@@ -7,6 +7,28 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
+# Laravel Project
+
+## Requirements
+Before running this project, make sure your system meets the following requirement:
+
+- **PHP version 8.2 or higher**
+- Composer
+
+## Installation
+
+Follow these steps to run the project:
+
+1. Install project dependencies
+   ```bash
+   composer install
+
+2. copy .env.example .env
+3. php artisan key:generate
+4. masuk ke file .env
+5. ubah SESSION_DRIVER=database menjadi SESSION_DRIVER=file
+6. lalu jalankan dengan perintah php artisan serve
+
 ## About Laravel
 
 Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
