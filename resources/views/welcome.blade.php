@@ -47,9 +47,8 @@ Solusi<br>Sentra Global Indo
 </div>
 
 <div class="hidden md:flex gap-8 text-sm font-semibold text-gray-600">
-<a href="#home">Home</a>
+<a href="#home">Dashboard</a>
 <a href="#profile">Profile</a>
-<a href="#artikel">Artikel</a>
 <a href="#produk">Produk</a>
 <a href="#testi">Testimonials</a>
 <a href="#faq">FAQ</a>
