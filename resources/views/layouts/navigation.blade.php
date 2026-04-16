@@ -20,9 +20,9 @@
                         {{ __('Profile') }}
                     </x-nav-link>
 
-                     {{-- <x-nav-link :href="route('Produk')" :active="request()->routeIs('Produk')">
-                        {{ __('Produk') }}
-                    </x-nav-link> --}}
+                     <x-nav-link :href="route('admin.products.index')" :active="request()->routeIs('admin.products.*')">
+                         {{ __('Produk') }}
+                    </x-nav-link> 
 
                     <x-nav-link :href="route('faqs.index')" :active="request()->routeIs('faqs.*')">
                         {{ __('FAQ') }}

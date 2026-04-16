@@ -28,7 +28,7 @@ Route::middleware('auth')->group(function () {
         Route::resource('profile', ProfileController::class);
         });
 
-    Route::middleware('cant manage products')->group(function () {
+    Route::middleware('can:manage products')->group(function () {
         Route::resource('products', ProductController::class);       
     });
 
