@@ -188,37 +188,35 @@ Dukungan teknis kapan saja
 <!-- PRODUCT -->
 <section id="produk" class="py-16 px-10 bg-white">
 
-<div class="text-center mb-10">
-<span class="bg-purple-400 text-white px-6 py-1 rounded-md font-bold text-sm">
-Catalog Product
-</span>
-</div>
+    <div class="text-center mb-10">
+        <a href="{{ route('katalog.index') }}" class="inline-block transition hover:scale-105">
+            <span class="bg-purple-400 text-white px-6 py-1 rounded-md font-bold text-sm">
+                Catalog Product
+            </span>
+        </a>
+    </div>
 
-<div class="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-6">
+    <div class="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-6">
+        @foreach($products as $product)
+        <div data-aos="zoom-in" class="bg-white border rounded-xl p-3 shadow-sm transition product-hover">
+            
+            <img src="{{ asset('storage/' . $product->image) }}" 
+                 class="w-full h-32 object-cover rounded-lg mb-3"
+                 onerror="this.src='https://images.unsplash.com/photo-1526733158272-60b4944e8d52?q=80&w=200'">
 
-@foreach(range(1,8) as $p)
+            <h4 class="text-xs font-bold mb-1">{{ $product->name }}</h4>
 
-<div data-aos="zoom-in"
-class="bg-white border rounded-xl p-3 shadow-sm transition product-hover">
+            <p class="text-[10px] text-gray-400 mb-2">
+                {{ \Illuminate\Support\Str::limit($product->description, 50) }}
+            </p>
 
-<img src="https://images.unsplash.com/photo-1526733158272-60b4944e8d52?q=80&w=200"
-class="w-full h-32 object-cover rounded-lg mb-3">
+            <div class="text-orange-500 font-bold text-xs">
+                IDR {{ number_format($product->price, 0, ',', '.') }}
+            </div>
 
-<h4 class="text-xs font-bold mb-1">Tinta Ori</h4>
-
-<p class="text-[10px] text-gray-400 mb-2">
-Original ink for high quality printing
-</p>
-
-<div class="text-orange-500 font-bold text-xs">
-IDR 15.000
-</div>
-
-</div>
-
-@endforeach
-
-</div>
+        </div>
+        @endforeach
+    </div>
 
 </section>
 

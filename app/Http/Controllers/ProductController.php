@@ -84,4 +84,18 @@ class ProductController extends Controller
 
         return redirect()->route('admin.products.index')->with('success', 'Product deleted successfully!');
     }
+    public function welcome()
+{
+    // Mengambil 8 produk terbaru dari database
+    $products = Product::latest()->take(8)->get();
+    
+    // Mengirim data ke view welcome.blade.php
+    return view('welcome', compact('products'));
+}
+public function katalog()
+{
+    // Ambil semua produk dengan pagination (12 per halaman)
+    $products = Product::latest()->paginate(12);
+    return view('products.katalog', compact('products'));
+}
 }

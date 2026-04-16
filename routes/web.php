@@ -10,9 +10,9 @@ use App\Http\Controllers\RoleController;
 // use App\Http\Controllers\FaqController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [ProductController::class, 'welcome'])->name('welcome');
+
+Route::get('/katalog-produk', [ProductController::class, 'katalog'])->name('katalog.index');
 
 Route::get('/dashboard', function () {
     return view('dashboard');
