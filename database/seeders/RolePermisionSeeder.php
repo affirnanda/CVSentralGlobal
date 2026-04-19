@@ -47,11 +47,14 @@ class RolePermisionSeeder extends Seeder
             'name' => 'super_admin'
             ]);
 
-         $user = User::create([
-            'name' => 'AdminCv',
-            'email' => 'super@admin.com',
-            'password' => bcrypt('admin123')
-            ]);
+         
+    $user = User::firstOrCreate([
+        'email' => 'super@admin.com'
+    ], [
+        'name' => 'Super Admin',
+        'password' => bcrypt('admin123')
+    ]);
+
             
           $user->assignRole($superAdminRole);  
     }
