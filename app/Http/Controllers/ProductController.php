@@ -40,7 +40,7 @@ class ProductController extends Controller
             'image'       => $imagePath,
         ]);
 
-        return redirect()->route('admin.products.index')->with('success', 'Product created successfully!');
+        return redirect()->route('welcome')->with('success', 'Produk berhasil ditambahkan dan kini tampil di landing page!');
     }
 
     public function edit(Product $product)
@@ -85,13 +85,15 @@ class ProductController extends Controller
         return redirect()->route('admin.products.index')->with('success', 'Product deleted successfully!');
     }
     public function welcome()
-{
-    // Mengambil 8 produk terbaru dari database
-    $products = Product::latest()->take(8)->get();
-    
-    // Mengirim data ke view welcome.blade.php
-    return view('welcome', compact('products'));
-}
+    {
+        // Mengambil 8 produk terbaru
+        $products = \App\Models\Product::latest()->take(8)->get();
+        
+        // Mengambil testimoni yang sudah disetujui admin
+        $testimonials = \App\Models\Testimonial::where('is_approved', true)->latest()->take(6)->get();
+        
+        return view('welcome', compact('products', 'testimonials'));
+    }
 public function katalog()
 {
     // Ambil semua produk dengan pagination (12 per halaman)

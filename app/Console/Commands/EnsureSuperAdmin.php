@@ -1,23 +1,29 @@
 <?php
 
-namespace Database\Seeders;
+namespace App\Console\Commands;
 
 use App\Models\User;
-use Illuminate\Database\Seeder;
+use Illuminate\Console\Command;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 
-class RolePermisionSeeder extends Seeder
+class EnsureSuperAdmin extends Command
 {
     /**
-     * Run the database seeds.
+     * The name and signature of the console command.
      */
-    public function run(): void
+    protected $signature = 'ensure:superadmin';
+
+    /**
+     * The console command description.
+     */
+    protected $description = 'Memastikan user super admin selalu ada di database tanpa menghapus data lain';
+
+    public function handle(): void
     {
-        // Reset cached roles & permissions agar tidak konflik saat dijalankan ulang
+        // Reset cache Spatie Permission
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
 
-        // Daftar semua permissions
         $permissions = [
             'manage products',
             'manage orders',
@@ -25,25 +31,15 @@ class RolePermisionSeeder extends Seeder
             'manage testimonials',
             'manage Roles',
             'manage hero section',
-            'manage profile',
         ];
 
-        foreach ($permissions as $permission) {
-            Permission::firstOrCreate(['name' => $permission]);
+        foreach ($permissions as $perm) {
+            Permission::firstOrCreate(['name' => $perm]);
         }
 
-        // Role admin_cv_solusi dengan permission terbatas
-        $admincvsolusiRole = Role::firstOrCreate(['name' => 'admin_cv_solusi']);
-        $admincvsolusiRole->syncPermissions([
-            'manage products',
-            'manage orders',
-        ]);
-
-        // Role super_admin dengan semua permissions
         $superAdminRole = Role::firstOrCreate(['name' => 'super_admin']);
         $superAdminRole->syncPermissions($permissions);
 
-        // Buat user super admin jika belum ada (firstOrCreate = tidak akan duplikat)
         $user = User::firstOrCreate(
             ['email' => 'super@admin.com'],
             [
@@ -52,9 +48,10 @@ class RolePermisionSeeder extends Seeder
             ]
         );
 
-        // Assign role super_admin (cek dulu agar tidak duplikat)
         if (!$user->hasRole('super_admin')) {
             $user->assignRole($superAdminRole);
         }
+
+        $this->info('✅ Super Admin dipastikan ada: super@admin.com / admin123');
     }
 }

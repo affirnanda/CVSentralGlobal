@@ -8,11 +8,19 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Testimonial extends Model
 {
-    //untuk testimoni pelanggan
     use HasFactory, SoftDeletes;
+
     protected $fillable = [
+        'name',
         'thumbnail',
         'message',
+        'rating',
+        'is_approved',
         'project_client_id',
+    ];
+
+    protected $casts = [
+        'is_approved' => 'boolean',
+        'rating'      => 'integer',
     ];
 }

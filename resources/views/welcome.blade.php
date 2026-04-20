@@ -36,7 +36,25 @@ scroll-behavior:smooth;
 
 <body class="bg-[#F3F4F6] text-gray-800">
 
+@if(session('success'))
+<div id="flash-success"
+     class="fixed top-5 right-5 z-[9999] bg-green-500 text-white px-6 py-3 rounded-xl shadow-xl flex items-center gap-3 transition-all duration-500">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+    </svg>
+    <span class="text-sm font-semibold">{{ session('success') }}</span>
+    <button onclick="document.getElementById('flash-success').remove()" class="ml-2 text-white hover:text-green-100 font-bold text-lg leading-none">&times;</button>
+</div>
+<script>
+    setTimeout(function() {
+        var el = document.getElementById('flash-success');
+        if (el) el.style.opacity = '0', setTimeout(() => el.remove(), 500);
+    }, 4000);
+</script>
+@endif
+
 <!-- NAVBAR -->
+
 <nav class="flex items-center justify-between px-10 py-4 bg-white sticky top-0 z-50 shadow-sm">
 
 <div class="flex items-center gap-2">
@@ -197,10 +215,10 @@ Dukungan teknis kapan saja
     </div>
 
     <div class="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-6">
-        @foreach($products as $product)
+        @forelse($products as $product)
         <div data-aos="zoom-in" class="bg-white border rounded-xl p-3 shadow-sm transition product-hover">
-            
-            <img src="{{ asset('storage/' . $product->image) }}" 
+
+            <img src="{{ asset('storage/' . $product->image) }}"
                  class="w-full h-32 object-cover rounded-lg mb-3"
                  onerror="this.src='https://images.unsplash.com/photo-1526733158272-60b4944e8d52?q=80&w=200'">
 
@@ -215,7 +233,11 @@ Dukungan teknis kapan saja
             </div>
 
         </div>
-        @endforeach
+        @empty
+        <div class="col-span-4 text-center py-10 text-gray-400 text-sm">
+            Belum ada produk. Tambahkan produk melalui panel admin.
+        </div>
+        @endforelse
     </div>
 
 </section>
@@ -223,37 +245,74 @@ Dukungan teknis kapan saja
 <!-- TESTIMONIAL -->
 <section id="testi" class="py-16 bg-[#E9E9FF] px-10">
 
-<div class="text-center mb-10">
-<span class="bg-purple-400 text-white px-6 py-1 rounded-md font-bold text-sm">
-Testimonial
-</span>
-</div>
+    <div class="text-center mb-10">
+        <span class="bg-purple-400 text-white px-6 py-1 rounded-md font-bold text-sm">
+            Testimonial
+        </span>
+    </div>
 
-<div class="max-w-6xl mx-auto grid md:grid-cols-3 gap-4">
+    <div class="max-w-6xl mx-auto grid md:grid-cols-3 gap-6 mb-16">
+        @forelse($testimonials as $t)
+            <div data-aos="fade-up" class="bg-white p-6 rounded-xl shadow-md flex flex-col gap-3">
+                <div class="flex items-center gap-3">
+                    <img src="https://ui-avatars.com/api/?name={{ urlencode($t->name) }}&background=random" 
+                         class="w-12 h-12 rounded-full border-2 border-purple-200">
+                    <div>
+                        <h5 class="text-sm font-bold text-gray-800">{{ $t->name }}</h5>
+                        <div class="text-yellow-400 text-xs">
+                            @for($i = 1; $i <= 5; $i++)
+                                {{ $i <= $t->rating ? '★' : '☆' }}
+                            @endfor
+                        </div>
+                    </div>
+                </div>
+                <p class="text-xs text-gray-600 italic leading-relaxed">
+                    "{{ $t->message }}"
+                </p>
+            </div>
+        @empty
+            <div class="col-span-full text-center text-gray-400 italic">
+                Belum ada testimoni yang disetujui.
+            </div>
+        @endforelse
+    </div>
 
-@foreach(range(1,6) as $t)
+    <!-- FORM KIRIM TESTIMONI -->
+    <div class="max-w-2xl mx-auto bg-white p-8 rounded-3xl shadow-xl border border-purple-100" data-aos="zoom-in">
+        <h3 class="text-xl font-bold text-center mb-6 text-gray-800">Kirim Testimoni Anda</h3>
+        
+        <form action="{{ route('testimonials.store') }}" method="POST" class="space-y-4">
+            @csrf
+            <div>
+                <label class="block text-xs font-bold text-gray-500 mb-1">NAMA ANDA</label>
+                <input type="text" name="name" required placeholder="Masukkan nama lengkap"
+                       class="w-full px-4 py-2 rounded-lg bg-gray-50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-purple-400 text-sm">
+            </div>
 
-<div data-aos="fade-up"
-class="bg-white p-4 rounded-xl shadow-sm flex gap-3 items-center">
+            <div>
+                <label class="block text-xs font-bold text-gray-500 mb-1">RATING</label>
+                <select name="rating" required 
+                        class="w-full px-4 py-2 rounded-lg bg-gray-50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-purple-400 text-sm">
+                    <option value="5">★★★★★ (Sangat Bagus)</option>
+                    <option value="4">★★★★☆ (Bagus)</option>
+                    <option value="3">★★★☆☆ (Cukup)</option>
+                    <option value="2">★★☆☆☆ (Buruk)</option>
+                    <option value="1">★☆☆☆☆ (Sangat Buruk)</option>
+                </select>
+            </div>
 
-<img src="https://ui-avatars.com/api/?name=User{{$t}}&background=random"
-class="w-10 h-10 rounded-full">
+            <div>
+                <label class="block text-xs font-bold text-gray-500 mb-1">PESAN / TESTIMONI</label>
+                <textarea name="message" rows="3" required placeholder="Tuliskan pengalaman Anda bersama kami..."
+                          class="w-full px-4 py-2 rounded-lg bg-gray-50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-purple-400 text-sm"></textarea>
+            </div>
 
-<div>
-
-<h5 class="text-xs font-bold">Customer {{$t}}</h5>
-
-<p class="text-[9px] text-gray-400">
-"Layanan sangat memuaskan"
-</p>
-
-</div>
-
-</div>
-
-@endforeach
-
-</div>
+            <button type="submit" 
+                    class="w-full bg-purple-500 hover:bg-purple-600 text-white font-bold py-3 rounded-xl shadow-lg transition-all transform hover:scale-[1.02]">
+                Kirim Testimoni
+            </button>
+        </form>
+    </div>
 
 </section>
 
@@ -286,4 +345,3 @@ once:true
 
 </body>
 </html>
-```
