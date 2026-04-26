@@ -313,6 +313,44 @@ Dukungan teknis kapan saja
             </button>
         </form>
     </div>
+</section>
+
+    <!-- FAQ -->
+<section id="faq" class="py-16 px-10 bg-white">
+
+    <div class="text-center mb-10">
+        <span class="bg-purple-400 text-white px-6 py-1 rounded-md font-bold text-sm">
+            FAQ
+        </span>
+    </div>
+
+    <div class="max-w-4xl mx-auto space-y-4">
+
+        @forelse($faqs as $faq)
+    <details data-aos="fade-up" class="bg-[#F3F4F6] rounded-xl shadow-sm p-4 group">
+
+        <!-- Question -->
+        <summary class="flex justify-between items-center cursor-pointer font-semibold text-gray-700 list-none">
+            <span>{{ $faq->question }}</span>
+
+            <!-- Icon -->
+            <span class="text-purple-500 text-xl transition-transform duration-300 group-open:rotate-45">
+                +
+            </span>
+        </summary>
+
+        <!-- Answer -->
+        <p class="mt-3 text-sm text-gray-500 leading-relaxed">
+            {{ $faq->answer }}
+        </p>
+
+    </details>
+@empty
+    <div class="text-center text-gray-400">
+        Belum ada FAQ tersedia.
+    </div>
+@endforelse
+    
 
 </section>
 

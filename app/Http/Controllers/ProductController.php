@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use App\Models\Faq;
+use App\Models\Testimonial;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -91,13 +93,15 @@ class ProductController extends Controller
         
         // Mengambil testimoni yang sudah disetujui admin
         $testimonials = \App\Models\Testimonial::where('is_approved', true)->latest()->take(6)->get();
+
+        $faqs = Faq::where('is_active', true)->orderBy('order')->orderBy('id')->get();
         
-        return view('welcome', compact('products', 'testimonials'));
+        return view('welcome', compact('products', 'testimonials','faqs'));
     }
-public function katalog()
-{
+    public function katalog()
+    {
     // Ambil semua produk dengan pagination (12 per halaman)
     $products = Product::latest()->paginate(12);
     return view('products.katalog', compact('products'));
-}
+    }
 }
