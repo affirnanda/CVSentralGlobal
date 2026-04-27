@@ -10,7 +10,6 @@ class ValidInputFaqTest extends TestCase
 {
     use RefreshDatabase;
 
-    /** @test */
     public function test_can_create_faq_with_valid_input()
     {
         $response = $this->post(route('faqs.store'), [
@@ -30,7 +29,6 @@ class ValidInputFaqTest extends TestCase
         ]);
     }
 
-    /** @test */
     public function test_can_update_faq_with_valid_input()
     {
         $faq = Faq::factory()->create();
@@ -52,7 +50,6 @@ class ValidInputFaqTest extends TestCase
         ]);
     }
 
-    /** @test */
     public function test_can_delete_faq()
     {
         $faq = Faq::factory()->create();
