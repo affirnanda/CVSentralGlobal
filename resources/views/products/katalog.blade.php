@@ -46,10 +46,10 @@
                          onerror="this.src='https://via.placeholder.com/300'">
                     
                     <h4 class="text-sm font-bold mb-1">{{ $product->name }}</h4>
-                    <p class="text-xs text-gray-400 mb-3 h-8 overflow-hidden">{{ Str::limit($product->description, 60) }}</p>
+                    <p class="text-xs text-gray-400 mb-3 h-8 overflow-hidden">{{ \Illuminate\Support\Str::limit($product->description ?? '', 60) }}</p>
                     
                     <div class="flex justify-between items-center">
-                        <span class="text-purple-600 font-bold text-sm">IDR {{ number_format($product->price, 0, ',', '.') }}</span>
+                        <span class="text-purple-600 font-bold text-sm">IDR {{ number_format((float)$product->price, 0, ',', '.') }}</span>
                         <button class="bg-purple-100 text-purple-600 p-2 rounded-lg hover:bg-purple-600 hover:text-white transition">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />

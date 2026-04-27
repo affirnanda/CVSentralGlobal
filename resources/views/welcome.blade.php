@@ -58,10 +58,8 @@ scroll-behavior:smooth;
 <nav class="flex items-center justify-between px-10 py-4 bg-white sticky top-0 z-50 shadow-sm">
 
 <div class="flex items-center gap-2">
-<div class="w-8 h-8 bg-black rounded text-white flex items-center justify-center font-bold">CV</div>
-<span class="text-[10px] font-bold leading-tight">
-Solusi<br>Sentra Global Indo
-</span>
+
+
 </div>
 
 <div class="hidden md:flex gap-8 text-sm font-semibold text-gray-600">
@@ -225,11 +223,11 @@ Dukungan teknis kapan saja
             <h4 class="text-xs font-bold mb-1">{{ $product->name }}</h4>
 
             <p class="text-[10px] text-gray-400 mb-2">
-                {{ \Illuminate\Support\Str::limit($product->description, 50) }}
+                {{ \Illuminate\Support\Str::limit($product->description ?? '', 50) }}
             </p>
 
             <div class="text-orange-500 font-bold text-xs">
-                IDR {{ number_format($product->price, 0, ',', '.') }}
+                IDR {{ number_format((float)$product->price, 0, ',', '.') }}
             </div>
 
         </div>
