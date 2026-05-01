@@ -104,4 +104,14 @@ class ProductController extends Controller
     $products = Product::latest()->paginate(12);
     return view('products.katalog', compact('products'));
     }
+
+    public function show(Product $product)
+{
+    $related = Product::where('id', '!=', $product->id)
+                ->latest()
+                ->take(4)
+                ->get();
+
+    return view('products.show', compact('product', 'related'));
+}
 }

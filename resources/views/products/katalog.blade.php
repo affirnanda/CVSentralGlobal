@@ -39,24 +39,26 @@
     <section class="py-16 px-10">
         <div class="max-w-6xl mx-auto">
             <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
-                @forelse($products as $product)
-                <div data-aos="fade-up" class="bg-white border rounded-xl p-4 shadow-sm transition product-hover">
-                    <img src="{{ asset('storage/' . $product->image) }}" 
-                         class="w-full h-40 object-cover rounded-lg mb-4"
-                         onerror="this.src='https://via.placeholder.com/300'">
-                    
-                    <h4 class="text-sm font-bold mb-1">{{ $product->name }}</h4>
-                    <p class="text-xs text-gray-400 mb-3 h-8 overflow-hidden">{{ \Illuminate\Support\Str::limit($product->description ?? '', 60) }}</p>
-                    
-                    <div class="flex justify-between items-center">
-                        <span class="text-purple-600 font-bold text-sm">IDR {{ number_format((float)$product->price, 0, ',', '.') }}</span>
-                        <button class="bg-purple-100 text-purple-600 p-2 rounded-lg hover:bg-purple-600 hover:text-white transition">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                            </svg>
-                        </button>
-                    </div>
-                </div>
+             @forelse($products as $product)
+<div data-aos="fade-up" class="bg-white border rounded-xl p-4 shadow-sm transition product-hover">
+    <a href="{{ route('products.show', $product) }}" class="block">
+        <img src="{{ asset('storage/' . $product->image) }}" 
+             class="w-full h-40 object-cover rounded-lg mb-4"
+             onerror="this.src='https://via.placeholder.com/300'">
+        
+        <h4 class="text-sm font-bold mb-1">{{ $product->name }}</h4>
+        <p class="text-xs text-gray-400 mb-3 h-8 overflow-hidden">{{ \Illuminate\Support\Str::limit($product->description ?? '', 60) }}</p>
+    </a>
+    
+    <div class="flex justify-between items-center">
+        <span class="text-purple-600 font-bold text-sm">IDR {{ number_format((float)$product->price, 0, ',', '.') }}</span>
+        <button class="bg-purple-100 text-purple-600 p-2 rounded-lg hover:bg-purple-600 hover:text-white transition">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+            </svg>
+        </button>
+    </div>
+</div>
                 @empty
                 <div class="col-span-full text-center py-10">
                     <p class="text-gray-500 text-lg">Belum ada produk yang tersedia.</p>

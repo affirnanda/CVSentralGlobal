@@ -214,28 +214,28 @@ Dukungan teknis kapan saja
 
     <div class="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-6">
         @forelse($products as $product)
-        <div data-aos="zoom-in" class="bg-white border rounded-xl p-3 shadow-sm transition product-hover">
+<div data-aos="zoom-in" class="bg-white border rounded-xl p-3 shadow-sm transition product-hover">
+    <a href="{{ route('products.show', $product) }}" class="block">
+        <img src="{{ asset('storage/' . $product->image) }}"
+             class="w-full h-32 object-cover rounded-lg mb-3"
+             onerror="this.src='https://images.unsplash.com/photo-1526733158272-60b4944e8d52?q=80&w=200'">
 
-            <img src="{{ asset('storage/' . $product->image) }}"
-                 class="w-full h-32 object-cover rounded-lg mb-3"
-                 onerror="this.src='https://images.unsplash.com/photo-1526733158272-60b4944e8d52?q=80&w=200'">
+        <h4 class="text-xs font-bold mb-1">{{ $product->name }}</h4>
 
-            <h4 class="text-xs font-bold mb-1">{{ $product->name }}</h4>
+        <p class="text-[10px] text-gray-400 mb-2">
+            {{ \Illuminate\Support\Str::limit($product->description ?? '', 50) }}
+        </p>
 
-            <p class="text-[10px] text-gray-400 mb-2">
-                {{ \Illuminate\Support\Str::limit($product->description ?? '', 50) }}
-            </p>
-
-            <div class="text-orange-500 font-bold text-xs">
-                IDR {{ number_format((float)$product->price, 0, ',', '.') }}
-            </div>
-
+        <div class="text-orange-500 font-bold text-xs">
+            IDR {{ number_format((float)$product->price, 0, ',', '.') }}
         </div>
-        @empty
-        <div class="col-span-4 text-center py-10 text-gray-400 text-sm">
-            Belum ada produk. Tambahkan produk melalui panel admin.
-        </div>
-        @endforelse
+    </a>
+</div>
+@empty
+<div class="col-span-4 text-center py-10 text-gray-400 text-sm">
+    Belum ada produk. Tambahkan produk melalui panel admin.
+</div>
+@endforelse
     </div>
 
 </section>
