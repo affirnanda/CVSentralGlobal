@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('Kelola Landing Page') }}
+            {{ __('Kelola Hero Section') }}
         </h2>
     </x-slot>
 
@@ -16,7 +16,7 @@
                         </div>
                     @endif
 
-                    <form method="POST" action="{{ route('admin.landing.update') }}" enctype="multipart/form-data">
+                    <form method="POST" action="{{ route('admin.hero-section.update') }}" enctype="multipart/form-data">
                         @csrf
 
                         <!-- Hero Title -->

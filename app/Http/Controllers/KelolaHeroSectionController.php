@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Validator;
 
-class KelolaLandingPageController extends Controller
+class KelolaHeroSectionController extends Controller
 {
     // Path to JSON data file
     private $dataPath = 'landing_page.json';
@@ -23,7 +23,7 @@ class KelolaLandingPageController extends Controller
             $json = Storage::get($this->dataPath);
             $data = json_decode($json, true) ?? [];
         }
-        return view('admin.kelola-landing-page', compact('data'));
+        return view('admin.kelola-hero-section', compact('data'));
     }
 
     /**

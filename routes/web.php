@@ -2,11 +2,10 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProductController;
-use App\Http\Controllers\HeroSectionController;
 use App\Http\Controllers\FaqController;
 use App\Http\Controllers\TestimonialController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\KelolaLandingPageController;
+use App\Http\Controllers\KelolaHeroSectionController;
 
 Route::get('/', [ProductController::class, 'welcome'])->name('welcome');
 
@@ -42,12 +41,9 @@ Route::middleware('auth')->group(function () {
             Route::delete('/testimonials/{testimonial}', [TestimonialController::class, 'destroy'])->name('testimonials.destroy');
         });
 
-        Route::middleware('can:manage hero section')->group(function () {
-            Route::resource('hero-section', HeroSectionController::class);
-        });
-        // Landing page management routes
-        Route::get('/landing-page', [KelolaLandingPageController::class, 'index'])->name('landing.manage');
-        Route::post('/landing-page', [KelolaLandingPageController::class, 'update'])->name('landing.update');
+        // Hero section management routes
+        Route::get('/kelola-hero-section', [KelolaHeroSectionController::class, 'index'])->name('hero-section.manage');
+        Route::post('/kelola-hero-section', [KelolaHeroSectionController::class, 'update'])->name('hero-section.update');
     });
 });
 
