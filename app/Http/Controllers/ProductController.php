@@ -88,6 +88,12 @@ class ProductController extends Controller
     }
     public function welcome()
     {
+        // Mengambil data landing page (JSON)
+        $landingData = [];
+        if (Storage::exists('landing_page.json')) {
+            $landingData = json_decode(Storage::get('landing_page.json'), true) ?? [];
+        }
+
         // Mengambil 8 produk terbaru
         $products = \App\Models\Product::latest()->take(8)->get();
         
@@ -96,7 +102,7 @@ class ProductController extends Controller
 
         $faqs = Faq::where('is_active', true)->orderBy('order')->orderBy('id')->get();
         
-        return view('welcome', compact('products', 'testimonials','faqs'));
+        return view('welcome', compact('products', 'testimonials', 'faqs', 'landingData'));
     }
     public function katalog()
     {

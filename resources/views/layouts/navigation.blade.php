@@ -31,6 +31,10 @@
                     <x-nav-link :href="route('admin.testimonials.index')" :active="request()->routeIs('admin.testimonials.*')">
                         {{ __('Testimoni') }}
                     </x-nav-link>
+
+                    <x-nav-link :href="route('admin.landing.manage')" :active="request()->routeIs('admin.landing.*')">
+                        {{ __('Kelola Landing Page') }}
+                    </x-nav-link>
                 </div>
             </div>
 
@@ -88,6 +92,9 @@
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('faqs.index')" :active="request()->routeIs('faqs.*')">
                 {{ __('FAQ') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('admin.landing.manage')" :active="request()->routeIs('admin.landing.*')">
+                {{ __('Kelola Landing Page') }}
             </x-responsive-nav-link>
         </div>
 

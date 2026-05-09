@@ -6,6 +6,7 @@ use App\Http\Controllers\HeroSectionController;
 use App\Http\Controllers\FaqController;
 use App\Http\Controllers\TestimonialController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\KelolaLandingPageController;
 
 Route::get('/', [ProductController::class, 'welcome'])->name('welcome');
 
@@ -44,6 +45,9 @@ Route::middleware('auth')->group(function () {
         Route::middleware('can:manage hero section')->group(function () {
             Route::resource('hero-section', HeroSectionController::class);
         });
+        // Landing page management routes
+        Route::get('/landing-page', [KelolaLandingPageController::class, 'index'])->name('landing.manage');
+        Route::post('/landing-page', [KelolaLandingPageController::class, 'update'])->name('landing.update');
     });
 });
 

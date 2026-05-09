@@ -13,7 +13,7 @@
 <style>
 .hero-bg{
 background:linear-gradient(rgba(0,0,0,0.5),rgba(0,0,0,0.5)),
-url('https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=1200');
+url('{{ !empty($landingData["hero_image"]) ? asset("storage/landing/" . $landingData["hero_image"]) : "https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=1200" }}');
 background-size:cover;
 background-position:center;
 }
@@ -90,8 +90,14 @@ scroll-behavior:smooth;
 
 <h1 data-aos="zoom-in"
 class="text-3xl md:text-5xl font-extrabold text-white max-w-3xl mb-6">
-The Best Solution for Your Bussines
+{{ $landingData['hero_title'] ?? 'The Best Solution for Your Bussines' }}
 </h1>
+
+@if(!empty($landingData['hero_subtitle']))
+<p data-aos="fade-up" data-aos-delay="100" class="text-xl text-gray-200 mb-8 max-w-2xl">
+{{ $landingData['hero_subtitle'] }}
+</p>
+@endif
 
 <button data-aos="fade-up" data-aos-delay="300"
 class="bg-purple-400 hover:bg-purple-500 text-white px-8 py-2 rounded-full font-bold shadow-lg transition hover:scale-110">
@@ -110,11 +116,11 @@ Learn More
 <div data-aos="fade-right">
 
 <h2 class="text-2xl font-bold mb-4 border-l-4 border-purple-500 pl-4">
-Berpengalaman di bidangnya selama 5 tahun
+{{ $landingData['profile_title'] ?? 'Berpengalaman di bidangnya selama 5 tahun' }}
 </h2>
 
 <p class="text-gray-500 text-sm leading-relaxed mb-6">
-Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+{{ $landingData['section_text'] ?? 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.' }}
 </p>
 
 <div class="grid grid-cols-3 gap-4 text-center">
@@ -139,7 +145,7 @@ Lorem Ipsum is simply dummy text of the printing and typesetting industry.
 </div>
 
 <div data-aos="fade-left" class="rounded-xl overflow-hidden shadow-2xl">
-<img src="https://www.shutterstock.com/image-photo/asian-staff-member-meeting-customer-600nw-2672747739.jpg">
+<img src="{{ !empty($landingData['profile_image']) ? asset('storage/landing/' . $landingData['profile_image']) : 'https://www.shutterstock.com/image-photo/asian-staff-member-meeting-customer-600nw-2672747739.jpg' }}">
 </div>
 
 </div>
