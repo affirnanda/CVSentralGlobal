@@ -32,14 +32,18 @@ class KelolaHeroSectionController extends Controller
     public function update(Request $request)
     {
         $rules = [
-            'hero_title'   => 'nullable|string|max:255',
+            'hero_title'   => 'nullable|string|max:100',
             'hero_subtitle'=> 'nullable|string',
             'section_text' => 'nullable|string',
-            'hero_image'   => 'nullable|image|max:2048',
+            'hero_image'   => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
             'profile_title'=> 'nullable|string|max:255',
-            'profile_image'=> 'nullable|image|max:2048',
+            'profile_image'=> 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ];
-        $validator = Validator::make($request->all(), $rules);
+        $messages = [
+            'hero_title.max' => 'Judul hero section terlalu panjang',
+        ];
+
+        $validator = Validator::make($request->all(), $rules, $messages);
         if ($validator->fails()) {
             return Redirect::back()->withErrors($validator)->withInput();
         }
