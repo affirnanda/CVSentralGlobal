@@ -94,6 +94,8 @@ class ProductController extends Controller
             $landingData = json_decode(Storage::get('landing_page.json'), true) ?? [];
         }
 
+        $keranjang = session()->get('keranjang', []);
+
         // Mengambil 8 produk terbaru
         $products = \App\Models\Product::latest()->take(8)->get();
         
@@ -102,7 +104,7 @@ class ProductController extends Controller
 
         $faqs = Faq::where('is_active', true)->orderBy('order')->orderBy('id')->get();
         
-        return view('welcome', compact('products', 'testimonials', 'faqs', 'landingData'));
+        return view('welcome', compact('products', 'testimonials', 'faqs', 'landingData','keranjang'));
     }
     public function katalog()
     {
@@ -118,6 +120,7 @@ class ProductController extends Controller
                 ->take(4)
                 ->get();
 
-    return view('products.show', compact('product', 'related'));
+    $keranjang = session()->get('keranjang', []);
+    return view('products.show', compact('product', 'related','keranjang'));
 }
 }
