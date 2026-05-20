@@ -15,7 +15,6 @@ return new class extends Migration
             $table->text('message');
             $table->integer('rating')->default(5);
             $table->boolean('is_approved')->default(false);
-            $table->foreignId('project_client_id')->nullable()->constrained('project_clients')->onDelete('cascade');
             $table->softDeletes();
             $table->timestamps();
         });
