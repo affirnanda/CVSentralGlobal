@@ -12,10 +12,14 @@
 
 <style>
 .hero-bg{
-background:linear-gradient(rgba(0,0,0,0.5),rgba(0,0,0,0.5)),
-url('{{ !empty($landingData["hero_image"]) ? asset("storage/landing/" . $landingData["hero_image"]) : "https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=1200" }}');
-background-size:cover;
-background-position:center;
+@if(!empty($landingData["hero_image"]))
+    background:linear-gradient(rgba(0,0,0,0.5),rgba(0,0,0,0.5)),
+    url('{{ asset("storage/landing/" . $landingData["hero_image"]) }}');
+    background-size:cover;
+    background-position:center;
+@else
+    background-color: #ffffff;
+@endif
 }
 
 .card-hover:hover{
@@ -89,12 +93,12 @@ scroll-behavior:smooth;
 <header class="hero-bg h-[500px] flex flex-col items-center justify-center text-center px-6">
 
 <h1 data-aos="zoom-in"
-class="text-3xl md:text-5xl font-extrabold text-white max-w-3xl mb-6">
+class="text-3xl md:text-5xl font-extrabold {{ !empty($landingData['hero_image']) ? 'text-white' : 'text-gray-800' }} max-w-3xl mb-6">
 {{ $landingData['hero_title'] ?? 'The Best Solution for Your Bussines' }}
 </h1>
 
 @if(!empty($landingData['hero_subtitle']))
-<p data-aos="fade-up" data-aos-delay="100" class="text-xl text-gray-200 mb-8 max-w-2xl">
+<p data-aos="fade-up" data-aos-delay="100" class="text-xl {{ !empty($landingData['hero_image']) ? 'text-gray-200' : 'text-gray-600' }} mb-8 max-w-2xl">
 {{ $landingData['hero_subtitle'] }}
 </p>
 @endif
@@ -145,7 +149,11 @@ Learn More
 </div>
 
 <div data-aos="fade-left" class="rounded-xl overflow-hidden shadow-2xl">
-<img src="{{ !empty($landingData['profile_image']) ? asset('storage/landing/' . $landingData['profile_image']) : 'https://www.shutterstock.com/image-photo/asian-staff-member-meeting-customer-600nw-2672747739.jpg' }}">
+@if(!empty($landingData['profile_image']))
+<img src="{{ asset('storage/landing/' . $landingData['profile_image']) }}">
+@else
+<div class="w-full h-[400px] bg-white"></div>
+@endif
 </div>
 
 </div>

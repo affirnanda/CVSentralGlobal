@@ -59,13 +59,13 @@ class KelolaHeroSectionController extends Controller
         $data['profile_title']  = $request->input('profile_title');
         // Handle image upload
         if ($request->hasFile('hero_image')) {
-            $path = $request->file('hero_image')->store('public/landing');
-            // store returns path like public/landing/xxxx.jpg; we keep only filename
+            $path = $request->file('hero_image')->store('landing', 'public');
+            // store returns path like landing/xxxx.jpg; we keep only filename
             $filename = basename($path);
             $data['hero_image'] = $filename;
         }
         if ($request->hasFile('profile_image')) {
-            $path = $request->file('profile_image')->store('public/landing');
+            $path = $request->file('profile_image')->store('landing', 'public');
             $filename = basename($path);
             $data['profile_image'] = $filename;
         }
