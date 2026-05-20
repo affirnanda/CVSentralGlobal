@@ -90,7 +90,7 @@
 
                         <!-- Hero Title -->
                         <div class="mb-4">
-                            <x-input-label for="hero_title" :value="__('Hero Title (batas 100 karakter, opsional)')" />
+                            <x-input-label for="hero_title" :value="__('Hero Title (opsional)')" />
                             <x-text-input id="hero_title" class="block mt-1 w-full {{ $errors->has('hero_title') ? 'border-red-500 ring-red-500' : '' }}"
                                           type="text" name="hero_title"
                                           :value="old('hero_title', $data['hero_title'] ?? '')"
@@ -140,7 +140,7 @@
 
                         <!-- Profile Title -->
                         <div class="mb-4">
-                            <x-input-label for="profile_title" :value="__('Profile Title (maks. 255 karakter, opsional)')" />
+                            <x-input-label for="profile_title" :value="__('Profile Title (opsional)')" />
                             <x-text-input id="profile_title" class="block mt-1 w-full {{ $errors->has('profile_title') ? 'border-red-500 ring-red-500' : '' }}"
                                           type="text" name="profile_title"
                                           :value="old('profile_title', $data['profile_title'] ?? '')" />
@@ -210,8 +210,55 @@
         fileGuard('profile_image', 'profile_image_hint', 2);
 
         // Client-side popup untuk error file sebelum submit
-        function showClientPopup(msg) {
-            const overlay = document.createElement('div');
+
+            function showClientPopup(msg) {
+    const overlay = document.createElement('div');
+    overlay.style.cssText = 'position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.4);backdrop-filter:blur(4px)';
+    overlay.innerHTML = `
+        <div style="background:#fff;border-radius:1rem;padding:2rem;max-width:360px;width:90%;text-align:center;box-shadow:0 25px 50px rgba(0,0,0,.2)">
+            <div style="width:64px;height:64px;background:#fee2e2;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem">
+                <svg width="32" height="32" fill="none" stroke="#ef4444" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
+                </svg>
+            </div>
+            <h3 style="font-weight:700;font-size:1.1rem;margin-bottom:.5rem;color:#1f2937">File Tidak Valid!</h3>
+            <p style="font-size:.875rem;color:#6b7280;margin-bottom:1.5rem">${msg}</p>
+            <button onclick="this.closest('[style]').remove()"
+                    style="width:100%;background:#ef4444;color:#fff;font-weight:600;padding:.6rem 0;border-radius:.75rem;border:none;cursor:pointer">
+                OK, Mengerti
+            </button>
+        </div>`;
+    document.body.appendChild(overlay);
+    overlay.addEventListener('click', e => { if (e.target === overlay) overlay.remove(); });
+}
+
+// Monitor hero title length and update counter
+const heroTitleInput = document.getElementById('hero_title');
+if (heroTitleInput) {
+    const counterEl = document.getElementById('hero_title_counter');
+    heroTitleInput.addEventListener('input', function () {
+        const max = 100;
+        const len = this.value.length;
+        if (counterEl) {
+            counterEl.textContent = `${len}/${max}`;
+        }
+        if (len > max) {
+            showClientPopup('Judul Hero terlalu panjang. Maksimum 100 karakter.');
+        }
+    });
+}
+ // Monitor profile title length and show popup if exceeds 255 characters
+ const profileTitleInput = document.getElementById('profile_title');
+ if (profileTitleInput) {
+     profileTitleInput.addEventListener('input', function () {
+         const max = 255;
+         if (this.value.length > max) {
+             showClientPopup('Judul Profile terlalu panjang. Maksimum 255 karakter.');
+         }
+     });
+ }
+
             overlay.style.cssText = 'position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.4);backdrop-filter:blur(4px)';
             overlay.innerHTML = `
                 <div style="background:#fff;border-radius:1rem;padding:2rem;max-width:360px;width:90%;text-align:center;box-shadow:0 25px 50px rgba(0,0,0,.2)">

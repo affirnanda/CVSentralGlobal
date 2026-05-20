@@ -22,7 +22,16 @@ class AppServiceProvider extends ServiceProvider
     {
         //
         Gate::before(function ($user, $ability) {
-        return true;
-    });
+            return true;
+        });
+
+        // Auto-seed default Super Admin if users table is empty
+        try {
+            if (\Illuminate\Support\Facades\Schema::hasTable('users') && \App\Models\User::count() === 0) {
+                \Illuminate\Support\Facades\Artisan::call('db:seed', ['--class' => 'RolePermisionSeeder']);
+            }
+        } catch (\Exception $e) {
+            // Table doesn't exist yet or connection failure, ignore
+        }
     }
 }
