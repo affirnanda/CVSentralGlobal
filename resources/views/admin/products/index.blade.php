@@ -24,6 +24,7 @@
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Image</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Name</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Price</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Stock</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
                         </tr>
                     </thead>
@@ -39,6 +40,7 @@
                             </td>
                             <td class="px-6 py-4 text-sm text-gray-900">{{ $product->name }}</td>
                             <td class="px-6 py-4 text-sm text-gray-900">IDR {{ number_format($product->price, 0, ',', '.') }}</td>
+                            <td class="px-6 py-4 text-sm text-gray-900">{{ $product->stock }}</td>
                             <td class="px-6 py-4 text-sm space-x-2">
                                 <a href="{{ route('admin.products.edit', $product) }}"
                                    class="text-indigo-600 hover:underline">Edit</a>

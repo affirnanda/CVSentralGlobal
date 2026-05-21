@@ -9,6 +9,12 @@
 </head>
 <body class="bg-[#F3F4F6] text-gray-800">
 
+    @php
+        use Illuminate\Support\Facades\Storage;
+        $defaultImage = 'data:image/svg+xml;base64,' . base64_encode('<svg xmlns="http://www.w3.org/2000/svg" width="600" height="400"><rect fill="#ddd" width="600" height="400"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-family="Arial" font-size="24" fill="#666">No Image</text></svg>');
+        $productImage = $product->image && Storage::disk('public')->exists($product->image) ? asset('storage/' . $product->image) : $defaultImage;
+    @endphp
+
     <nav class="flex items-center justify-between px-10 py-4 bg-white sticky top-0 z-50 shadow-sm">
         <div class="flex items-center gap-2">
             <a href="{{ route('welcome') }}" class="flex items-center gap-2">
@@ -78,7 +84,8 @@
 
             <div id="cart-item-{{ $item['id'] }}" class="flex gap-3 border-b pb-3">
 
-                <img src="{{ asset('storage/' . $item['image']) }}"
+                @php $cartImage = !empty($item['image']) && Storage::disk('public')->exists($item['image']) ? asset('storage/' . $item['image']) : $defaultImage; @endphp
+                <img src="{{ $cartImage }}"
                      class="w-20 h-20 object-cover rounded-lg">
 
                 <div class="flex-1">
@@ -163,18 +170,22 @@
         <div class="bg-white rounded-2xl shadow-md p-8 flex flex-col md:flex-row gap-10" data-aos="fade-up">
             
             <div class="md:w-1/2">
-                <img src="{{ asset('storage/' . $product->image) }}"
+                <img src="{{ $productImage }}"
                      class="w-full h-80 object-cover rounded-xl"
-                     onerror="this.src='https://via.placeholder.com/600x400'">
+                     onerror="this.src='{{ $defaultImage }}'">
             </div>
 
             <div class="md:w-1/2 flex flex-col justify-center">
                 <a href="{{ route('katalog.index') }}" 
                    class="text-xs text-purple-500 hover:underline mb-4 inline-block">← Kembali ke Katalog</a>
                 <h1 class="text-2xl font-bold text-gray-900 mb-3">{{ $product->name }}</h1>
-                <p class="text-2xl text-orange-500 font-bold mb-4">
+                <p class="text-2xl text-orange-500 font-bold mb-2">
                     IDR {{ number_format((float)$product->price, 0, ',', '.') }}
                 </p>
+                <p class="text-sm text-gray-500 mb-2">Stock: {{ $product->stock }}</p>
+                @if($product->stock <= 0)
+                    <p class="text-sm text-red-500 font-semibold mb-4">Stok produk habis</p>
+                @endif
                 <p class="text-sm text-gray-500 leading-relaxed">{{ $product->description }}</p>
             </div>
         </div>
@@ -187,8 +198,9 @@
         @csrf
 
         <button type="submit"
-            class="w-full bg-purple-400 hover:bg-purple-500 text-white py-3 rounded-xl font-bold shadow-md transition hover:scale-[1.02]">
-            Tambahkan ke Keranjang
+            class="w-full {{ $product->stock <= 0 ? 'bg-gray-300 text-gray-600 cursor-not-allowed' : 'bg-purple-400 hover:bg-purple-500 text-white' }} py-3 rounded-xl font-bold shadow-md transition hover:scale-[1.02]"
+            {{ $product->stock <= 0 ? 'disabled' : '' }}>
+            {{ $product->stock <= 0 ? 'Stok Habis' : 'Tambahkan ke Keranjang' }}
         </button>
     </form>
 
@@ -202,13 +214,15 @@
                 @foreach($related as $item)
                 <a href="{{ route('products.show', $item) }}"
                    class="bg-white border rounded-xl p-3 shadow-sm transition hover:scale-105 block" data-aos="fade-up">
-                    <img src="{{ asset('storage/' . $item->image) }}"
+                    @php $relatedImage = !empty($item->image) && Storage::disk('public')->exists($item->image) ? asset('storage/' . $item->image) : $defaultImage; @endphp
+                    <img src="{{ $relatedImage }}"
                          class="w-full h-32 object-cover rounded-lg mb-3"
-                         onerror="this.src='https://via.placeholder.com/300'">
+                         onerror="this.src='{{ $defaultImage }}'">
                     <h4 class="text-xs font-bold mb-1 truncate">{{ $item->name }}</h4>
                     <div class="text-orange-500 font-bold text-xs">
                         IDR {{ number_format((float)$item->price, 0, ',', '.') }}
                     </div>
+                    <p class="text-[10px] text-gray-500 mt-1">Stock: {{ $item->stock }}</p>
                 </a>
                 @endforeach
             </div>

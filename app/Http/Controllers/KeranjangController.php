@@ -17,8 +17,12 @@ class KeranjangController extends Controller
 
     public function add(Product $product)
     {
+        if ($product->stock <= 0) {
+            return back()->with('error', 'Stok produk habis');
+        }
+
         $keranjang = session()->get('keranjang', []);
-        if(isset($keranjang[$product->id])) {
+        if (isset($keranjang[$product->id])) {
             $keranjang[$product->id]['qty']++;
         } else {
             $keranjang[$product->id] = [
@@ -30,6 +34,10 @@ class KeranjangController extends Controller
             ];
         }
 
+        // decrement stock
+        $product->stock = max(0, $product->stock - 1);
+        $product->save();
+
         session()->put('keranjang', $keranjang);
         return back()->with('success', 'Produk ditambahkan ke keranjang');
     }
@@ -38,34 +46,65 @@ class KeranjangController extends Controller
     {
         $keranjang = session()->get('keranjang', []);
 
-        unset($keranjang[$id]);
+        if (isset($keranjang[$id])) {
+            $qty = $keranjang[$id]['qty'];
 
-        session()->put('keranjang', $keranjang);
+            // restore stock
+            $product = Product::find($id);
+            if ($product) {
+                $product->stock += $qty;
+                $product->save();
+            }
+
+            unset($keranjang[$id]);
+            session()->put('keranjang', $keranjang);
+        }
 
         return back();
     }
 
     public function update(Request $request, $id)
-{
-    $cart = session()->get('keranjang', []);
+    {
+        $change = intval($request->change);
+        $cart = session()->get('keranjang', []);
 
-    if(isset($cart[$id])) {
+        if (!isset($cart[$id])) {
+            return response()->json(['success' => false]);
+        }
 
-        $cart[$id]['qty'] += $request->change;
+        $product = Product::find($id);
 
-        if($cart[$id]['qty'] <= 0) {
-            unset($cart[$id]);
+        if ($change > 0) {
+            // Attempt to increase qty in cart: require available stock
+            if (!$product || $product->stock < $change) {
+                return response()->json(['success' => false, 'message' => 'Stok tidak mencukupi']);
+            }
+
+            $product->stock -= $change;
+            $product->save();
+
+            $cart[$id]['qty'] += $change;
+        } elseif ($change < 0) {
+            // Decrease qty in cart and restore stock
+            $restore = abs($change);
+            $cart[$id]['qty'] -= $restore;
+
+            if ($product) {
+                $product->stock += $restore;
+                $product->save();
+            }
+
+            if ($cart[$id]['qty'] <= 0) {
+                unset($cart[$id]);
+            }
         }
 
         session()->put('keranjang', $cart);
 
-        $subtotal = isset($cart[$id])
-            ? $cart[$id]['price'] * $cart[$id]['qty']
-            : 0;
+        $subtotal = isset($cart[$id]) ? $cart[$id]['price'] * $cart[$id]['qty'] : 0;
 
         $total = 0;
-
-        foreach($cart as $item) {
+        foreach ($cart as $item) {
             $total += $item['price'] * $item['qty'];
         }
 
@@ -75,9 +114,4 @@ class KeranjangController extends Controller
             'total' => $total,
         ]);
     }
-
-    return response()->json([
-        'success' => false
-    ]);
-}
 }

@@ -10,11 +10,21 @@
 
 <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css"/>
 
+@php
+    use Illuminate\Support\Facades\Storage;
+    $defaultImage = 'data:image/svg+xml;base64,' . base64_encode('<svg xmlns="http://www.w3.org/2000/svg" width="600" height="400"><rect fill="#ddd" width="600" height="400"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-family="Arial" font-size="24" fill="#666">No Image</text></svg>');
+    $smallDefaultImage = 'data:image/svg+xml;base64,' . base64_encode('<svg xmlns="http://www.w3.org/2000/svg" width="300" height="300"><rect fill="#ddd" width="300" height="300"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-family="Arial" font-size="18" fill="#666">No Image</text></svg>');
+    $heroImage = !empty($landingData['hero_image']) ? trim($landingData['hero_image']) : null;
+    $heroBackground = $heroImage && Storage::disk('public')->exists('landing/' . $heroImage) ? asset('storage/landing/' . $heroImage) : null;
+    $profileImage = !empty($landingData['profile_image']) ? trim($landingData['profile_image']) : null;
+    $profileImageUrl = $profileImage && Storage::disk('public')->exists('landing/' . $profileImage) ? asset('storage/landing/' . $profileImage) : $defaultImage;
+@endphp
+
 <style>
 .hero-bg{
-@if(!empty($landingData["hero_image"]))
+@if($heroBackground)
     background:linear-gradient(rgba(0,0,0,0.5),rgba(0,0,0,0.5)),
-    url('{{ asset("storage/landing/" . $landingData["hero_image"]) }}');
+    url('{{ $heroBackground }}');
     background-size:cover;
     background-position:center;
 @else
@@ -58,8 +68,6 @@ scroll-behavior:smooth;
 </script>
 @endif
 
-<!-- NAVBAR -->
-
 <nav class="flex items-center justify-between px-10 py-4 bg-white sticky top-0 z-50 shadow-sm">
 <div class="flex items-center gap-2">
 </div>
@@ -96,16 +104,13 @@ scroll-behavior:smooth;
 </div>
 </nav>
 
-<!-- KERANJANG -->
 <div id="cartOverlay"
      class="fixed inset-0 bg-black/40 z-40 hidden">
 </div>
 
-<!-- Sidebar -->
 <div id="cartSidebar"
      class="fixed top-0 right-[-400px] w-[350px] h-full bg-white z-50 shadow-2xl transition-all duration-300 flex flex-col">
 
-    <!-- Header -->
     <div class="p-4 border-b flex justify-between items-center">
         <div>
             <h2 class="font-bold text-lg">Keranjang</h2>
@@ -131,7 +136,8 @@ scroll-behavior:smooth;
 
             <div id="cart-item-{{ $item['id'] }}" class="flex gap-3 border-b pb-3">
 
-                <img src="{{ asset('storage/' . $item['image']) }}"
+                @php $cartImage = !empty($item['image']) && Storage::disk('public')->exists($item['image']) ? asset('storage/' . $item['image']) : $smallDefaultImage; @endphp
+                <img src="{{ $cartImage }}"
                      class="w-20 h-20 object-cover rounded-lg">
 
                 <div class="flex-1">
@@ -190,7 +196,6 @@ scroll-behavior:smooth;
 
     </div>
 
-    <!-- Footer -->
     <div class="border-t p-4">
 
         <div class="flex justify-between font-bold mb-4">
@@ -211,7 +216,6 @@ scroll-behavior:smooth;
 
 </div>
 
-<!-- HERO -->
 <header class="hero-bg h-[500px] flex flex-col items-center justify-center text-center px-6">
 
 <h1 data-aos="zoom-in"
@@ -232,7 +236,6 @@ Learn More
 
 </header>
 
-<!-- PROFILE -->
 <section id="profile" class="py-16 px-10 bg-white">
 
 <div class="max-w-6xl mx-auto">
@@ -271,11 +274,8 @@ Learn More
 </div>
 
 <div data-aos="fade-left" class="rounded-xl overflow-hidden shadow-2xl">
-@if(!empty($landingData['profile_image']))
-<img src="{{ asset('storage/landing/' . $landingData['profile_image']) }}">
-@else
-<div class="w-full h-[400px] bg-white"></div>
-@endif
+<img src="{{ $profileImageUrl }}" class="w-full h-auto object-cover" onerror="this.src='{{ $defaultImage }}'">
+
 </div>
 
 </div>
@@ -284,7 +284,6 @@ Learn More
 
 </section>
 
-<!-- LAYANAN -->
 <section class="py-16 bg-[#E9E9FF] px-10">
 
 <div class="text-center mb-10">
@@ -337,7 +336,6 @@ Dukungan teknis kapan saja
 
 </section>
 
-<!-- PRODUCT -->
 <section id="produk" class="py-16 px-10 bg-white">
 
     <div class="text-center mb-10">
@@ -352,12 +350,12 @@ Dukungan teknis kapan saja
         @forelse($products as $product)
 <div data-aos="zoom-in" class="bg-white border rounded-xl p-3 shadow-sm transition product-hover">
     <a href="{{ route('products.show', $product) }}" class="block">
-        <img src="{{ asset('storage/' . $product->image) }}"
+        @php $listImage = !empty($product->image) && Storage::disk('public')->exists($product->image) ? asset('storage/' . $product->image) : $smallDefaultImage; @endphp
+        <img src="{{ $listImage }}"
              class="w-full h-32 object-cover rounded-lg mb-3"
-             onerror="this.src='https://images.unsplash.com/photo-1526733158272-60b4944e8d52?q=80&w=200'">
+             onerror="this.src='{{ $smallDefaultImage }}'">
 
-        <h4 class="text-xs font-bold mb-1">{{ $product->name }}</h4>
-
+   <h4 class="text-xs font-bold mb-1 truncate" title="{{ $product->name }}">{{ $product->name }}</h4>
         <p class="text-[10px] text-gray-400 mb-2">
             {{ \Illuminate\Support\Str::limit($product->description ?? '', 50) }}
         </p>
@@ -365,6 +363,11 @@ Dukungan teknis kapan saja
         <div class="text-orange-500 font-bold text-xs">
             IDR {{ number_format((float)$product->price, 0, ',', '.') }}
         </div>
+        @if($product->stock <= 0)
+            <p class="text-[10px] text-red-500 font-semibold mt-1">Stok produk habis</p>
+        @else
+            <p class="text-[10px] text-gray-500 mt-1">Stock: {{ $product->stock }}</p>
+        @endif
     </a>
 </div>
 @empty
@@ -376,7 +379,6 @@ Dukungan teknis kapan saja
 
 </section>
 
-<!-- TESTIMONIAL -->
 <section id="testi" class="py-16 bg-[#E9E9FF] px-10">
 
     <div class="text-center mb-10">
@@ -401,7 +403,7 @@ Dukungan teknis kapan saja
                     </div>
                 </div>
                 <p class="text-xs text-gray-600 italic leading-relaxed">
-                    "{{ $t->message }}"
+                    "{-- !! $t->message !! --}}"
                 </p>
             </div>
         @empty
@@ -411,7 +413,6 @@ Dukungan teknis kapan saja
         @endforelse
     </div>
 
-    <!-- FORM KIRIM TESTIMONI -->
     <div class="max-w-2xl mx-auto bg-white p-8 rounded-3xl shadow-xl border border-purple-100" data-aos="zoom-in">
         <h3 class="text-xl font-bold text-center mb-6 text-gray-800">Kirim Testimoni Anda</h3>
         
@@ -449,8 +450,7 @@ Dukungan teknis kapan saja
     </div>
 </section>
 
-    <!-- FAQ -->
-<section id="faq" class="py-16 px-10 bg-white">
+    <section id="faq" class="py-16 px-10 bg-white">
 
     <div class="text-center mb-10">
         <span class="bg-purple-400 text-white px-6 py-1 rounded-md font-bold text-sm">
@@ -463,17 +463,14 @@ Dukungan teknis kapan saja
         @forelse($faqs as $faq)
     <details data-aos="fade-up" class="bg-[#F3F4F6] rounded-xl shadow-sm p-4 group">
 
-        <!-- Question -->
         <summary class="flex justify-between items-center cursor-pointer font-semibold text-gray-700 list-none">
             <span>{{ $faq->question }}</span>
 
-            <!-- Icon -->
             <span class="text-purple-500 text-xl transition-transform duration-300 group-open:rotate-45">
                 +
             </span>
         </summary>
 
-        <!-- Answer -->
         <p class="mt-3 text-sm text-gray-500 leading-relaxed">
             {{ $faq->answer }}
         </p>
@@ -488,7 +485,6 @@ Dukungan teknis kapan saja
 
 </section>
 
-<!-- FOOTER -->
 <footer class="bg-gray-100 py-10 text-center text-xs text-gray-500">
 
 <p>
@@ -497,7 +493,6 @@ Dukungan teknis kapan saja
 
 </footer>
 
-<!-- WHATSAPP BUTTON -->
 <a href="#"
 class="fixed bottom-6 right-6 bg-green-500 p-3 rounded-full shadow-xl animate-bounce hover:scale-110 transition">
 

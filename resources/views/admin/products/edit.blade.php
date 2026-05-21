@@ -16,7 +16,7 @@
                     </div>
                 @endif
 
-                <form action="{{ route('admin.products.update', $product) }}" method="POST" enctype="multipart/form-data">
+                <form action="{{ route('admin.products.update', $product) }}" method="POST" enctype="multipart/form-data" novalidate>
                     @csrf
                     @method('PUT')
                     <div class="mb-4">
@@ -31,7 +31,14 @@
                     </div>
                     <div class="mb-4">
                         <label class="block text-sm font-medium text-gray-700">Price (IDR)</label>
-                        <input type="number" name="price" value="{{ old('price', $product->price) }}"
+                        <input type="text" name="price" value="{{ old('price', $product->price) }}"
+                               inputmode="numeric" autocomplete="off"
+                               class="mt-1 block w-full border border-gray-300 rounded-md p-2">
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700">Stock</label>
+                        <input type="text" name="stock" value="{{ old('stock', $product->stock) }}"
+                               inputmode="numeric" autocomplete="off"
                                class="mt-1 block w-full border border-gray-300 rounded-md p-2">
                     </div>
                     <div class="mb-4">

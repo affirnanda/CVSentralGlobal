@@ -24,10 +24,25 @@ class ProductController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name'        => 'required|string|max:255',
+            'name'        => 'required|string|max:100',
             'description' => 'required|string',
-            'price'       => 'required|numeric|min:0',
+            'price'       => ['required', 'integer', 'min:1', 'max:100000000', 'regex:/^[0-9]+$/'],
+            'stock'       => ['required', 'integer', 'min:1', 'max:10000000', 'regex:/^[0-9]+$/'],
             'image'       => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+        ], [
+            'name.required' => 'Nama produk tidak boleh kosong',
+            'name.max' => 'Nama produk terlalu panjang',
+            'price.required' => 'Harga tidak boleh bernilai 0 atau negatif',
+            'price.integer' => 'Harga tidak boleh bernilai 0 atau negatif',
+            'price.min' => 'Harga tidak boleh bernilai 0 atau negatif',
+            'price.regex' => 'Harga tidak boleh bernilai 0 atau negatif',
+            'price.max' => 'Nominal harga produk terlalu besar',
+            'stock.required' => 'Stok tidak boleh bernial 0 atau negatif',
+            'stock.integer' => 'Stok tidak boleh bernial 0 atau negatif',
+            'stock.min' => 'Stok tidak boleh bernial 0 atau negatif',
+            'stock.regex' => 'Stok tidak boleh bernial 0 atau negatif',
+            'stock.max' => 'Jumlah stok melebihi batas',
+            'image.mimes' => 'Format gambar yang diunggah tidak sesuai',
         ]);
 
         $imagePath = null;
@@ -39,6 +54,7 @@ class ProductController extends Controller
             'name'        => $request->name,
             'description' => $request->description,
             'price'       => $request->price,
+            'stock'       => $request->stock,
             'image'       => $imagePath,
         ]);
 
@@ -53,10 +69,25 @@ class ProductController extends Controller
     public function update(Request $request, Product $product)
     {
         $request->validate([
-            'name'        => 'required|string|max:255',
+            'name'        => 'required|string|max:100',
             'description' => 'required|string',
-            'price'       => 'required|numeric|min:0',
+            'price'       => ['required', 'integer', 'min:1', 'max:100000000', 'regex:/^[0-9]+$/'],
+            'stock'       => ['required', 'integer', 'min:1', 'max:10000000', 'regex:/^[0-9]+$/'],
             'image'       => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+        ], [
+            'name.required' => 'Nama produk tidak boleh kosong',
+            'name.max' => 'Nama produk terlalu panjang',
+            'price.required' => 'Harga tidak boleh bernilai 0 atau negatif',
+            'price.integer' => 'Harga tidak boleh bernilai 0 atau negatif',
+            'price.min' => 'Harga tidak boleh bernilai 0 atau negatif',
+            'price.regex' => 'Harga tidak boleh bernilai 0 atau negatif',
+            'price.max' => 'Nominal harga produk terlalu besar',
+            'stock.required' => 'Stok tidak boleh bernial 0 atau negatif',
+            'stock.integer' => 'Stok tidak boleh bernial 0 atau negatif',
+            'stock.min' => 'Stok tidak boleh bernial 0 atau negatif',
+            'stock.regex' => 'Stok tidak boleh bernial 0 atau negatif',
+            'stock.max' => 'Jumlah stok melebihi batas',
+            'image.mimes' => 'Format gambar yang diunggah tidak sesuai',
         ]);
 
         $imagePath = $product->image;
@@ -71,6 +102,7 @@ class ProductController extends Controller
             'name'        => $request->name,
             'description' => $request->description,
             'price'       => $request->price,
+            'stock'       => $request->stock,
             'image'       => $imagePath,
         ]);
 
@@ -108,9 +140,11 @@ class ProductController extends Controller
     }
     public function katalog()
     {
-    // Ambil semua produk dengan pagination (12 per halaman)
-    $products = Product::latest()->paginate(12);
-    return view('products.katalog', compact('products'));
+        // Ambil semua produk dengan pagination (12 per halaman)
+        $products = Product::latest()->paginate(12);
+        $keranjang = session()->get('keranjang', []);
+
+        return view('products.katalog', compact('products', 'keranjang'));
     }
 
     public function show(Product $product)

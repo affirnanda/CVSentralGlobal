@@ -16,7 +16,7 @@
                     </div>
                 @endif
 
-                <form action="{{ route('admin.products.store') }}" method="POST" enctype="multipart/form-data">
+                <form action="{{ route('admin.products.store') }}" method="POST" enctype="multipart/form-data" novalidate>
                     @csrf
                     <div class="mb-4">
                         <label class="block text-sm font-medium text-gray-700">Name</label>
@@ -30,7 +30,14 @@
                     </div>
                     <div class="mb-4">
                         <label class="block text-sm font-medium text-gray-700">Price (IDR)</label>
-                        <input type="number" name="price" value="{{ old('price') }}"
+                        <input type="text" name="price" value="{{ old('price') }}"
+                               inputmode="numeric" autocomplete="off"
+                               class="mt-1 block w-full border border-gray-300 rounded-md p-2">
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700">Stock</label>
+                        <input type="text" name="stock" value="{{ old('stock', 0) }}"
+                               inputmode="numeric" autocomplete="off"
                                class="mt-1 block w-full border border-gray-300 rounded-md p-2">
                     </div>
                     <div class="mb-4">
