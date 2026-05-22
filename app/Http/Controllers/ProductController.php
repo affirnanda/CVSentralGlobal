@@ -26,19 +26,19 @@ class ProductController extends Controller
         $request->validate([
             'name'        => 'required|string|max:100',
             'description' => 'required|string',
-            'price'       => ['required', 'integer', 'min:1', 'max:100000000', 'regex:/^[0-9]+$/'],
-            'stock'       => ['required', 'integer', 'min:1', 'max:10000000', 'regex:/^[0-9]+$/'],
+            'price'       => ['bail', 'required', 'regex:/^[0-9]+$/', 'numeric', 'min:1', 'max:100000000'],
+            'stock'       => ['bail', 'required', 'regex:/^[0-9]+$/', 'numeric', 'min:1', 'max:10000000'],
             'image'       => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ], [
             'name.required' => 'Nama produk tidak boleh kosong',
             'name.max' => 'Nama produk terlalu panjang',
             'price.required' => 'Harga tidak boleh bernilai 0 atau negatif',
-            'price.integer' => 'Harga tidak boleh bernilai 0 atau negatif',
+            'price.numeric' => 'Harga tidak boleh bernilai 0 atau negatif',
             'price.min' => 'Harga tidak boleh bernilai 0 atau negatif',
             'price.regex' => 'Harga tidak boleh bernilai 0 atau negatif',
             'price.max' => 'Nominal harga produk terlalu besar',
             'stock.required' => 'Stok tidak boleh bernial 0 atau negatif',
-            'stock.integer' => 'Stok tidak boleh bernial 0 atau negatif',
+            'stock.numeric' => 'Stok tidak boleh bernial 0 atau negatif',
             'stock.min' => 'Stok tidak boleh bernial 0 atau negatif',
             'stock.regex' => 'Stok tidak boleh bernial 0 atau negatif',
             'stock.max' => 'Jumlah stok melebihi batas',
@@ -71,19 +71,19 @@ class ProductController extends Controller
         $request->validate([
             'name'        => 'required|string|max:100',
             'description' => 'required|string',
-            'price'       => ['required', 'integer', 'min:1', 'max:100000000', 'regex:/^[0-9]+$/'],
-            'stock'       => ['required', 'integer', 'min:1', 'max:10000000', 'regex:/^[0-9]+$/'],
+            'price'       => ['bail', 'required', 'regex:/^[0-9]+$/', 'numeric', 'min:1', 'max:100000000'],
+            'stock'       => ['bail', 'required', 'regex:/^[0-9]+$/', 'numeric', 'min:1', 'max:10000000'],
             'image'       => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ], [
             'name.required' => 'Nama produk tidak boleh kosong',
             'name.max' => 'Nama produk terlalu panjang',
             'price.required' => 'Harga tidak boleh bernilai 0 atau negatif',
-            'price.integer' => 'Harga tidak boleh bernilai 0 atau negatif',
+            'price.numeric' => 'Harga tidak boleh bernilai 0 atau negatif',
             'price.min' => 'Harga tidak boleh bernilai 0 atau negatif',
             'price.regex' => 'Harga tidak boleh bernilai 0 atau negatif',
             'price.max' => 'Nominal harga produk terlalu besar',
             'stock.required' => 'Stok tidak boleh bernial 0 atau negatif',
-            'stock.integer' => 'Stok tidak boleh bernial 0 atau negatif',
+            'stock.numeric' => 'Stok tidak boleh bernial 0 atau negatif',
             'stock.min' => 'Stok tidak boleh bernial 0 atau negatif',
             'stock.regex' => 'Stok tidak boleh bernial 0 atau negatif',
             'stock.max' => 'Jumlah stok melebihi batas',
@@ -106,7 +106,7 @@ class ProductController extends Controller
             'image'       => $imagePath,
         ]);
 
-        return redirect()->route('admin.products.index')->with('success', 'Product updated successfully!');
+        return redirect()->route('admin.products.index')->with('sukses', 'Product berhasil diupdate!');
     }
 
     public function destroy(Product $product)
@@ -116,7 +116,7 @@ class ProductController extends Controller
         }
         $product->delete();
 
-        return redirect()->route('admin.products.index')->with('success', 'Product deleted successfully!');
+        return redirect()->route('admin.products.index')->with('sukses', 'Product berhasil dihapus!');
     }
     public function welcome()
     {
