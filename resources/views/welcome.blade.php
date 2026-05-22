@@ -12,12 +12,12 @@
 
 @php
     use Illuminate\Support\Facades\Storage;
-    $defaultImage = 'data:image/svg+xml;base64,' . base64_encode('<svg xmlns="http://www.w3.org/2000/svg" width="600" height="400"><rect fill="#ddd" width="600" height="400"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-family="Arial" font-size="24" fill="#666">No Image</text></svg>');
-    $smallDefaultImage = 'data:image/svg+xml;base64,' . base64_encode('<svg xmlns="http://www.w3.org/2000/svg" width="300" height="300"><rect fill="#ddd" width="300" height="300"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-family="Arial" font-size="18" fill="#666">No Image</text></svg>');
+    $defaultImage = 'data:image/svg+xml;base64,' . base64_encode('<svg xmlns="http://www.w3.org/2000/svg" width="600" height="400" viewBox="0 0 600 400"><rect fill="#F3F4F6" width="100%" height="100%"/><g transform="translate(0, -10)"><circle cx="300" cy="180" r="40" fill="#E5E7EB"/><path d="M285 175h30m-15-15v30" stroke="#9CA3AF" stroke-width="4" stroke-linecap="round"/><text x="50%" y="260" dominant-baseline="middle" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="18" font-weight="600" fill="#9CA3AF" letter-spacing="1">SOLUSI SENTRAL GLOBAL INDO</text></g></svg>');
+    $smallDefaultImage = 'data:image/svg+xml;base64,' . base64_encode('<svg xmlns="http://www.w3.org/2000/svg" width="300" height="300" viewBox="0 0 300 300"><rect fill="#F3F4F6" width="100%" height="100%"/><g transform="translate(0, -5)"><circle cx="150" cy="135" r="28" fill="#E5E7EB"/><path d="M139 131h22m-11-11v22" stroke="#9CA3AF" stroke-width="3" stroke-linecap="round"/><text x="50%" y="195" dominant-baseline="middle" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="12" font-weight="600" fill="#9CA3AF" letter-spacing="0.5">SENTRAL GLOBAL INDO</text></g></svg>');
     $heroImage = !empty($landingData['hero_image']) ? trim($landingData['hero_image']) : null;
     $heroBackground = $heroImage && Storage::disk('public')->exists('landing/' . $heroImage) ? asset('storage/landing/' . $heroImage) : null;
     $profileImage = !empty($landingData['profile_image']) ? trim($landingData['profile_image']) : null;
-    $profileImageUrl = $profileImage && Storage::disk('public')->exists('landing/' . $profileImage) ? asset('storage/landing/' . $profileImage) : $defaultImage;
+    $profileImageUrl = $profileImage && Storage::disk('public')->exists('landing/' . $profileImage) ? asset('storage/landing/' . $profileImage) : 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=600&h=400&fit=crop';;
 @endphp
 
 <style>

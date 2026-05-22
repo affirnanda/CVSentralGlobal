@@ -35,7 +35,7 @@
                                 @if($product->image)
                                     <img src="{{ Storage::url($product->image) }}" class="h-12 w-12 object-cover rounded">
                                 @else
-                                    <span class="text-gray-400 text-sm">No image</span>
+                                    <span class="text-gray-400 text-sm">Sentral Global Indo</span>
                                 @endif
                             </td>
                             <td class="px-6 py-4 text-sm text-gray-900">{{ $product->name }}</td>

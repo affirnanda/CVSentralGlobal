@@ -11,7 +11,7 @@
 
     @php
         use Illuminate\Support\Facades\Storage;
-        $defaultImage = 'data:image/svg+xml;base64,' . base64_encode('<svg xmlns="http://www.w3.org/2000/svg" width="600" height="400"><rect fill="#ddd" width="600" height="400"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-family="Arial" font-size="24" fill="#666">No Image</text></svg>');
+        $defaultImage = 'data:image/svg+xml;base64,' . base64_encode('<svg xmlns="http://www.w3.org/2000/svg" width="600" height="400"><rect fill="#F3F4F6" width="600" height="400"/><g transform="translate(0, -5)"><circle cx="150" cy="135" r="28" fill="#E5E7EB"/><path d="M139 131h22m-11-11v22" stroke="#9CA3AF" stroke-width="3" stroke-linecap="round"/><text x="50%" y="195" dominant-baseline="middle" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="12" font-weight="600" fill="#9CA3AF" letter-spacing="0.5">SENTRAL GLOBAL INDO</text></g></svg>');
         $productImage = $product->image && Storage::disk('public')->exists($product->image) ? asset('storage/' . $product->image) : $defaultImage;
     @endphp
 
