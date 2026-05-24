@@ -14,6 +14,9 @@ Route::get('/katalog-produk', [ProductController::class, 'katalog'])->name('kata
 
 Route::get('/products/{product}', [ProductController::class, 'show'])->name('products.show');
 
+// Route publik: kirim testimoni tanpa harus login
+Route::post('/testimonials', [TestimonialController::class, 'store'])->name('testimonials.store');
+
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
@@ -22,8 +25,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-
-    Route::post('/testimonials', [TestimonialController::class, 'store'])->name('testimonials.store');
 
     Route::prefix('admin')->name('admin.')->group(function () {
         Route::middleware('can:manage profile')->group(function () {
