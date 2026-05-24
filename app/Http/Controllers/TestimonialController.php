@@ -53,7 +53,6 @@ class TestimonialController extends Controller
             'is_approved' => false, // menunggu persetujuan admin
         ]);
 
-        return redirect()->route('welcome')
-            ->with('success', 'Terima kasih! Testimoni Anda sedang menunggu persetujuan admin.');
+        return back()->with('success', 'Terima kasih Telah mengisi Testimoni');
     }
 }

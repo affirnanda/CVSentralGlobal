@@ -90,7 +90,7 @@
 
                         <!-- Hero Title -->
                         <div class="mb-4">
-                            <x-input-label for="hero_title" :value="__('Hero Title (opsional)')" />
+                            <x-input-label for="hero_title" :value="__('Hero Title')" />
                             <x-text-input id="hero_title" class="block mt-1 w-full {{ $errors->has('hero_title') ? 'border-red-500 ring-red-500' : '' }}"
                                           type="text" name="hero_title"
                                           :value="old('hero_title', $data['hero_title'] ?? '')"
@@ -99,7 +99,7 @@
 
                         <!-- Hero Subtitle -->
                         <div class="mb-4">
-                            <x-input-label for="hero_subtitle" :value="__('Hero Subtitle (opsional)')" />
+                            <x-input-label for="hero_subtitle" :value="__('Hero Subtitle')" />
                             <textarea id="hero_subtitle" name="hero_subtitle" rows="3"
                                       class="block mt-1 w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm {{ $errors->has('hero_subtitle') ? 'border-red-500 ring-red-500' : '' }}"
                             >{{ old('hero_subtitle', $data['hero_subtitle'] ?? '') }}</textarea>
@@ -125,7 +125,7 @@
 
                         <!-- Section Text -->
                         <div class="mb-4">
-                            <x-input-label for="section_text" :value="__('Teks Tambahan Seksi (opsional)')" />
+                            <x-input-label for="section_text" :value="__('Teks Tambahan Seksi')" />
                             <textarea id="section_text" name="section_text" rows="3"
                                       class="block mt-1 w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm {{ $errors->has('section_text') ? 'border-red-500 ring-red-500' : '' }}"
                             >{{ old('section_text', $data['section_text'] ?? '') }}</textarea>
@@ -140,7 +140,7 @@
 
                         <!-- Profile Title -->
                         <div class="mb-4">
-                            <x-input-label for="profile_title" :value="__('Profile Title (opsional)')" />
+                            <x-input-label for="profile_title" :value="__('Profile Title')" />
                             <x-text-input id="profile_title" class="block mt-1 w-full {{ $errors->has('profile_title') ? 'border-red-500 ring-red-500' : '' }}"
                                           type="text" name="profile_title"
                                           :value="old('profile_title', $data['profile_title'] ?? '')" />
@@ -148,7 +148,7 @@
 
                         <!-- Profile Image -->
                         <div class="mb-4">
-                            <x-input-label for="profile_image" :value="__('Profile Image (jpg, jpeg, png, maks. 2 MB, opsional)')" />
+                            <x-input-label for="profile_image" :value="__('Profile Image (jpg, jpeg, png, maks. 2 MB)')" />
                             <input type="file" id="profile_image" name="profile_image" accept=".jpg,.jpeg,.png"
                                    class="block mt-1 w-full text-sm text-gray-500 dark:text-gray-300
                                           file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0
