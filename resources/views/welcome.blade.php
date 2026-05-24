@@ -403,7 +403,7 @@ Dukungan teknis kapan saja
                     </div>
                 </div>
                 <p class="text-xs text-gray-600 italic leading-relaxed">
-                    "{-- !! $t->message !! --}}"
+                    "{{ $t->message }}"
                 </p>
             </div>
         @empty
