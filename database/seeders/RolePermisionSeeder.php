@@ -26,6 +26,7 @@ class RolePermisionSeeder extends Seeder
             'manage Roles',
             'manage hero section',
             'manage profile',
+            'manage orders',
         ];
 
         foreach ($permissions as $permission) {

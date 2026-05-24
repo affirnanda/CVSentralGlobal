@@ -24,6 +24,10 @@
                          {{ __('Produk') }}
                     </x-nav-link> 
 
+                    <x-nav-link :href="route('admin.orders.index')" :active="request()->routeIs('admin.orders.*')">
+                        {{ __('Orders') }}
+                    </x-nav-link>
+
                     <x-nav-link :href="route('faqs.index')" :active="request()->routeIs('faqs.*')">
                         {{ __('FAQ') }}
                     </x-nav-link>
@@ -92,6 +96,9 @@
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('faqs.index')" :active="request()->routeIs('faqs.*')">
                 {{ __('FAQ') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('admin.orders.index')" :active="request()->routeIs('admin.orders.*')">
+            {{ __('Orders') }}
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('admin.hero-section.manage')" :active="request()->routeIs('admin.hero-section.*')">
                 {{ __('Kelola Hero Section') }}

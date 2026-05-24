@@ -46,7 +46,7 @@
     </div>
 
     <div id="cartSidebar"
-         class="fixed top-0 right-[-400px] w-[350px] h-full bg-white z-50 shadow-2xl transition-all duration-300 flex flex-col">
+         class="fixed top-0 -right-[400px] w-[350px] h-full bg-white z-50 shadow-2xl transition-all duration-300 flex flex-col">
 
         <div class="p-4 border-b flex justify-between items-center">
             <div>
@@ -97,8 +97,19 @@
                 <span>Total:</span>
                 <span id="cart-total">Rp {{ number_format($total, 0, ',', '.') }}</span>
             </div>
-            <button class="w-full bg-purple-400 text-white py-3 rounded-lg mb-3">Beli</button>
-            <button class="w-full bg-purple-400 text-white py-3 rounded-lg">Sewa</button>
+
+            <div class="space-y-3">
+            <a href="{{ route('checkout.buy') }}"
+            class="block w-full bg-purple-500 hover:bg-purple-600 text-white py-3 rounded-lg text-center font-bold transition">
+            Beli
+            </a>
+
+            <a href="{{ route('checkout.rent') }}"
+            class="block w-full bg-purple-500 hover:bg-purple-600 text-white py-3 rounded-lg text-center font-bold transition">
+            Sewa
+            </a>
+            </div>
+
         </div>
     </div>
 
@@ -173,13 +184,15 @@
         const cartOverlay = document.getElementById('cartOverlay');
 
         cartButton?.addEventListener('click', () => {
-            cartSidebar.style.right = '0';
-            cartOverlay.classList.remove('hidden');
+        cartSidebar.classList.remove('-right-[400px]');
+        cartSidebar.classList.add('right-0');
+        cartOverlay.classList.remove('hidden');
         });
 
         function closeSidebar() {
-            cartSidebar.style.right = '-400px';
-            cartOverlay.classList.add('hidden');
+        cartSidebar.classList.remove('right-0');
+        cartSidebar.classList.add('-right-[400px]');
+        cartOverlay.classList.add('hidden');
         }
 
         closeCart?.addEventListener('click', closeSidebar);

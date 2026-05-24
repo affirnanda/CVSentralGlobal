@@ -1,0 +1,113 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Order;
+use App\Models\OrderItem;
+use App\Models\PaymentMethod;
+use Illuminate\Http\Request;
+use Illuminate\Support\Str;
+
+class CheckoutController extends Controller
+{
+    public function buyForm()
+    {
+        $keranjang = session()->get('keranjang', []);
+
+        $paymentMethods = PaymentMethod::where('is_active', true)->get();
+
+        return view('checkout.buy', compact(
+            'keranjang',
+            'paymentMethods'
+        ));
+    }
+
+    public function rentForm()
+    {
+        $keranjang = session()->get('keranjang', []);
+        $paymentMethods = PaymentMethod::where('is_active', true)->get();
+        return view('checkout.rent', compact(
+            'keranjang',
+            'paymentMethods'
+        ));
+    }
+
+    public function process(Request $request)
+    {
+        $request->validate([
+            'type' => 'required|in:buy,rent',
+            'full_name' => 'required|string|max:100',
+            'email' => 'required|email',
+            'phone' => 'required|numeric|digits_between:9,13',
+            'province' => 'required',
+            'city' => 'required',
+            'district' => 'required',
+            'postal_code' => 'required',
+            'payment_method_id' => 'required|exists:payment_methods,id',
+            'rent_start' => 'required_if:type,rent|date',
+            'rent_end' => 'required_if:type,rent|date|after:rent_start',
+        ],[
+            'full_name.required' => 'Silahkan input nama anda',
+            'full_name.max' => 'input nama terlalu panjang',
+            'email.required' => 'Silahkan input email anda',
+            'email.email' => 'Format email anda salah',
+            'phone.required' => 'Silahkan input nomor whatsapp anda',
+            'phone.digits_between' => 'nomor WA tidak valid',
+            'province.required' => 'Silahkan pilih provinsi anda',
+            'city.required' => 'Silahkan pilih kota anda',
+            'district.required' => 'Silahkan pilih kecamatan anda',
+            'postal_code.required' => 'Silahkan input kode pos anda',
+            'payment_method_id.required' => 'Silahkan pilih metode pembayaran anda',
+            'rent_start.required_if'=> 'Silahkan pilih tanggal mulai sewa anda',
+            'rent_end.required_if'=> 'Silahkan pilih tanggal akhir sewa anda',
+            'rent_end.after' => 'Tanggal akhir harus setelah tanggal mulai',
+        ]);
+
+        $cart = session()->get('keranjang', []);
+        if(empty($cart)) {
+            return back()->with('error', 'Keranjang kosong');
+        }
+
+        $total = 0;
+
+        foreach($cart as $item) {
+            $total += $item['price'] * $item['qty'];
+        }
+
+        $order = Order::create([
+            'invoice_number' => 'INV-' . strtoupper(Str::random(8)),
+            'type' => $request->type,
+            'full_name' => $request->full_name,
+            'email' => $request->email,
+            'phone' => $request->phone,
+            'province' => $request->province,
+            'city' => $request->city,
+            'district' => $request->district,
+            'postal_code' => $request->postal_code,
+            'rent_start' => $request->rent_start,
+            'rent_end' => $request->rent_end,
+            'payment_method_id' => $request->payment_method_id,
+            'total' => $total,
+        ]);
+
+        foreach($cart as $item) {
+
+            OrderItem::create([
+                'order_id' => $order->id,
+                'product_id' => $item['id'],
+                'product_name' => $item['name'],
+                'price' => $item['price'],
+                'qty' => $item['qty'],
+                'subtotal' => $item['price'] * $item['qty'],
+            ]);
+        }
+        session()->forget('keranjang');
+        return redirect()->route('invoice.show', $order);
+    }
+
+    public function invoice(Order $order)
+    {
+        $order->load('items', 'paymentMethod');
+        return view('checkout.invoice', compact('order'));
+    }
+}

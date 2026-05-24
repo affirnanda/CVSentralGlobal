@@ -153,13 +153,18 @@
             <span id="cart-total">Rp {{ number_format($total, 0, ',', '.') }}</span>
         </div>
 
-        <button class="w-full bg-purple-400 text-white py-3 rounded-lg mb-3">
-            Beli
-        </button>
+        <div class="space-y-3">
 
-        <button class="w-full bg-purple-400 text-white py-3 rounded-lg">
+            <a href="{{ route('checkout.buy') }}"
+            class="block w-full bg-purple-400 hover:bg-purple-500 text-white py-3 rounded-lg text-center font-bold relative z-50">
+            Beli
+            </a>
+
+            <a href="{{ route('checkout.rent') }}"
+            class="block w-full bg-purple-400 hover:bg-purple-500 text-white py-3 rounded-lg text-center font-bold relative z-50">
             Sewa
-        </button>
+            </a>
+        </div>
 
     </div>
 
