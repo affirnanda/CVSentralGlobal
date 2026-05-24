@@ -106,7 +106,7 @@ class ProductController extends Controller
             'image'       => $imagePath,
         ]);
 
-        return redirect()->route('admin.products.index')->with('success', 'Product berhasil diupdate!');
+        return redirect()->route('admin.products.index')->with('sukses', 'Product berhasil diupdate!');
     }
 
     public function destroy(Product $product)
@@ -116,7 +116,7 @@ class ProductController extends Controller
         }
         $product->delete();
 
-        return redirect()->route('admin.products.index')->with('success', 'Product berhasil dihapus!');
+        return redirect()->route('admin.products.index')->with('sukses', 'Product berhasil dihapus!');
     }
     public function welcome()
     {
