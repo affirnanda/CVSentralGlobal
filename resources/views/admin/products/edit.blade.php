@@ -30,15 +30,24 @@
                                   class="mt-1 block w-full border border-gray-300 rounded-md p-2">{{ old('description', $product->description) }}</textarea>
                     </div>
                     <div class="mb-4">
-                        <label class="block text-sm font-medium text-gray-700">Price (IDR)</label>
-                        <input type="text" name="price" value="{{ old('price', $product->price) }}"
-                               inputmode="numeric" autocomplete="off"
+                        <label class="block text-sm font-medium text-gray-700">Harga Beli (IDR)</label>
+                        <input type="number" name="price" value="{{ old('price', $product->price) }}"
+                               inputmode="numeric" autocomplete="off" min="0" step="1"
+                               oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                               class="mt-1 block w-full border border-gray-300 rounded-md p-2">
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700">Harga Sewa (IDR)</label>
+                        <input type="number" name="rental_price" value="{{ old('rental_price', $product->rental_price ?? 0) }}"
+                               inputmode="numeric" autocomplete="off" min="0" step="1"
+                               oninput="this.value = this.value.replace(/[^0-9]/g, '')"
                                class="mt-1 block w-full border border-gray-300 rounded-md p-2">
                     </div>
                     <div class="mb-4">
                         <label class="block text-sm font-medium text-gray-700">Stock</label>
-                        <input type="text" name="stock" value="{{ old('stock', $product->stock) }}"
-                               inputmode="numeric" autocomplete="off"
+                        <input type="number" name="stock" value="{{ old('stock', $product->stock) }}"
+                               inputmode="numeric" autocomplete="off" min="0" step="1"
+                               oninput="this.value = this.value.replace(/[^0-9]/g, '')"
                                class="mt-1 block w-full border border-gray-300 rounded-md p-2">
                     </div>
                     <div class="mb-4">

@@ -40,6 +40,7 @@ class ProductSeeder extends Seeder
                 'name' => $name,
                 'description' => $description,
                 'price' => $basePrice + ($index * 250000),
+                'rental_price' => max(500000, ($basePrice + ($index * 250000)) / 4),
                 'stock' => 5,
                 'image' => $filename,
             ]);

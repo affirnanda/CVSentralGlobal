@@ -49,7 +49,9 @@ class ProductTest extends TestCase
             'name' => 'Produk Test',
             'description' => 'Deskripsi produk',
             'price' => 10000,
-            'image' => UploadedFile::fake()->image('product.jpg'),
+            'rental_price' => 5000,
+            'stock' => 10,
+            'image' => UploadedFile::fake()->create('product.jpg', 100, 'image/jpeg'),
         ]);
 
         $response->assertRedirect(route('welcome'));
@@ -74,7 +76,9 @@ class ProductTest extends TestCase
         'name' => 'Produk Update',
         'description' => 'Deskripsi update',
         'price' => 20000,
-        'image' => UploadedFile::fake()->image('new.jpg'), // 🔥 FIX
+        'rental_price' => 7000,
+        'stock' => 5,
+        'image' => UploadedFile::fake()->create('new.jpg', 100, 'image/jpeg'),
     ]
 );
 
@@ -115,26 +119,54 @@ public function test_cannot_create_product_with_empty_input()
     $response->assertSessionHasErrors([
         'name',
         'description',
-        'price',
     ]);
 
     $this->assertDatabaseCount('products', 0);
 }
 
-public function test_cannot_create_product_with_negative_price()
+public function test_non_numeric_price_and_stock_are_normalized_to_zero()
 {
+    Storage::fake('public');
+
     $user = $this->adminUser();
 
     $response = $this->actingAs($user)->post(route('admin.products.store'), [
-        'name' => 'Produk Test',
-        'description' => 'Deskripsi',
-        'price' => -1000,
+        'name' => 'Produk Huruf',
+        'description' => 'Deskripsi produk',
+        'price' => 'abc',
+        'rental_price' => 'xyz',
+        'stock' => 'huruf',
     ]);
 
-    $response->assertSessionHasErrors('price');
+    $response->assertRedirect(route('welcome'));
+    $response->assertSessionHasNoErrors();
+
+    $this->assertDatabaseHas('products', [
+        'name' => 'Produk Huruf',
+        'price' => 0,
+        'rental_price' => 0,
+        'stock' => 0,
+    ]);
+}
+
+public function test_zero_or_negative_price_and_stock_values_are_rejected()
+{
+    Storage::fake('public');
+
+    $user = $this->adminUser();
+
+    $response = $this->actingAs($user)->post(route('admin.products.store'), [
+        'name' => 'Produk Negatif',
+        'description' => 'Deskripsi',
+        'price' => -1000,
+        'rental_price' => -500,
+        'stock' => -10,
+    ]);
+
+    $response->assertSessionHasErrors(['price', 'rental_price', 'stock']);
 
     $this->assertDatabaseMissing('products', [
-        'name' => 'Produk Test',
+        'name' => 'Produk Negatif',
     ]);
 }
 
@@ -146,6 +178,8 @@ public function test_cannot_create_product_with_invalid_image()
         'name' => 'Produk Test',
         'description' => 'Deskripsi',
         'price' => 10000,
+        'rental_price' => 5000,
+        'stock' => 10,
         'image' => UploadedFile::fake()->create('file.pdf', 100),
     ]);
 
@@ -168,13 +202,14 @@ public function test_cannot_update_product_with_invalid_data()
             'name' => '',
             'description' => '',
             'price' => -500,
+            'rental_price' => 0,
+            'stock' => 0,
         ]
     );
 
     $response->assertSessionHasErrors([
         'name',
         'description',
-        'price',
     ]);
 
     $this->assertDatabaseHas('products', [

@@ -7,6 +7,7 @@ use App\Models\Faq;
 use App\Models\Testimonial;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 
 class ProductController extends Controller
 {
@@ -23,27 +24,33 @@ class ProductController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'name'        => 'required|string|max:100',
-            'description' => 'required|string',
-            'price'       => ['bail', 'required', 'regex:/^[0-9]+$/', 'numeric', 'min:1', 'max:100000000'],
-            'stock'       => ['bail', 'required', 'regex:/^[0-9]+$/', 'numeric', 'min:1', 'max:10000000'],
-            'image'       => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+        $validator = Validator::make($request->all(), [
+            'name'          => 'required|string|max:100',
+            'description'   => 'required|string',
+            'price'         => 'required',
+            'rental_price'  => 'required',
+            'stock'         => 'required',
+            'image'         => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ], [
             'name.required' => 'Nama produk tidak boleh kosong',
             'name.max' => 'Nama produk terlalu panjang',
-            'price.required' => 'Harga tidak boleh bernilai 0 atau negatif',
-            'price.numeric' => 'Harga tidak boleh bernilai 0 atau negatif',
-            'price.min' => 'Harga tidak boleh bernilai 0 atau negatif',
-            'price.regex' => 'Harga tidak boleh bernilai 0 atau negatif',
-            'price.max' => 'Nominal harga produk terlalu besar',
-            'stock.required' => 'Stok tidak boleh bernial 0 atau negatif',
-            'stock.numeric' => 'Stok tidak boleh bernial 0 atau negatif',
-            'stock.min' => 'Stok tidak boleh bernial 0 atau negatif',
-            'stock.regex' => 'Stok tidak boleh bernial 0 atau negatif',
-            'stock.max' => 'Jumlah stok melebihi batas',
+            'price.required' => 'Harga beli tidak boleh kosong',
+            'rental_price.required' => 'Harga sewa tidak boleh kosong',
+            'stock.required' => 'Stok tidak boleh kosong',
             'image.mimes' => 'Format gambar yang diunggah tidak sesuai',
         ]);
+
+        $validator->after(function ($validator) use ($request) {
+            $this->validatePriceAndStock($validator, $request);
+        });
+
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
+
+        $price        = $this->normalizeNumericValue($request->input('price'));
+        $rentalPrice  = $this->normalizeNumericValue($request->input('rental_price'));
+        $stock        = $this->normalizeNumericValue($request->input('stock'));
 
         $imagePath = null;
         if ($request->hasFile('image')) {
@@ -51,11 +58,12 @@ class ProductController extends Controller
         }
 
         Product::create([
-            'name'        => $request->name,
-            'description' => $request->description,
-            'price'       => $request->price,
-            'stock'       => $request->stock,
-            'image'       => $imagePath,
+            'name'          => $request->name,
+            'description'   => $request->description,
+            'price'         => $price,
+            'rental_price'  => $rentalPrice,
+            'stock'         => $stock,
+            'image'         => $imagePath,
         ]);
 
         return redirect()->route('welcome')->with('success', 'Produk berhasil ditambahkan dan kini tampil di landing page!');
@@ -68,27 +76,33 @@ class ProductController extends Controller
 
     public function update(Request $request, Product $product)
     {
-        $request->validate([
-            'name'        => 'required|string|max:100',
-            'description' => 'required|string',
-            'price'       => ['bail', 'required', 'regex:/^[0-9]+$/', 'numeric', 'min:1', 'max:100000000'],
-            'stock'       => ['bail', 'required', 'regex:/^[0-9]+$/', 'numeric', 'min:1', 'max:10000000'],
-            'image'       => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+        $validator = Validator::make($request->all(), [
+            'name'          => 'required|string|max:100',
+            'description'   => 'required|string',
+            'price'         => 'required',
+            'rental_price'  => 'required',
+            'stock'         => 'required',
+            'image'         => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ], [
             'name.required' => 'Nama produk tidak boleh kosong',
             'name.max' => 'Nama produk terlalu panjang',
-            'price.required' => 'Harga tidak boleh bernilai 0 atau negatif',
-            'price.numeric' => 'Harga tidak boleh bernilai 0 atau negatif',
-            'price.min' => 'Harga tidak boleh bernilai 0 atau negatif',
-            'price.regex' => 'Harga tidak boleh bernilai 0 atau negatif',
-            'price.max' => 'Nominal harga produk terlalu besar',
-            'stock.required' => 'Stok tidak boleh bernial 0 atau negatif',
-            'stock.numeric' => 'Stok tidak boleh bernial 0 atau negatif',
-            'stock.min' => 'Stok tidak boleh bernial 0 atau negatif',
-            'stock.regex' => 'Stok tidak boleh bernial 0 atau negatif',
-            'stock.max' => 'Jumlah stok melebihi batas',
+            'price.required' => 'Harga beli tidak boleh kosong',
+            'rental_price.required' => 'Harga sewa tidak boleh kosong',
+            'stock.required' => 'Stok tidak boleh kosong',
             'image.mimes' => 'Format gambar yang diunggah tidak sesuai',
         ]);
+
+        $validator->after(function ($validator) use ($request) {
+            $this->validatePriceAndStock($validator, $request);
+        });
+
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
+
+        $price        = $this->normalizeNumericValue($request->input('price'));
+        $rentalPrice  = $this->normalizeNumericValue($request->input('rental_price'));
+        $stock        = $this->normalizeNumericValue($request->input('stock'));
 
         $imagePath = $product->image;
         if ($request->hasFile('image')) {
@@ -99,14 +113,54 @@ class ProductController extends Controller
         }
 
         $product->update([
-            'name'        => $request->name,
-            'description' => $request->description,
-            'price'       => $request->price,
-            'stock'       => $request->stock,
-            'image'       => $imagePath,
+            'name'          => $request->name,
+            'description'   => $request->description,
+            'price'         => $price,
+            'rental_price'  => $rentalPrice,
+            'stock'         => $stock,
+            'image'         => $imagePath,
         ]);
 
         return redirect()->route('admin.products.index')->with('sukses', 'Product berhasil diupdate!');
+    }
+
+    private function validatePriceAndStock($validator, Request $request): void
+    {
+        $checks = [
+            'price' => ['label' => 'Harga beli', 'max' => 100000000],
+            'rental_price' => ['label' => 'Harga sewa', 'max' => 100000000],
+            'stock' => ['label' => 'Stok', 'max' => 10000000],
+        ];
+
+        foreach ($checks as $field => $config) {
+            $value = $request->input($field);
+
+            if (! is_numeric($value)) {
+                continue;
+            }
+
+            $number = (float) $value;
+
+            if ($number <= 0) {
+                $validator->errors()->add($field, $config['label'] . ' tidak boleh bernilai 0 atau negatif');
+                continue;
+            }
+
+            if ($number > $config['max']) {
+                $validator->errors()->add($field, 'Nominal ' . strtolower($config['label']) . ' terlalu besar');
+            }
+        }
+    }
+
+    private function normalizeNumericValue($value): float
+    {
+        if (! is_numeric($value)) {
+            return 0;
+        }
+
+        $number = (float) $value;
+
+        return $number < 0 ? 0 : $number;
     }
 
     public function destroy(Product $product)

@@ -23,7 +23,7 @@
                         <tr>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Image</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Name</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Price</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Harga Beli / Sewa</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Stock</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
                         </tr>
@@ -39,7 +39,10 @@
                                 @endif
                             </td>
                             <td class="px-6 py-4 text-sm text-gray-900">{{ $product->name }}</td>
-                            <td class="px-6 py-4 text-sm text-gray-900">IDR {{ number_format($product->price, 0, ',', '.') }}</td>
+                            <td class="px-6 py-4 text-sm text-gray-900">
+                                <div>Beli: IDR {{ number_format((float)($product->price ?? 0), 0, ',', '.') }}</div>
+                                <div class="text-gray-500">Sewa: IDR {{ number_format((float)($product->rental_price ?? 0), 0, ',', '.') }}</div>
+                            </td>
                             <td class="px-6 py-4 text-sm text-gray-900">{{ $product->stock }}</td>
                             <td class="px-6 py-4 text-sm space-x-2">
                                 <a href="{{ route('admin.products.edit', $product) }}"

@@ -184,9 +184,15 @@
                 <a href="{{ route('katalog.index') }}" 
                    class="text-xs text-purple-500 hover:underline mb-4 inline-block">← Kembali ke Katalog</a>
                 <h1 class="text-2xl font-bold text-gray-900 mb-3">{{ $product->name }}</h1>
-                <p class="text-2xl text-orange-500 font-bold mb-2">
-                    IDR {{ number_format((float)$product->price, 0, ',', '.') }}
-                </p>
+                <div class="space-y-2 mb-3">
+                    <p class="text-sm uppercase tracking-wide text-gray-500">Harga</p>
+                    <p class="text-xl text-orange-500 font-bold">
+                        Harga Beli: IDR {{ number_format((float)($product->price ?? 0), 0, ',', '.') }}
+                    </p>
+                    <p class="text-base text-gray-700 font-semibold">
+                        Harga Sewa: IDR {{ number_format((float)($product->rental_price ?? 0), 0, ',', '.') }}
+                    </p>
+                </div>
                 <p class="text-sm text-gray-500 mb-2">Stock: {{ $product->stock }}</p>
                 @if($product->stock <= 0)
                     <p class="text-sm text-red-500 font-semibold mb-4">Stok produk habis</p>

@@ -14,6 +14,7 @@ class Product extends Model
             'name',
             'description',
             'price',
+            'rental_price',
             'stock',
             'image',
         ];
