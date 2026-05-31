@@ -24,11 +24,17 @@
                             </label>
                             <input type="text" id="question" name="question"
                                    value="{{ old('question') }}"
+                                   maxlength="100"
+                                   oninput="validateField(this, 'question-count', 'question-error', 100, 'submit-btn')"
                                    class="w-full border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 @error('question') border-red-500 @enderror"
-                                   placeholder="Masukkan pertanyaan...">
-                            @error('question')
-                                <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
-                            @enderror
+                                   placeholder="Masukkan pertanyaan (maks. 100 karakter)">
+                            <div class="flex justify-between items-center mt-1">
+                                <span id="question-error" class="text-sm text-red-500 hidden">&#10060; Pertanyaan tidak boleh lebih dari 100 karakter!</span>
+                                @error('question')
+                                    <span class="text-sm text-red-500">{{ $message }}</span>
+                                @enderror
+                                <span id="question-counter" class="text-xs text-gray-400 ml-auto"><span id="question-count">0</span>/100</span>
+                            </div>
                         </div>
 
                         {{-- Jawaban --}}
@@ -37,11 +43,17 @@
                                 Jawaban <span class="text-red-500">*</span>
                             </label>
                             <textarea id="answer" name="answer" rows="5"
+                                      maxlength="300"
+                                      oninput="validateField(this, 'answer-count', 'answer-error', 300, 'submit-btn')"
                                       class="w-full border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 @error('answer') border-red-500 @enderror"
-                                      placeholder="Masukkan jawaban...">{{ old('answer') }}</textarea>
-                            @error('answer')
-                                <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
-                            @enderror
+                                      placeholder="Masukkan jawaban (maks. 300 karakter)">{{ old('answer') }}</textarea>
+                            <div class="flex justify-between items-center mt-1">
+                                <span id="answer-error" class="text-sm text-red-500 hidden">&#10060; Jawaban tidak boleh lebih dari 300 karakter!</span>
+                                @error('answer')
+                                    <span class="text-sm text-red-500">{{ $message }}</span>
+                                @enderror
+                                <span id="answer-counter" class="text-xs text-gray-400 ml-auto"><span id="answer-count">0</span>/300</span>
+                            </div>
                         </div>
 
                         {{-- Urutan --}}
@@ -67,7 +79,7 @@
 
                         {{-- Tombol --}}
                         <div class="flex items-center gap-3">
-                            <button type="submit"
+                            <button type="submit" id="submit-btn"
                                     class="inline-flex items-center px-4 py-2 bg-gray-800 dark:bg-gray-200 border border-transparent rounded-md font-semibold text-xs text-white dark:text-gray-800 uppercase tracking-widest hover:bg-gray-700 dark:hover:bg-white transition ease-in-out duration-150">
                                 Simpan FAQ
                             </button>
@@ -81,4 +93,51 @@
             </div>
         </div>
     </div>
+
+    <script>
+        // Fungsi generik untuk validasi field (dipakai untuk pertanyaan & jawaban)
+        function validateField(input, countId, errorId, maxLen, btnId) {
+            const count = input.value.length;
+            const counterEl = document.getElementById(countId);
+            const errorMsg = document.getElementById(errorId);
+            const submitBtn = document.getElementById(btnId);
+
+            counterEl.textContent = count;
+
+            const isOverLimit = count > maxLen;
+
+            // Cek apakah field lain juga dalam kondisi error
+            const questionOver = document.getElementById('question').value.length > 100;
+            const answerOver   = document.getElementById('answer').value.length > 300;
+
+            if (isOverLimit) {
+                input.classList.add('border-red-500');
+                input.classList.remove('border-gray-300');
+                errorMsg.classList.remove('hidden');
+                document.getElementById(countId).parentElement.classList.add('text-red-500');
+            } else {
+                input.classList.remove('border-red-500');
+                input.classList.add('border-gray-300');
+                errorMsg.classList.add('hidden');
+                document.getElementById(countId).parentElement.classList.remove('text-red-500');
+            }
+
+            // Disable tombol jika salah satu field melebihi batas
+            submitBtn.disabled = questionOver || answerOver;
+            if (submitBtn.disabled) {
+                submitBtn.classList.add('opacity-50', 'cursor-not-allowed');
+            } else {
+                submitBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+            }
+        }
+
+        // Inisialisasi counter saat halaman dimuat
+        window.addEventListener('DOMContentLoaded', () => {
+            const question = document.getElementById('question');
+            const answer   = document.getElementById('answer');
+            if (question) validateField(question, 'question-count', 'question-error', 100, 'submit-btn');
+            if (answer)   validateField(answer,   'answer-count',   'answer-error',   300, 'submit-btn');
+        });
+    </script>
+
 </x-app-layout>

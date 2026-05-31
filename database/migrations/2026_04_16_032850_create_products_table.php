@@ -17,6 +17,7 @@ return new class extends Migration
         $table->text('description');
         $table->string('image')->nullable();
         $table->decimal('price', 10, 2);
+        $table->integer('rental_price')->nullable();
         // habis hapus foreignid
         $table->softDeletes();
         $table->timestamps(); 
