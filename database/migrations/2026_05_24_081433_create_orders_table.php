@@ -33,6 +33,10 @@ return new class extends Migration
                 'paid',
                 'rejected'
             ])->default('pending');
+    $table->enum('return_status', [
+            'not_returned',
+            'returned'
+        ])->nullable();
     $table->timestamps();
 });
 }

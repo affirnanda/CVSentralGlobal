@@ -21,6 +21,7 @@ class Order extends Model
         'payment_method_id',
         'total',
         'status',
+        'return_status',
     ];
 
     public function items()

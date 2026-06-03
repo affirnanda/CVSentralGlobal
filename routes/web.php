@@ -40,18 +40,20 @@ Route::middleware('auth')->group(function () {
         Route::post('/kelola-hero-section', [KelolaHeroSectionController::class, 'update'])->name('hero-section.update');
 
         Route::get('/orders', [OrderController::class, 'index'])
-        ->name('orders.index');
+            ->name('orders.index');
         Route::get('/orders/{order}', [OrderController::class, 'show'])
-        ->name('orders.show');
+            ->name('orders.show');
         Route::delete('/orders/{order}', [OrderController::class, 'destroy'])
-        ->name('orders.destroy');
-        Route::patch('/orders/{order}/status',[OrderController::class, 'updateStatus'])
-        ->name('orders.updateStatus');
+            ->name('orders.destroy');
+        Route::patch('/orders/{order}/status', [OrderController::class, 'updateStatus'])
+            ->name('orders.updateStatus');
+        Route::patch('/orders/{order}/return-status',[OrderController::class, 'updateReturnStatus']
+        )->name('orders.updateReturnStatus');
     });
 
 });
 Route::resource('faqs', FaqController::class);
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
 
 //Route untuk keranjang
 Route::post('/keranjang/add/{product}', [KeranjangController::class, 'add'])->name('keranjang.add');
