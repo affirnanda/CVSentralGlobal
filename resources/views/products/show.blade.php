@@ -143,7 +143,9 @@
         @endforelse
 
     </div>
-
+    @php
+        $jumlahItem = collect($keranjang)->sum('qty');
+    @endphp
     <!-- Footer -->
     <div class="border-t p-4">
 
@@ -155,13 +157,19 @@
 
         <div class="space-y-3">
 
-            <a href="{{ route('checkout.buy') }}"
-            class="block w-full bg-purple-400 hover:bg-purple-500 text-white py-3 rounded-lg text-center font-bold relative z-50">
-            Beli
+            <a href="{{ $jumlahItem > 0 ? route('checkout.buy') : '#' }}"
+            class="checkout-btn block w-full py-3 rounded-lg text-center font-bold relative z-50
+                {{ $jumlahItem > 0
+            ? 'bg-purple-400 hover:bg-purple-500 text-white'
+            : 'bg-gray-300 text-gray-500 cursor-not-allowed pointer-events-none' }}">
+                Beli
             </a>
 
-            <a href="{{ route('checkout.rent') }}"
-            class="block w-full bg-purple-400 hover:bg-purple-500 text-white py-3 rounded-lg text-center font-bold relative z-50">
+            <a href="{{ $jumlahItem > 0 ? route('checkout.rent') : '#' }}"
+            class="checkout-btn block w-full py-3 rounded-lg text-center font-bold relative z-50
+            {{ $jumlahItem > 0
+                ? 'bg-purple-400 hover:bg-purple-500 text-white'
+                : 'bg-gray-300 text-gray-500 cursor-not-allowed pointer-events-none' }}">
             Sewa
             </a>
         </div>
