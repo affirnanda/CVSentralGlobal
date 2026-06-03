@@ -177,6 +177,24 @@
                             @enderror
                         </div>
 
+                        <div>
+                            <label class="block text-sm font-semibold mb-2">
+                                Alamat
+                            </label>
+
+                            <input type="text" name="address" 
+                            value="{{ old('address') }}"
+                            class="w-full border rounded-xl px-4 py-3"
+                             @error('address') border-red-500 @enderror
+                            placeholder="Alamat">
+                        
+                        @error('address')
+                        <p class="text-red-500 text-sm mt-2">
+                        {{ $message }}
+                        </p>
+                        @enderror
+                        </div>
+
                         {{-- POSTAL CODE --}}
                         <div>
                             <label class="block text-sm font-semibold mb-2">

@@ -15,6 +15,7 @@ class Order extends Model
         'province',
         'city',
         'district',
+        'address',
         'postal_code',
         'rent_start',
         'rent_end',

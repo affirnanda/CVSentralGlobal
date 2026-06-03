@@ -148,6 +148,17 @@
                             </h3>
                         </div>
 
+                         <div>
+                            <p class="text-sm text-gray-500 mb-1">
+                                Alamat
+                            </p>
+
+                            <h3 class="font-semibold">
+                                {{ $order->address }}
+                            </h3>
+                        </div>
+
+
                         <div>
                             <p class="text-sm text-gray-500 mb-1">
                                 Kode Pos

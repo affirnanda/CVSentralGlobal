@@ -234,7 +234,7 @@
 
                                                     <select name="return_status"
                                                             onchange="this.form.submit()"
-                                                            @disabled($order->return_status == 'returned')
+                                                            @disabled($order->status == 'rejected' || $order->return_status == 'returned')
                                                             class="border-gray-300 rounded-lg text-sm">
 
                                                         <option value="not_returned"

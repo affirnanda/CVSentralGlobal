@@ -157,6 +157,7 @@
                                         {{ $order->province }},
                                         {{ $order->city }},
                                         {{ $order->district }},
+                                        {{ $order->address }},
                                         {{ $order->postal_code }}
                                     </p>
                                 </div>
