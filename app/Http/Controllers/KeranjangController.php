@@ -29,6 +29,7 @@ class KeranjangController extends Controller
                 'id' => $product->id,
                 'name' => $product->name,
                 'price' => $product->price,
+                'rental_price' => $product->rental_price,
                 'image' => $product->image,
                 'qty' => 1
             ];

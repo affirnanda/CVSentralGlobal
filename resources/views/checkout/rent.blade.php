@@ -245,7 +245,7 @@
             @foreach($keranjang as $item)
 
                 @php
-                    $subtotal = $item['price'] * $item['qty'];
+                    $subtotal = $item['rental_price'] * $item['qty'];
                     $total += $subtotal;
                 @endphp
 
@@ -262,7 +262,7 @@
                     </div>
 
                     <div class="font-bold text-sm">
-                        Rp {{ number_format($subtotal,0,',','.') }}
+                        Rp {{ number_format($item['rental_price'],0,',','.') }}/hari
                     </div>
 
                 </div>
@@ -273,13 +273,20 @@
 
         <div class="flex justify-between items-center py-5 border-b">
 
-            <span class="font-bold text-lg">
-                Total
-            </span>
+         <span class="font-bold text-lg">
+            Total Rental
+        </span>
 
-            <span class="font-bold text-xl text-purple-600">
-                Rp {{ number_format($total,0,',','.') }}
-            </span>
+        <div class="text-right">
+        <div>
+            Lama Sewa :
+            <span id="rental-days">0</span> hari
+        </div>
+
+        <span id="rental-total" class="font-bold text-xl text-purple-600">
+            Rp 0
+        </span>
+    </div>
 
         </div>
 
@@ -418,6 +425,51 @@ rentStart.addEventListener('change', function() {
     }
 });
 
+const cartItems = @json($keranjang);
+function updateRentalSummary() {
+
+    let start = document.getElementById('rent_start').value;
+    let end = document.getElementById('rent_end').value;
+
+    if (!start || !end) {
+        return;
+    }
+
+    let startDate = new Date(start);
+    let endDate = new Date(end);
+
+    let diffTime = endDate.getTime() - startDate.getTime();
+
+    let days = Math.ceil(
+        diffTime / (1000 * 60 * 60 * 24)
+    );
+
+    if (days < 1) {
+        days = 1;
+    }
+
+    let total = 0;
+
+    Object.values(cartItems).forEach(item => {
+
+    total += item.rental_price * item.qty * days;
+
+});
+
+    document.getElementById('rental-days').innerText = days;
+
+    document.getElementById('rental-total').innerText =
+        'Rp ' + total.toLocaleString('id-ID');
+}
+document.getElementById('rent_start')
+    .addEventListener('change', updateRentalSummary);
+
+document.getElementById('rent_end')
+    .addEventListener('change', updateRentalSummary);
+
+window.addEventListener('load', function () {
+    updateRentalSummary();
+});
 </script>
 </body>
 </html>

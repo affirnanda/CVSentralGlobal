@@ -13,9 +13,7 @@ class CheckoutController extends Controller
     public function buyForm()
     {
         $keranjang = session()->get('keranjang', []);
-
         $paymentMethods = PaymentMethod::where('is_active', true)->get();
-
         return view('checkout.buy', compact(
             'keranjang',
             'paymentMethods'
@@ -46,7 +44,7 @@ class CheckoutController extends Controller
             'payment_method_id' => 'required|exists:payment_methods,id',
             'rent_start' => 'required_if:type,rent|date',
             'rent_end' => 'required_if:type,rent|date|after:rent_start',
-        ],[
+        ], [
             'full_name.required' => 'Silahkan input nama anda',
             'full_name.max' => 'input nama terlalu panjang',
             'email.required' => 'Silahkan input email anda',
@@ -58,21 +56,41 @@ class CheckoutController extends Controller
             'district.required' => 'Silahkan pilih kecamatan anda',
             'postal_code.required' => 'Silahkan input kode pos anda',
             'payment_method_id.required' => 'Silahkan pilih metode pembayaran anda',
-            'rent_start.required_if'=> 'Silahkan pilih tanggal mulai sewa anda',
-            'rent_end.required_if'=> 'Silahkan pilih tanggal akhir sewa anda',
+            'rent_start.required_if' => 'Silahkan pilih tanggal mulai sewa anda',
+            'rent_end.required_if' => 'Silahkan pilih tanggal akhir sewa anda',
             'rent_end.after' => 'Tanggal akhir harus setelah tanggal mulai',
         ]);
 
         $cart = session()->get('keranjang', []);
-        if(empty($cart)) {
+        if (empty($cart)) {
             return back()->with('error', 'Keranjang kosong');
         }
+        $days = 1;
 
+        if ($request->type == 'rent') {
+            $days = \Carbon\Carbon::parse($request->rent_start)
+                ->diffInDays(\Carbon\Carbon::parse($request->rent_end));
+        }
+        
         $total = 0;
 
-        foreach($cart as $item) {
-            $total += $item['price'] * $item['qty'];
+        foreach ($cart as $item) {
+
+        if ($request->type == 'rent') {
+
+            $total +=
+                $item['rental_price']
+                * $item['qty']
+                * $days;
+
+        } else {
+
+            $total +=
+                $item['price']
+                * $item['qty'];
+
         }
+    }
 
         $order = Order::create([
             'invoice_number' => 'INV-' . strtoupper(Str::random(8)),
@@ -90,15 +108,26 @@ class CheckoutController extends Controller
             'total' => $total,
         ]);
 
-        foreach($cart as $item) {
+        foreach ($cart as $item) {
 
-            OrderItem::create([
+        if ($request->type == 'rent') {
+
+            $price = $item['rental_price'];
+            $subtotal = $price * $item['qty'] * $days;
+
+        } else {
+
+            $price = $item['price'];
+            $subtotal = $price * $item['qty'];
+        }
+            
+            OrderItem::create([ 
                 'order_id' => $order->id,
                 'product_id' => $item['id'],
                 'product_name' => $item['name'],
-                'price' => $item['price'],
+                'price' => $price,
                 'qty' => $item['qty'],
-                'subtotal' => $item['price'] * $item['qty'],
+                'subtotal' => $subtotal,
             ]);
         }
         session()->forget('keranjang');
