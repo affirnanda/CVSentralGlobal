@@ -157,20 +157,22 @@
 
         <div class="space-y-3">
 
-            <a href="{{ $jumlahItem > 0 ? route('checkout.buy') : '#' }}"
-            class="checkout-btn block w-full py-3 rounded-lg text-center font-bold relative z-50
-                {{ $jumlahItem > 0
-            ? 'bg-purple-400 hover:bg-purple-500 text-white'
-            : 'bg-gray-300 text-gray-500 cursor-not-allowed pointer-events-none' }}">
-                Beli
-            </a>
-
-            <a href="{{ $jumlahItem > 0 ? route('checkout.rent') : '#' }}"
+            <a id="btn-buy"
+            href="{{ $jumlahItem > 0 ? route('checkout.buy') : '#' }}"
             class="checkout-btn block w-full py-3 rounded-lg text-center font-bold relative z-50
             {{ $jumlahItem > 0
                 ? 'bg-purple-400 hover:bg-purple-500 text-white'
                 : 'bg-gray-300 text-gray-500 cursor-not-allowed pointer-events-none' }}">
-            Sewa
+                Beli
+            </a>
+
+            <a id="btn-rent"
+            href="{{ $jumlahItem > 0 ? route('checkout.rent') : '#' }}"
+            class="checkout-btn block w-full py-3 rounded-lg text-center font-bold relative z-50
+            {{ $jumlahItem > 0
+                ? 'bg-purple-400 hover:bg-purple-500 text-white'
+                : 'bg-gray-300 text-gray-500 cursor-not-allowed pointer-events-none' }}">
+                Sewa
             </a>
         </div>
 
@@ -302,6 +304,43 @@ function updateCart(id, change)
             qty += change;
             if(qty <= 0) {
                 document.getElementById(`cart-item-${id}`).remove();
+                const remainingItems =
+        document.querySelectorAll('[id^="cart-item-"]').length;
+
+    if(remainingItems === 0) {
+
+        const buyBtn = document.getElementById('btn-buy');
+        const rentBtn = document.getElementById('btn-rent');
+
+        buyBtn.href = '#';
+        rentBtn.href = '#';
+
+        buyBtn.classList.remove(
+            'bg-purple-400',
+            'hover:bg-purple-500',
+            'text-white'
+        );
+
+        rentBtn.classList.remove(
+            'bg-purple-400',
+            'hover:bg-purple-500',
+            'text-white'
+        );
+
+        buyBtn.classList.add(
+            'bg-gray-300',
+            'text-gray-500',
+            'cursor-not-allowed',
+            'pointer-events-none'
+        );
+
+        rentBtn.classList.add(
+            'bg-gray-300',
+            'text-gray-500',
+            'cursor-not-allowed',
+            'pointer-events-none'
+        );
+    }
             } else {
                 qtyElement.innerText = qty;
                 document.getElementById(`subtotal-${id}`).innerText =

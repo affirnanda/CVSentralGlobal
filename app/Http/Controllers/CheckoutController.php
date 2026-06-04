@@ -13,6 +13,9 @@ class CheckoutController extends Controller
     public function buyForm()
     {
         $keranjang = session()->get('keranjang', []);
+        if (count($keranjang) === 0) {
+        return back()->with('error', 'Keranjang kosong');
+    }
         $paymentMethods = PaymentMethod::where('is_active', true)->get();
         return view('checkout.buy', compact(
             'keranjang',
@@ -23,6 +26,9 @@ class CheckoutController extends Controller
     public function rentForm()
     {
         $keranjang = session()->get('keranjang', []);
+        if (count($keranjang) === 0) {
+        return back()->with('error', 'Keranjang kosong');
+    }
         $paymentMethods = PaymentMethod::where('is_active', true)->get();
         return view('checkout.rent', compact(
             'keranjang',
