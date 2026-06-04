@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\PaymentMethod;
+use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
 
 class CheckoutController extends Controller
 {
@@ -37,70 +39,62 @@ class CheckoutController extends Controller
     }
 
     public function process(Request $request)
-    {
-        $request->validate([
-            'type' => 'required|in:buy,rent',
-            'full_name' => 'required|string|max:100',
-            'email' => 'required|email',
-            'phone' => 'required|numeric|digits_between:9,13',
-            'province' => 'required',
-            'city' => 'required',
-            'district' => 'required',
-            'address'=> 'required|max:200',
-            'postal_code' => 'required',
-            'payment_method_id' => 'required|exists:payment_methods,id',
-            'rent_start' => 'required_if:type,rent|date',
-            'rent_end' => 'required_if:type,rent|date|after:rent_start',
-        ], [
-            'full_name.required' => 'Silahkan input nama anda',
-            'full_name.max' => 'input nama terlalu panjang',
-            'email.required' => 'Silahkan input email anda',
-            'email.email' => 'Format email anda salah',
-            'phone.required' => 'Silahkan input nomor whatsapp anda',
-            'phone.digits_between' => 'nomor WA tidak valid',
-            'province.required' => 'Silahkan pilih provinsi anda',
-            'city.required' => 'Silahkan pilih kota anda',
-            'district.required' => 'Silahkan pilih kecamatan anda',
-            'address.required' => 'Silahkan input alamat pengiriman anda',
-            'address.max' => 'Input alamat terlalu panjang',
-            'postal_code.required' => 'Silahkan input kode pos anda',
-            'payment_method_id.required' => 'Silahkan pilih metode pembayaran anda',
-            'rent_start.required_if' => 'Silahkan pilih tanggal mulai sewa anda',
-            'rent_end.required_if' => 'Silahkan pilih tanggal akhir sewa anda',
-            'rent_end.after' => 'Tanggal akhir harus setelah tanggal mulai',
-        ]);
+{
+    $request->validate([
+        'type' => 'required|in:buy,rent',
+        'full_name' => 'required|string|max:100',
+        'email' => 'required|email',
+        'phone' => 'required|numeric|digits_between:9,13',
+        'province' => 'required',
+        'city' => 'required',
+        'district' => 'required',
+        'address'=> 'required|max:200',
+        'postal_code' => 'required',
+        'payment_method_id' => 'required|exists:payment_methods,id',
+        'rent_start' => 'required_if:type,rent|date',
+        'rent_end' => 'required_if:type,rent|date|after:rent_start',
+    ], [
+        'full_name.required' => 'Silahkan input nama anda',
+        'full_name.max' => 'input nama terlalu panjang',
+        'email.required' => 'Silahkan input email anda',
+        'email.email' => 'Format email anda salah',
+        'phone.required' => 'Silahkan input nomor whatsapp anda',
+        'phone.digits_between' => 'nomor WA tidak valid',
+        'province.required' => 'Silahkan pilih provinsi anda',
+        'city.required' => 'Silahkan pilih kota anda',
+        'district.required' => 'Silahkan pilih kecamatan anda',
+        'address.required' => 'Silahkan input alamat pengiriman anda',
+        'address.max' => 'Input alamat terlalu panjang',
+        'postal_code.required' => 'Silahkan input kode pos anda',
+        'payment_method_id.required' => 'Silahkan pilih metode pembayaran anda',
+        'rent_start.required_if' => 'Silahkan pilih tanggal mulai sewa anda',
+        'rent_end.required_if' => 'Silahkan pilih tanggal akhir sewa anda',
+        'rent_end.after' => 'Tanggal akhir harus setelah tanggal mulai',
+    ]);
 
-        $cart = session()->get('keranjang', []);
-        if (empty($cart)) {
-            return back()->with('error', 'Keranjang kosong');
-        }
-        $days = 1;
+    $cart = session()->get('keranjang', []);
+    if (empty($cart)) {
+        return back()->with('error', 'Keranjang kosong');
+    }
 
+    $days = 1;
+    if ($request->type == 'rent') {
+        $days = \Carbon\Carbon::parse($request->rent_start)
+            ->diffInDays(\Carbon\Carbon::parse($request->rent_end));
+    }
+    
+    $total = 0;
+    foreach ($cart as $item) {
         if ($request->type == 'rent') {
-            $days = \Carbon\Carbon::parse($request->rent_start)
-                ->diffInDays(\Carbon\Carbon::parse($request->rent_end));
-        }
-        
-        $total = 0;
-
-        foreach ($cart as $item) {
-
-        if ($request->type == 'rent') {
-
-            $total +=
-                $item['rental_price']
-                * $item['qty']
-                * $days;
-
+            $total += $item['rental_price'] * $item['qty'] * $days;
         } else {
-
-            $total +=
-                $item['price']
-                * $item['qty'];
-
+            $total += $item['price'] * $item['qty'];
         }
     }
 
+    return DB::transaction(function () use ($request, $cart, $days, $total) {
+        
+        // 1. Buat Order
         $order = Order::create([
             'invoice_number' => 'INV-' . strtoupper(Str::random(8)),
             'type' => $request->type,
@@ -119,17 +113,13 @@ class CheckoutController extends Controller
         ]);
 
         foreach ($cart as $item) {
-
-        if ($request->type == 'rent') {
-
-            $price = $item['rental_price'];
-            $subtotal = $price * $item['qty'] * $days;
-
-        } else {
-
-            $price = $item['price'];
-            $subtotal = $price * $item['qty'];
-        }
+            if ($request->type == 'rent') {
+                $price = $item['rental_price'];
+                $subtotal = $price * $item['qty'] * $days;
+            } else {
+                $price = $item['price'];
+                $subtotal = $price * $item['qty'];
+            }
             
             OrderItem::create([ 
                 'order_id' => $order->id,
@@ -139,10 +129,21 @@ class CheckoutController extends Controller
                 'qty' => $item['qty'],
                 'subtotal' => $subtotal,
             ]);
+
+            $product = Product::find($item['id']);
+            if ($product) {
+                if ($product->stock < $item['qty']) {
+                    throw new \Exception("Stok untuk produk {$product->name} tidak mencukupi.");
+                }
+                $product->decrement('stock', $item['qty']); 
+            }
         }
+
         session()->forget('keranjang');
-        return redirect()->route('invoice.show', $order);
-    }
+
+        return redirect()->route('invoice.show', $order)->with('success', 'Order berhasil dibuat!');
+    });
+}
 
     public function invoice(Order $order)
     {
