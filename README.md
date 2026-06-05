@@ -1,88 +1,98 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# CV Sentral Global Indo - Company Profile Website
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Website profil perusahaan dan manajemen layanan untuk CV Sentral Global Indo. Dibangun menggunakan kerangka kerja Laravel.
 
-# Laravel Project
+## 🚀 Fitur Utama
 
-## Requirements
-Before running this project, make sure your system meets the following requirement:
+- **Landing Page Interaktif:** Hero section dinamis, daftar layanan, produk, cerita sukses profil (About Us), dan Testimoni pelanggan.
+- **Admin Dashboard:** Antarmuka pengelola (CMS) yang elegan untuk mengatur konten situs web secara _real-time_.
+- **Kelola Hero & Profile Section:** Admin dapat mengubah judul, teks paragraf, dan mengunggah gambar _background_ secara langsung dengan validasi instan. Konten disimpan secara efisien ke dalam file JSON.
+- **Kelola FAQ (Tanya Jawab):** Manajemen urutan FAQ secara otomatis (_Auto-shifting_) saat penambahan, penghapusan, atau pembaruan.
+- **Kelola Testimoni:** Persetujuan testimoni pelanggan secara langsung oleh admin untuk ditampilkan di _landing page_.
 
-- **PHP version 8.2 or higher**
-- Composer
+## 🛠️ Teknologi yang Digunakan
 
-## Installation
+- **Backend:** Laravel 11.x (PHP 8.2+)
+- **Frontend:** Blade Templates, Tailwind CSS, Alpine.js
+- **Database:** MySQL / SQLite
+- **Animasi:** AOS (Animate On Scroll)
 
-Follow these steps to run the project:
+---
 
-1. Install project dependencies
-   ```bash
-   composer install
+## 💻 Panduan Instalasi (Untuk Tim Developer / Puller)
 
-2. copy .env.example .env
-3. php artisan key:generate
-4. masuk ke file .env
-5. ubah SESSION_DRIVER=database menjadi SESSION_DRIVER=file
-6. lalu jalankan dengan perintah php artisan serve
+Jika Anda baru saja mengunduh (_clone_ atau _pull_) repositori ini, ikuti **"Ritual Wajib"** di bawah ini agar proyek dapat berjalan sempurna di komputer Anda:
 
-## About Laravel
+### 1. Instalasi Dependensi
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Buka terminal di dalam direktori proyek dan jalankan:
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+```bash
+composer install
+npm install
+```
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### 2. Konfigurasi Environment (.env)
 
-## Learning Laravel
+Salin file konfigurasi bawaan:
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+```bash
+cp .env.example .env
+```
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+_(Untuk pengguna Windows CMD, gunakan `copy .env.example .env`)_
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+Buka file `.env` dan atur koneksi database Anda (misal: `DB_DATABASE=cv_sentral_global`).
 
-## Laravel Sponsors
+### 3. Generate Key & Migrasi Database
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+Jalankan perintah berikut untuk mengamankan aplikasi dan membangun struktur database:
 
-### Premium Partners
+```bash
+php artisan key:generate
+php artisan migrate
+```
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+_(Jika ada file seeder, Anda juga bisa menjalankan `php artisan db:seed`)_
 
-## Contributing
+### 4. Menautkan Penyimpanan (SANGAT PENTING!) ⚠️
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+Karena website ini memiliki fitur unggah gambar (Hero Image, Profile Image), Anda **WAJIB** membuat _symlink_ agar gambar dapat diakses oleh browser:
 
-## Code of Conduct
+```bash
+php artisan storage:link
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+_Catatan: Jika langkah ini dilewati, semua gambar yang diunggah dari Dashboard Admin akan error/tidak muncul (404 Not Found)._
 
-## Security Vulnerabilities
+### 5. Jalankan Server Lokal
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+Anda membutuhkan 2 terminal yang berjalan bersamaan:
 
-## License
+Terminal 1 (Untuk memproses Tailwind CSS):
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+```bash
+npm run dev
+```
+
+Terminal 2 (Untuk menjalankan server PHP):
+
+```bash
+php artisan serve
+```
+
+Aplikasi kini dapat diakses di: `http://localhost:8000`
+
+---
+
+## 📝 Catatan Penting Pengembangan
+
+- **Manajemen Konten Landing Page:** Data teks dan pengaturan gambar Hero & Profile tidak disimpan di database relasional, melainkan di dalam file `storage/app/landing_page.json` untuk akses cepat.
+- **Validasi Gambar:** Gambar yang diunggah ke Hero Section dibatasi maksimal 2MB (JPG/PNG). Aturan ini dikawal dua lapis: via Javascript di browser dan Controller di server.
+
+## 🤝 Alur Kolaborasi (Git Push/Pull)
+
+1. Selalu pastikan berada di branch yang benar: `git status`
+2. Tarik pembaruan terbaru dari tim sebelum mulai mengubah kode: `git pull origin main`
+3. Jika mengubah kerangka UI, pastikan `npm run dev` tetap berjalan agar _class_ Tailwind baru terdeteksi.
+4. Jangan lupa `git add .` dan berikan pesan `commit` yang jelas sebelum melakukan `git push`.
