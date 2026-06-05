@@ -53,13 +53,6 @@
                 @enderror
             </div>
 
-            <div class="flex items-center justify-between mt-4">
-                <label for="remember_me" class="flex items-center cursor-pointer">
-                    <input id="remember_me" type="checkbox" class="w-4 h-4 rounded border-gray-300 text-purple-600 shadow-sm focus:ring-purple-500 cursor-pointer" name="remember">
-                    <span class="ms-2 text-xs font-semibold text-gray-600">Ingat Saya</span>
-                </label>
-            </div>
-
             <button type="submit" 
                     class="w-full bg-purple-500 hover:bg-purple-600 text-white font-bold py-3 rounded-xl shadow-lg transition-all transform hover:scale-[1.02] mt-6">
                 Masuk

@@ -1,35 +1,34 @@
 <x-app-layout>
     <x-slot name="header">
         <div class="flex items-center gap-3">
-            <a href="{{ route('faqs.index') }}" class="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-colors duration-150">
+            <a href="{{ route('faqs.index') }}" class="text-gray-500 hover:text-gray-700 transition-colors duration-150">
                 &larr; Kembali
             </a>
-            <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                 {{ __('Tambah FAQ Baru') }}
             </h2>
         </div>
     </x-slot>
 
-    <div class="py-12">
+    <div class="py-12 bg-gray-50 min-h-[calc(100vh-70px)]">
         <div class="max-w-3xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+            <div class="bg-white overflow-hidden shadow-lg sm:rounded-xl border border-gray-200">
                 <div class="p-6">
-                    <form action="{{ route('faqs.store') }}" method="POST">
+                    <form action="{{ route('faqs.store') }}" method="POST" novalidate>
                         @csrf
 
-                        {{-- Pertanyaan --}}
                         <div class="mb-5">
-                            <label for="question" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                            <label for="question" class="block text-sm font-medium text-gray-700 mb-1">
                                 Pertanyaan <span class="text-red-500">*</span>
                             </label>
-                            <input type="text" id="question" name="question"
+                            <input type="text" id="question" name="question" required
                                    value="{{ old('question') }}"
                                    maxlength="100"
                                    oninput="validateField(this, 'question-count', 'question-error', 100, 'submit-btn')"
-                                   class="w-full border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 @error('question') border-red-500 @enderror"
+                                   class="w-full border-gray-300 rounded-md shadow-sm focus:ring-purple-500 focus:border-purple-500 @error('question') border-red-500 @enderror"
                                    placeholder="Masukkan pertanyaan (maks. 100 karakter)">
                             <div class="flex justify-between items-center mt-1">
-                                <span id="question-error" class="text-sm text-red-500 hidden">&#10060; Pertanyaan tidak boleh lebih dari 100 karakter!</span>
+                                <span id="question-error" class="text-sm text-red-500 hidden">&#10060; Pertanyaan terlalu panjang</span>
                                 @error('question')
                                     <span class="text-sm text-red-500">{{ $message }}</span>
                                 @enderror
@@ -37,18 +36,17 @@
                             </div>
                         </div>
 
-                        {{-- Jawaban --}}
                         <div class="mb-5">
-                            <label for="answer" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                            <label for="answer" class="block text-sm font-medium text-gray-700 mb-1">
                                 Jawaban <span class="text-red-500">*</span>
                             </label>
-                            <textarea id="answer" name="answer" rows="5"
+                            <textarea id="answer" name="answer" rows="5" required
                                       maxlength="300"
                                       oninput="validateField(this, 'answer-count', 'answer-error', 300, 'submit-btn')"
-                                      class="w-full border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 @error('answer') border-red-500 @enderror"
+                                      class="w-full border-gray-300 rounded-md shadow-sm focus:ring-purple-500 focus:border-purple-500 @error('answer') border-red-500 @enderror"
                                       placeholder="Masukkan jawaban (maks. 300 karakter)">{{ old('answer') }}</textarea>
                             <div class="flex justify-between items-center mt-1">
-                                <span id="answer-error" class="text-sm text-red-500 hidden">&#10060; Jawaban tidak boleh lebih dari 300 karakter!</span>
+                                <span id="answer-error" class="text-sm text-red-500 hidden">&#10060; Jawaban terlalu panjang</span>
                                 @error('answer')
                                     <span class="text-sm text-red-500">{{ $message }}</span>
                                 @enderror
@@ -56,35 +54,34 @@
                             </div>
                         </div>
 
-                        {{-- Urutan --}}
                         <div class="mb-5">
-                            <label for="order" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                            <label for="order" class="block text-sm font-medium text-gray-700 mb-1">
                                 Urutan Tampil
                             </label>
-                            <input type="number" id="order" name="order"
-                                   value="{{ old('order', 0) }}" min="0"
-                                   class="w-32 border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
-                            <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Angka lebih kecil tampil lebih dulu.</p>
+                            <select id="order" name="order" class="w-32 border-gray-300 rounded-md shadow-sm focus:ring-purple-500 focus:border-purple-500">
+                                @for($i = 1; $i <= $maxOrder; $i++)
+                                    <option value="{{ $i }}" {{ old('order', $maxOrder) == $i ? 'selected' : '' }}>{{ $i }}</option>
+                                @endfor
+                            </select>
+                            <p class="mt-1 text-xs text-gray-500">Pilih posisi urutan FAQ ini.</p>
                         </div>
 
-                        {{-- Status Aktif --}}
                         <div class="mb-6">
                             <label class="flex items-center gap-3 cursor-pointer">
                                 <input type="checkbox" id="is_active" name="is_active" value="1"
                                        {{ old('is_active', true) ? 'checked' : '' }}
-                                       class="rounded border-gray-300 dark:border-gray-600 text-indigo-600 shadow-sm focus:ring-indigo-500">
-                                <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Aktifkan FAQ ini</span>
+                                       class="rounded border-gray-300 text-purple-600 shadow-sm focus:ring-purple-500">
+                                <span class="text-sm font-medium text-gray-700">Aktifkan FAQ ini</span>
                             </label>
                         </div>
 
-                        {{-- Tombol --}}
                         <div class="flex items-center gap-3">
                             <button type="submit" id="submit-btn"
-                                    class="inline-flex items-center px-4 py-2 bg-gray-800 dark:bg-gray-200 border border-transparent rounded-md font-semibold text-xs text-white dark:text-gray-800 uppercase tracking-widest hover:bg-gray-700 dark:hover:bg-white transition ease-in-out duration-150">
+                                    class="inline-flex items-center px-4 py-2 bg-purple-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-purple-700 focus:bg-purple-700 active:bg-purple-800 transition ease-in-out duration-150">
                                 Simpan FAQ
                             </button>
                             <a href="{{ route('faqs.index') }}"
-                               class="inline-flex items-center px-4 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md font-semibold text-xs text-gray-700 dark:text-gray-300 uppercase tracking-widest hover:bg-gray-50 dark:hover:bg-gray-600 transition ease-in-out duration-150">
+                               class="inline-flex items-center px-4 py-2 bg-red-500 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-red-600 focus:bg-red-600 active:bg-red-700 transition ease-in-out duration-150">
                                 Batal
                             </a>
                         </div>
@@ -95,7 +92,6 @@
     </div>
 
     <script>
-        // Fungsi generik untuk validasi field (dipakai untuk pertanyaan & jawaban)
         function validateField(input, countId, errorId, maxLen, btnId) {
             const count = input.value.length;
             const counterEl = document.getElementById(countId);
@@ -106,7 +102,6 @@
 
             const isOverLimit = count > maxLen;
 
-            // Cek apakah field lain juga dalam kondisi error
             const questionOver = document.getElementById('question').value.length > 100;
             const answerOver   = document.getElementById('answer').value.length > 300;
 
@@ -122,7 +117,6 @@
                 document.getElementById(countId).parentElement.classList.remove('text-red-500');
             }
 
-            // Disable tombol jika salah satu field melebihi batas
             submitBtn.disabled = questionOver || answerOver;
             if (submitBtn.disabled) {
                 submitBtn.classList.add('opacity-50', 'cursor-not-allowed');
@@ -131,7 +125,6 @@
             }
         }
 
-        // Inisialisasi counter saat halaman dimuat
         window.addEventListener('DOMContentLoaded', () => {
             const question = document.getElementById('question');
             const answer   = document.getElementById('answer');
