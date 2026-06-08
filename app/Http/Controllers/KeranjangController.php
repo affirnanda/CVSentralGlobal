@@ -15,31 +15,44 @@ class KeranjangController extends Controller
         return view('keranjang.sidebar', compact('keranjang'));
     }
 
-    public function add(Product $product)
+    public function add(Request $request, Product $product)
     {
+        $validated = $request->validate([
+            'qty' => ['required', 'integer', 'min:1'],
+        ], [
+            'qty.required' => 'Silahkan isi jumlah produk yang ingin dipesan',
+            'qty.integer' => 'Silahkan isi jumlah produk yang ingin dipesan',
+            'qty.min' => 'Silahkan isi jumlah produk yang ingin dipesan',
+        ]);
+
+        $qty = (int) $validated['qty'];
+
         if ($product->stock <= 0) {
             return back()->with('error', 'Stok produk habis');
+        }
+
+        if ($qty > $product->stock) {
+            return back()->with('error', 'Stok barang tidak mencukupi');
         }
 
         $keranjang = session()->get('keranjang', []);
 
         if (isset($keranjang[$product->id])) {
+            $newQty = $keranjang[$product->id]['qty'] + $qty;
 
-            // Cegah qty melebihi stok
-            if ($keranjang[$product->id]['qty'] >= $product->stock) {
-                return back()->with('error', 'Stok tidak mencukupi');
+            if ($newQty > $product->stock) {
+                return back()->with('error', 'Stok barang tidak mencukupi');
             }
 
-            $keranjang[$product->id]['qty']++;
+            $keranjang[$product->id]['qty'] = $newQty;
         } else {
-
             $keranjang[$product->id] = [
                 'id' => $product->id,
                 'name' => $product->name,
                 'price' => $product->price,
                 'rental_price' => $product->rental_price,
                 'image' => $product->image,
-                'qty' => 1,
+                'qty' => $qty,
             ];
         }
 

@@ -144,17 +144,18 @@
     <div class="flex justify-between items-center">
         <div>
             <span class="text-purple-600 font-bold text-sm">IDR {{ number_format((float)$product->price, 0, ',', '.') }}</span>
-            @if($product->stock <= 0)
+            @if($product->available_stock <= 0)
                 <p class="text-[10px] text-red-500 font-semibold">Stok produk habis</p>
             @else
-                <p class="text-[10px] text-gray-500">Stock: {{ $product->stock }}</p>
+                <p class="text-[10px] text-gray-500">Stok tersisa: {{ $product->available_stock }}</p>
             @endif
         </div>
-        <form action="{{ route('keranjang.add', $product) }}" method="POST">
+        <form action="{{ route('keranjang.add', $product) }}" method="POST" class="flex items-center gap-2">
             @csrf
-            <button type="submit" class="flex items-center justify-center w-10 h-10 rounded-lg transition {{ $product->stock <= 0 ? 'bg-gray-300 text-gray-500 cursor-not-allowed' : 'bg-purple-100 text-purple-600 hover:bg-purple-600 hover:text-white' }}"
-                {{ $product->stock <= 0 ? 'disabled' : '' }}>
-                @if($product->stock <= 0)
+            <input type="number" name="qty" value="1" min="1" max="{{ max(1, $product->available_stock) }}" class="w-14 border border-gray-300 rounded-lg px-2 py-1 text-xs" {{ $product->available_stock <= 0 ? 'disabled' : '' }}>
+            <button type="submit" class="flex items-center justify-center w-10 h-10 rounded-lg transition {{ $product->available_stock <= 0 ? 'bg-gray-300 text-gray-500 cursor-not-allowed' : 'bg-purple-100 text-purple-600 hover:bg-purple-600 hover:text-white' }}"
+                {{ $product->available_stock <= 0 ? 'disabled' : '' }}>
+                @if($product->available_stock <= 0)
                     <span class="text-[10px]">Habis</span>
                 @else
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">

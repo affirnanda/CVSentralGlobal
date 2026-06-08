@@ -335,10 +335,10 @@
                         <div class="text-orange-500 font-bold text-xs">
                             IDR {{ number_format((float) $product->price, 0, ',', '.') }}
                         </div>
-                        @if($product->stock <= 0)
+                        @if($product->available_stock <= 0)
                             <p class="text-[10px] text-red-500 font-semibold mt-1">Stok produk habis</p>
                         @else
-                            <p class="text-[10px] text-gray-500 mt-1">Stock: {{ $product->stock }}</p>
+                            <p class="text-[10px] text-gray-500 mt-1">Stok tersisa: {{ $product->available_stock }}</p>
                         @endif
                     </a>
                 </div>

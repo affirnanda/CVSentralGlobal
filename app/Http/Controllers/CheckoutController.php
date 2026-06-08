@@ -131,11 +131,8 @@ class CheckoutController extends Controller
             ]);
 
             $product = Product::find($item['id']);
-            if ($product) {
-                if ($product->stock < $item['qty']) {
-                    throw new \Exception("Stok untuk produk {$product->name} tidak mencukupi.");
-                }
-                $product->decrement('stock', $item['qty']); 
+            if ($product && $product->stock < $item['qty']) {
+                throw new \Exception("Stok untuk produk {$product->name} tidak mencukupi.");
             }
         }
 

@@ -203,8 +203,8 @@
                         Harga Sewa: IDR {{ number_format((float)($product->rental_price ?? 0), 0, ',', '.') }}
                     </p>
                 </div>
-                <p class="text-sm text-gray-500 mb-2">Stock: {{ $product->stock }}</p>
-                @if($product->stock <= 0)
+                <p class="text-sm text-gray-500 mb-2">Stok tersisa: {{ $product->available_stock }}</p>
+                @if($product->available_stock <= 0)
                     <p class="text-sm text-red-500 font-semibold mb-4">Stok produk habis</p>
                 @endif
                 <p class="text-sm text-gray-500 leading-relaxed">{{ $product->description }}</p>
@@ -215,13 +215,18 @@
 <div class="flex flex-col gap-3">
 
     <!-- Tambahkan ke Keranjang -->
-    <form action="{{ route('keranjang.add', $product) }}" method="POST">
+    <form action="{{ route('keranjang.add', $product) }}" method="POST" class="flex flex-col gap-3 md:flex-row md:items-center">
         @csrf
 
+        <label class="text-sm text-gray-600 flex items-center gap-2">
+            Qty
+            <input type="number" name="qty" value="1" min="1" max="{{ max(1, $product->available_stock) }}" class="w-20 border border-gray-300 rounded-lg px-3 py-2 text-sm" {{ $product->available_stock <= 0 ? 'disabled' : '' }}>
+        </label>
+
         <button type="submit"
-            class="w-full {{ $product->stock <= 0 ? 'bg-gray-300 text-gray-600 cursor-not-allowed' : 'bg-purple-400 hover:bg-purple-500 text-white' }} py-3 rounded-xl font-bold shadow-md transition hover:scale-[1.02]"
-            {{ $product->stock <= 0 ? 'disabled' : '' }}>
-            {{ $product->stock <= 0 ? 'Stok Habis' : 'Tambahkan ke Keranjang' }}
+            class="w-full {{ $product->available_stock <= 0 ? 'bg-gray-300 text-gray-600 cursor-not-allowed' : 'bg-purple-400 hover:bg-purple-500 text-white' }} py-3 rounded-xl font-bold shadow-md transition hover:scale-[1.02]"
+            {{ $product->available_stock <= 0 ? 'disabled' : '' }}>
+            {{ $product->available_stock <= 0 ? 'Stok Habis' : 'Tambahkan ke Keranjang' }}
         </button>
     </form>
 
@@ -243,7 +248,11 @@
                     <div class="text-orange-500 font-bold text-xs">
                         IDR {{ number_format((float)$item->price, 0, ',', '.') }}
                     </div>
-                    <p class="text-[10px] text-gray-500 mt-1">Stock: {{ $item->stock }}</p>
+                    @if($item->available_stock <= 0)
+                        <p class="text-[10px] text-red-500 font-semibold mt-1">Stok produk habis</p>
+                    @else
+                        <p class="text-[10px] text-gray-500 mt-1">Stok tersisa: {{ $item->available_stock }}</p>
+                    @endif
                 </a>
                 @endforeach
             </div>
