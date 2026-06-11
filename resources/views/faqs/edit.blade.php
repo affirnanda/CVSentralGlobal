@@ -1,3 +1,4 @@
+<head>@vite(['resources/css/app.css', 'resources/js/app.js'])</head>
 <x-app-layout>
     <x-slot name="header">
         <div class="flex items-center gap-3">

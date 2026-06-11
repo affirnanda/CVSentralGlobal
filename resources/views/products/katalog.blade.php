@@ -10,6 +10,8 @@
         .product-hover:hover { transform: scale(1.05); }
         html { scroll-behavior: smooth; }
     </style>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+
 </head>
 <body class="bg-[#F3F4F6] text-gray-800">
     @php

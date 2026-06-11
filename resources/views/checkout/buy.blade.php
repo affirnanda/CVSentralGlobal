@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Checkout Pembelian</title>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     <script src="https://cdn.tailwindcss.com"></script>
 
@@ -82,7 +83,7 @@
                             <input type="email" name="email"
                                 value="{{ old('email') }}"
                                 class="w-full border rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-purple-400"
-                                @error('email') border-red-500 @enderror"
+                                @error('email') border-red-500 @enderror"   
                                 placeholder="Masukkan email">
 
                                 @error('email')

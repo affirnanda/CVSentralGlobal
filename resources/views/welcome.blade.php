@@ -8,6 +8,8 @@
     <title>Solusi Sentra Global Indo</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+
 
     @php
         use Illuminate\Support\Facades\Storage;

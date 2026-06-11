@@ -1,3 +1,4 @@
+<head>@vite(['resources/css/app.css', 'resources/js/app.js'])</head>
 <x-guest-layout>
     <form method="POST" action="{{ route('password.store') }}">
         @csrf
