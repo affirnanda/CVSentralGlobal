@@ -27,16 +27,19 @@ class ProductController extends Controller
         $validator = Validator::make($request->all(), [
             'name'          => 'required|string|max:100',
             'description'   => 'required|string',
-            'price'         => 'required',
-            'rental_price'  => 'required',
-            'stock'         => 'required',
+            'price'         => 'required|numeric',
+            'rental_price'  => 'required|numeric',
+            'stock'         => 'required|integer',
             'image'         => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ], [
             'name.required' => 'Nama produk tidak boleh kosong',
             'name.max' => 'Nama produk terlalu panjang',
             'price.required' => 'Harga beli tidak boleh kosong',
+            'price.numeric' => 'Harga beli harus berupa angka',
             'rental_price.required' => 'Harga sewa tidak boleh kosong',
+            'rental_price.numeric' => 'Harga sewa harus berupa angka',
             'stock.required' => 'Stok tidak boleh kosong',
+            'stock.integer' => 'Stok harus berupa bilangan bulat',
             'image.mimes' => 'Format gambar yang diunggah tidak sesuai',
         ]);
 
@@ -79,16 +82,19 @@ class ProductController extends Controller
         $validator = Validator::make($request->all(), [
             'name'          => 'required|string|max:100',
             'description'   => 'required|string',
-            'price'         => 'required',
-            'rental_price'  => 'required',
-            'stock'         => 'required',
+            'price'         => 'required|numeric',
+            'rental_price'  => 'required|numeric',
+            'stock'         => 'required|integer',
             'image'         => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ], [
             'name.required' => 'Nama produk tidak boleh kosong',
             'name.max' => 'Nama produk terlalu panjang',
             'price.required' => 'Harga beli tidak boleh kosong',
+            'price.numeric' => 'Harga beli harus berupa angka',
             'rental_price.required' => 'Harga sewa tidak boleh kosong',
+            'rental_price.numeric' => 'Harga sewa harus berupa angka',
             'stock.required' => 'Stok tidak boleh kosong',
+            'stock.integer' => 'Stok harus berupa bilangan bulat',
             'image.mimes' => 'Format gambar yang diunggah tidak sesuai',
         ]);
 
@@ -147,7 +153,11 @@ class ProductController extends Controller
             }
 
             if ($number > $config['max']) {
-                $validator->errors()->add($field, 'Nominal ' . strtolower($config['label']) . ' terlalu besar');
+                $message = $field === 'stock'
+                    ? 'Jumlah stok melebihi batas'
+                    : 'Nominal ' . strtolower($config['label']) . ' terlalu besar';
+
+                $validator->errors()->add($field, $message);
             }
         }
     }
@@ -172,6 +182,29 @@ class ProductController extends Controller
 
         return redirect()->route('admin.products.index')->with('sukses', 'Product berhasil dihapus!');
     }
+    private function withAvailableStock($products)
+    {
+        $keranjang = session()->get('keranjang', []);
+
+        if (method_exists($products, 'getCollection')) {
+            $products->getCollection()->transform(function ($product) use ($keranjang) {
+                $qtyInCart = (int) ($keranjang[$product->id]['qty'] ?? 0);
+                $product->available_stock = max(0, (int) $product->stock - $qtyInCart);
+
+                return $product;
+            });
+
+            return $products;
+        }
+
+        return $products->map(function ($product) use ($keranjang) {
+            $qtyInCart = (int) ($keranjang[$product->id]['qty'] ?? 0);
+            $product->available_stock = max(0, (int) $product->stock - $qtyInCart);
+
+            return $product;
+        });
+    }
+
     public function welcome()
     {
         // Mengambil data landing page (JSON)
@@ -183,7 +216,7 @@ class ProductController extends Controller
         $keranjang = session()->get('keranjang', []);
 
         // Mengambil 8 produk terbaru
-        $products = \App\Models\Product::latest()->take(8)->get();
+        $products = $this->withAvailableStock(\App\Models\Product::latest()->take(8)->get());
         
         // Mengambil testimoni yang sudah disetujui admin
         $testimonials = \App\Models\Testimonial::where('is_approved', true)->latest()->take(6)->get();
@@ -195,7 +228,7 @@ class ProductController extends Controller
     public function katalog()
     {
         // Ambil semua produk dengan pagination (12 per halaman)
-        $products = Product::latest()->paginate(12);
+        $products = $this->withAvailableStock(Product::latest()->paginate(12));
         $keranjang = session()->get('keranjang', []);
 
         return view('products.katalog', compact('products', 'keranjang'));
@@ -203,10 +236,12 @@ class ProductController extends Controller
 
     public function show(Product $product)
 {
-    $related = Product::where('id', '!=', $product->id)
+    $related = $this->withAvailableStock(Product::where('id', '!=', $product->id)
                 ->latest()
                 ->take(4)
-                ->get();
+                ->get());
+
+    $product->available_stock = max(0, (int) $product->stock - (int) (session('keranjang.' . $product->id . '.qty', 0)));
 
     $keranjang = session()->get('keranjang', []);
     return view('products.show', compact('product', 'related','keranjang'));
