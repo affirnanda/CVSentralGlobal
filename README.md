@@ -51,6 +51,7 @@ Jalankan perintah berikut untuk mengamankan aplikasi dan membangun struktur data
 ```bash
 php artisan key:generate
 php artisan migrate
+php artisan db:seed
 ```
 
 _(Jika ada file seeder, Anda juga bisa menjalankan `php artisan db:seed`)_

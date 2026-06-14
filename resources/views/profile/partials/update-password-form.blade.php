@@ -1,3 +1,4 @@
+<head>@vite(['resources/css/app.css', 'resources/js/app.js'])</head>
 <section>
     <header>
         <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">

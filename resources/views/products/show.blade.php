@@ -6,6 +6,8 @@
     <title>{{ $product->name }} - CV Solusi Sentra Global Indo</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css"/>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+
 </head>
 <body class="bg-[#F3F4F6] text-gray-800">
 
