@@ -359,9 +359,9 @@
 
             let id = $(this).find(':selected').data('id');
 
-            $('#city').html('<option>Pilih Kota</option>');
+            $('#city').html('<option value="">Pilih Kota</option>');
 
-            $('#district').html('<option>Pilih Kecamatan</option>');
+            $('#district').html('<option value="">Pilih Kecamatan</option>');
 
             $.get(`https://api.binderbyte.com/wilayah/kabupaten?api_key=${apiKey}&id_provinsi=${id}`,
                 function (result) {
@@ -384,7 +384,7 @@
 
             let id = $(this).find(':selected').data('id');
 
-            $('#district').html('<option>Pilih Kecamatan</option>');
+            $('#district').html('<option value="">Pilih Kecamatan</option>');
 
             $.get(`https://api.binderbyte.com/wilayah/kecamatan?api_key=${apiKey}&id_kabupaten=${id}`,
                 function (result) {

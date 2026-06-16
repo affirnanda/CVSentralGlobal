@@ -23,3 +23,23 @@
 //
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
+
+Cypress.Commands.add('isiCheckoutValid', () => {
+
+    cy.get('input[name="full_name"]')
+        .type('Galang Tegar');
+
+    cy.get('input[name="email"]')
+        .type('galang@test.com');
+
+    cy.get('input[name="phone"]')
+        .type('081234567890');
+
+    cy.get('input[name="address"]')
+        .type('Alamat Testing');
+
+    cy.get('input[name="postal_code"]')
+        .type('60234');
+
+        
+});
