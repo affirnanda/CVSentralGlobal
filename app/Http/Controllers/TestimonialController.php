@@ -30,7 +30,7 @@ class TestimonialController extends Controller
     {
         $request->validate([
             'name'    => 'required|string|max:100',
-            'message' => 'required|string|max:300',
+            'message' => 'required|string|max:200',
             'rating'  => 'required|integer|min:1|max:5',
         ], [
             'name.required'    => 'Silahkan isi nama anda',
