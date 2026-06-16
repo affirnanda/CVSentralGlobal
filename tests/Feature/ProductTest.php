@@ -12,210 +12,566 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class ProductTest extends TestCase
 {
-
     use RefreshDatabase;
 
     protected function setUp(): void
-{
-    parent::setUp();
+    {
+        parent::setUp();
 
-    Gate::define('manage products', function () {
-        return true;
-    });
-}
+        Gate::define('manage products', function () {
+            return true;
+        });
+    }
 
     protected function adminUser()
     {
         return User::factory()->create();
     }
 
-    public function test_can_view_products_page()
+    /** @test */
+    public function test_pengguna_memasukkan_produk_ke_keranjang_dengan_jumlah_valid()
     {
-        Product::factory()->count(5)->create();
+        $product = Product::factory()->create([
+            'name' => 'Produk A',
+            'stock' => 10,
+            'price' => 150000,
+            'rental_price' => 50000,
+        ]);
 
-        $response = $this->get(route('katalog.index'));
+        $response = $this->post(route('keranjang.add', $product), ['qty' => 2]);
 
-        $response->assertStatus(200);
-        $response->assertViewHas('products');
+        $response->assertRedirect();
+        $response->assertSessionHas('success', 'Produk ditambahkan ke keranjang');
+        $this->assertSame(2, session('keranjang.' . $product->id . '.qty'));
     }
 
-    public function test_can_create_product()
+    /** @test */
+    public function test_pengguna_memasukkan_produk_ke_keranjang_dengan_jumlah_melebihi_stok()
+    {
+        $product = Product::factory()->create([
+            'name' => 'Produk B',
+            'stock' => 10,
+            'price' => 150000,
+            'rental_price' => 50000,
+        ]);
+
+        $response = $this->post(route('keranjang.add', $product), ['qty' => 15]);
+
+        $response->assertRedirect();
+        $response->assertSessionHas('error', 'Stok barang tidak mencukupi');
+        $this->assertNull(session('keranjang.' . $product->id . '.qty'));
+    }
+
+    /** @test */
+    public function test_pengguna_memasukkan_produk_ke_keranjang_dengan_jumlah_bernilai_0()
+    {
+        $product = Product::factory()->create([
+            'name' => 'Produk C',
+            'stock' => 10,
+            'price' => 150000,
+            'rental_price' => 50000,
+        ]);
+
+        $response = $this->post(route('keranjang.add', $product), ['qty' => 0]);
+
+        $response->assertSessionHasErrors(['qty']);
+        $this->assertStringContainsString(
+            'Silahkan isi jumlah produk yang ingin dipesan',
+            session('errors')->get('qty')[0]
+        );
+    }
+
+    /** @test */
+    public function test_pengguna_memasukkan_produk_ke_keranjang_dengan_input_non_integer()
+    {
+        $product = Product::factory()->create([
+            'name' => 'Produk D',
+            'stock' => 10,
+            'price' => 150000,
+            'rental_price' => 50000,
+        ]);
+
+        $response = $this->post(route('keranjang.add', $product), ['qty' => 'dua']);
+
+        $response->assertSessionHasErrors(['qty']);
+        $this->assertStringContainsString(
+            'Silahkan isi jumlah produk yang ingin dipesan',
+            session('errors')->get('qty')[0]
+        );
+    }
+
+    /** @test */
+    public function test_admin_menambah_produk_dengan_data_lengkap()
     {
         Storage::fake('public');
 
-        $user = $this->adminUser();
+        $image = UploadedFile::fake()->create('produk.jpg', 100, 'image/jpeg');
 
-        $response = $this->actingAs($user)->post(route('admin.products.store'), [
-            'name' => 'Produk Test',
-            'description' => 'Deskripsi produk',
-            'price' => 10000,
-            'rental_price' => 5000,
-            'stock' => 10,
-            'image' => UploadedFile::fake()->create('product.jpg', 100, 'image/jpeg'),
-        ]);
+        $response = $this->actingAs($this->adminUser())
+            ->post(route('admin.products.store'), [
+                'name' => 'Produk A',
+                'description' => 'Deskripsi lengkap produk A',
+                'price' => 150000,
+                'rental_price' => 50000,
+                'stock' => 50,
+                'image' => $image,
+            ]);
 
         $response->assertRedirect(route('welcome'));
-
+        $response->assertSessionHas('success');
         $this->assertDatabaseHas('products', [
-            'name' => 'Produk Test',
-            'price' => 10000,
+            'name' => 'Produk A',
+            'stock' => 50,
+            'price' => 150000,
         ]);
     }
 
-   public function test_can_update_product()
-{
-    Storage::fake('public');
+    /** @test */
+    public function test_admin_menambah_produk_dengan_format_gambar_tidak_valid()
+    {
+        Storage::fake('public');
 
-    $user = $this->adminUser();
+        $image = UploadedFile::fake()->create('produk.gif', 100, 'image/gif');
 
-    $product = Product::factory()->create();
+        $response = $this->actingAs($this->adminUser())
+            ->post(route('admin.products.store'), [
+                'name' => 'Produk Gagal',
+                'description' => 'Deskripsi produk gagal',
+                'price' => 150000,
+                'rental_price' => 50000,
+                'stock' => 10,
+                'image' => $image,
+            ]);
 
-    $response = $this->actingAs($user)->patch(
-    route('admin.products.update', ['product' => $product->id]),
-    [
-        'name' => 'Produk Update',
-        'description' => 'Deskripsi update',
-        'price' => 20000,
-        'rental_price' => 7000,
-        'stock' => 5,
-        'image' => UploadedFile::fake()->create('new.jpg', 100, 'image/jpeg'),
-    ]
-);
+        $response->assertSessionHasErrors(['image']);
+        $this->assertStringContainsString(
+            'Format gambar yang diunggah tidak sesuai',
+            session('errors')->get('image')[0]
+        );
+    }
 
-    $response->assertStatus(302);
+    /** @test */
+    public function test_admin_menambah_produk_tanpa_mengunggah_gambar()
+    {
+        Storage::fake('public');
 
-    $this->assertDatabaseHas('products', [
-        'id' => $product->id,
-        'name' => 'Produk Update',
-    ]);
-}
+        $response = $this->actingAs($this->adminUser())
+            ->post(route('admin.products.store'), [
+                'name' => 'Produk A',
+                'description' => 'Deskripsi lengkap produk A',
+                'price' => 150000,
+                'rental_price' => 50000,
+                'stock' => 50,
+            ]);
 
-public function test_can_delete_product()
-{
-    $user = $this->adminUser();
+        $response->assertRedirect(route('welcome'));
+        $response->assertSessionHas('success');
+        $this->assertDatabaseHas('products', [
+            'name' => 'Produk A',
+            'stock' => 50,
+            'price' => 150000,
+        ]);
+    }
 
-    $product = Product::factory()->create();
+    /** @test */
+    public function test_admin_menambah_produk_dengan_nama_produk_maksimal_100_karakter()
+    {
+        Storage::fake('public');
 
-    $response = $this->actingAs($user)->post(
-        route('admin.products.destroy', ['product' => $product->id]),
-        [
-            '_method' => 'DELETE',
-        ]
-    );
+        $name = str_repeat('A', 100);
 
-    $response->assertStatus(302);
+        $response = $this->actingAs($this->adminUser())
+            ->post(route('admin.products.store'), [
+                'name' => $name,
+                'description' => 'Deskripsi produk valid',
+                'price' => 150000,
+                'rental_price' => 50000,
+                'stock' => 10,
+            ]);
 
-    $this->assertSoftDeleted('products', [
-        'id' => $product->id,
-    ]);
-}
+        $response->assertRedirect(route('welcome'));
+        $response->assertSessionHas('success');
+        $this->assertDatabaseHas('products', ['name' => $name]);
+    }
 
-public function test_cannot_create_product_with_empty_input()
-{
-    $user = $this->adminUser();
+    /** @test */
+    public function test_admin_menambah_produk_dengan_nama_produk_melebihi_100_karakter()
+    {
+        $response = $this->actingAs($this->adminUser())
+            ->post(route('admin.products.store'), [
+                'name' => str_repeat('A', 101),
+                'description' => 'Deskripsi produk invalid',
+                'price' => 150000,
+                'rental_price' => 50000,
+                'stock' => 10,
+            ]);
 
-    $response = $this->actingAs($user)->post(route('admin.products.store'), []);
+        $response->assertSessionHasErrors(['name']);
+        $this->assertStringContainsString(
+            'Nama produk terlalu panjang',
+            session('errors')->get('name')[0]
+        );
+    }
 
-    $response->assertSessionHasErrors([
-        'name',
-        'description',
-    ]);
+    /** @test */
+    public function test_admin_menambah_produk_tanpa_mengisi_nama_produk()
+    {
+        $response = $this->actingAs($this->adminUser())
+            ->post(route('admin.products.store'), [
+                'name' => '',
+                'description' => 'Deskripsi produk kosong nama',
+                'price' => 150000,
+                'rental_price' => 50000,
+                'stock' => 10,
+            ]);
 
-    $this->assertDatabaseCount('products', 0);
-}
+        $response->assertSessionHasErrors(['name']);
+        $this->assertStringContainsString(
+            'Nama produk tidak boleh kosong',
+            session('errors')->get('name')[0]
+        );
+    }
 
-public function test_non_numeric_price_and_stock_are_normalized_to_zero()
-{
-    Storage::fake('public');
+    /** @test */
+    public function test_admin_menambah_produk_dengan_stok_melebihi_batas_maksimum_integer()
+    {
+        $response = $this->actingAs($this->adminUser())
+            ->post(route('admin.products.store'), [
+                'name' => 'Produk Stok Besar',
+                'description' => 'Deskripsi stok besar',
+                'price' => 150000,
+                'rental_price' => 50000,
+                'stock' => 2147483648,
+            ]);
 
-    $user = $this->adminUser();
+        $response->assertSessionHasErrors(['stock']);
+        $this->assertStringContainsString('Jumlah stok melebihi batas', session('errors')->get('stock')[0]);
+    }
 
-    $response = $this->actingAs($user)->post(route('admin.products.store'), [
-        'name' => 'Produk Huruf',
-        'description' => 'Deskripsi produk',
-        'price' => 'abc',
-        'rental_price' => 'xyz',
-        'stock' => 'huruf',
-    ]);
+    /** @test */
+    public function test_admin_menambah_produk_dengan_stok_bernilai_negatif()
+    {
+        $response = $this->actingAs($this->adminUser())
+            ->post(route('admin.products.store'), [
+                'name' => 'Produk Stok Negatif',
+                'description' => 'Deskripsi stok negatif',
+                'price' => 150000,
+                'rental_price' => 50000,
+                'stock' => -2,
+            ]);
 
-    $response->assertRedirect(route('welcome'));
-    $response->assertSessionHasNoErrors();
+        $response->assertSessionHasErrors(['stock']);
+        $this->assertStringContainsString('Stok tidak boleh bernilai 0 atau negatif', session('errors')->get('stock')[0]);
+    }
 
-    $this->assertDatabaseHas('products', [
-        'name' => 'Produk Huruf',
-        'price' => 0,
-        'rental_price' => 0,
-        'stock' => 0,
-    ]);
-}
+    /** @test */
+    public function test_admin_menambah_produk_dengan_stok_non_integer()
+    {
+        $response = $this->actingAs($this->adminUser())
+            ->post(route('admin.products.store'), [
+                'name' => 'Produk Stok Non Integer',
+                'description' => 'Deskripsi stok non integer',
+                'price' => 150000,
+                'rental_price' => 50000,
+                'stock' => 'budi',
+            ]);
 
-public function test_zero_or_negative_price_and_stock_values_are_rejected()
-{
-    Storage::fake('public');
+        $response->assertSessionHasErrors(['stock']);
+        $this->assertStringContainsString('Stok harus berupa bilangan bulat', session('errors')->get('stock')[0]);
+    }
 
-    $user = $this->adminUser();
+    /** @test */
+    public function test_admin_menambah_produk_dengan_harga_melebihi_batas_maksimum_integer()
+    {
+        $response = $this->actingAs($this->adminUser())
+            ->post(route('admin.products.store'), [
+                'name' => 'Produk Harga Besar',
+                'description' => 'Deskripsi harga besar',
+                'price' => 2147483648,
+                'rental_price' => 50000,
+                'stock' => 10,
+            ]);
 
-    $response = $this->actingAs($user)->post(route('admin.products.store'), [
-        'name' => 'Produk Negatif',
-        'description' => 'Deskripsi',
-        'price' => -1000,
-        'rental_price' => -500,
-        'stock' => -10,
-    ]);
+        $response->assertSessionHasErrors(['price']);
+        $this->assertStringContainsString('Nominal harga beli terlalu besar', session('errors')->get('price')[0]);
+    }
 
-    $response->assertSessionHasErrors(['price', 'rental_price', 'stock']);
+    /** @test */
+    public function test_admin_menambah_produk_dengan_harga_bernilai_0()
+    {
+        $response = $this->actingAs($this->adminUser())
+            ->post(route('admin.products.store'), [
+                'name' => 'Produk Harga Nol',
+                'description' => 'Deskripsi harga nol',
+                'price' => 0,
+                'rental_price' => 50000,
+                'stock' => 10,
+            ]);
 
-    $this->assertDatabaseMissing('products', [
-        'name' => 'Produk Negatif',
-    ]);
-}
+        $response->assertSessionHasErrors(['price']);
+        $this->assertStringContainsString('Harga beli tidak boleh bernilai 0 atau negatif', session('errors')->get('price')[0]);
+    }
 
-public function test_cannot_create_product_with_invalid_image()
-{
-    $user = $this->adminUser();
+    /** @test */
+    public function test_admin_menambah_produk_dengan_harga_non_integer()
+    {
+        $response = $this->actingAs($this->adminUser())
+            ->post(route('admin.products.store'), [
+                'name' => 'Produk Harga Non Integer',
+                'description' => 'Deskripsi harga non integer',
+                'price' => 'tono',
+                'rental_price' => 50000,
+                'stock' => 10,
+            ]);
 
-    $response = $this->actingAs($user)->post(route('admin.products.store'), [
-        'name' => 'Produk Test',
-        'description' => 'Deskripsi',
-        'price' => 10000,
-        'rental_price' => 5000,
-        'stock' => 10,
-        'image' => UploadedFile::fake()->create('file.pdf', 100),
-    ]);
+        $response->assertSessionHasErrors(['price']);
+        $this->assertStringContainsString('Harga beli harus berupa angka', session('errors')->get('price')[0]);
+    }
 
-    $response->assertSessionHasErrors('image');
+    /** @test */
+    public function test_admin_mengedit_produk_dengan_data_yang_valid()
+    {
+        $product = Product::factory()->create([
+            'name' => 'Produk Lama',
+            'description' => 'Deskripsi lama',
+            'price' => 150000,
+            'rental_price' => 50000,
+            'stock' => 10,
+        ]);
 
-    $this->assertDatabaseMissing('products', [
-        'name' => 'Produk Test',
-    ]);
-}
+        $response = $this->actingAs($this->adminUser())
+            ->put(route('admin.products.update', $product), [
+                'name' => 'Produk A',
+                'description' => 'Deskripsi diperbarui',
+                'price' => 200000,
+                'rental_price' => 60000,
+                'stock' => 50,
+            ]);
 
-public function test_cannot_update_product_with_invalid_data()
-{
-    $user = $this->adminUser();
+        $response->assertRedirect(route('admin.products.index'));
+        $this->assertDatabaseHas('products', [
+            'id' => $product->id,
+            'name' => 'Produk A',
+            'stock' => 50,
+            'price' => 200000,
+        ]);
+    }
 
-    $product = Product::factory()->create();
+    /** @test */
+    public function test_admin_mengedit_produk_dengan_format_gambar_tidak_valid()
+    {
+        $product = Product::factory()->create([
+            'name' => 'Produk Lama',
+            'description' => 'Deskripsi lama',
+            'price' => 150000,
+            'rental_price' => 50000,
+            'stock' => 10,
+        ]);
 
-    $response = $this->actingAs($user)->patch(
-        route('admin.products.update', ['product' => $product->id]),
-        [
-            'name' => '',
-            'description' => '',
-            'price' => -500,
-            'rental_price' => 0,
-            'stock' => 0,
-        ]
-    );
+        $image = UploadedFile::fake()->create('produk.gif', 100, 'image/gif');
 
-    $response->assertSessionHasErrors([
-        'name',
-        'description',
-    ]);
+        $response = $this->actingAs($this->adminUser())
+            ->put(route('admin.products.update', $product), [
+                'name' => 'Produk A',
+                'description' => 'Deskripsi diperbarui',
+                'price' => 200000,
+                'rental_price' => 60000,
+                'stock' => 50,
+                'image' => $image,
+            ]);
 
-    $this->assertDatabaseHas('products', [
-        'id' => $product->id,
-        'name' => $product->name,
-    ]);
-}
+        $response->assertSessionHasErrors(['image']);
+        $this->assertStringContainsString('Format gambar yang diunggah tidak sesuai', session('errors')->get('image')[0]);
+    }
 
+    /** @test */
+    public function test_admin_mengedit_produk_tanpa_mengunggah_gambar_baru()
+    {
+        $product = Product::factory()->create([
+            'name' => 'Produk Lama',
+            'description' => 'Deskripsi lama',
+            'price' => 150000,
+            'rental_price' => 50000,
+            'stock' => 10,
+            'image' => 'products/old.jpg',
+        ]);
+
+        $response = $this->actingAs($this->adminUser())
+            ->put(route('admin.products.update', $product), [
+                'name' => 'Produk Baru',
+                'description' => 'Deskripsi baru',
+                'price' => 180000,
+                'rental_price' => 55000,
+                'stock' => 15,
+            ]);
+
+        $response->assertRedirect(route('admin.products.index'));
+        $this->assertDatabaseHas('products', [
+            'id' => $product->id,
+            'name' => 'Produk Baru',
+            'image' => 'products/old.jpg',
+        ]);
+    }
+
+    /** @test */
+    public function test_admin_mengedit_produk_dengan_nama_produk_valid_1_100_karakter()
+    {
+        $product = Product::factory()->create(['name' => 'Produk Lama']);
+
+        $response = $this->actingAs($this->adminUser())
+            ->put(route('admin.products.update', $product), [
+                'name' => 'A',
+                'description' => 'Deskripsi',
+                'price' => 150000,
+                'rental_price' => 50000,
+                'stock' => 10,
+            ]);
+
+        $response->assertRedirect(route('admin.products.index'));
+        $this->assertDatabaseHas('products', ['id' => $product->id, 'name' => 'A']);
+    }
+
+    /** @test */
+    public function test_admin_mengedit_produk_dengan_nama_produk_melebihi_100_karakter()
+    {
+        $product = Product::factory()->create(['name' => 'Produk Lama']);
+
+        $response = $this->actingAs($this->adminUser())
+            ->put(route('admin.products.update', $product), [
+                'name' => str_repeat('A', 101),
+                'description' => 'Deskripsi',
+                'price' => 150000,
+                'rental_price' => 50000,
+                'stock' => 10,
+            ]);
+
+        $response->assertSessionHasErrors(['name']);
+        $this->assertStringContainsString('Nama produk terlalu panjang', session('errors')->get('name')[0]);
+    }
+
+    /** @test */
+    public function test_admin_mengedit_produk_tanpa_mengisi_nama_produk()
+    {
+        $product = Product::factory()->create(['name' => 'Produk Lama']);
+
+        $response = $this->actingAs($this->adminUser())
+            ->put(route('admin.products.update', $product), [
+                'name' => '',
+                'description' => 'Deskripsi',
+                'price' => 150000,
+                'rental_price' => 50000,
+                'stock' => 10,
+            ]);
+
+        $response->assertSessionHasErrors(['name']);
+        $this->assertStringContainsString('Nama produk tidak boleh kosong', session('errors')->get('name')[0]);
+    }
+
+    /** @test */
+    public function test_admin_mengedit_produk_dengan_stok_melebihi_batas_maksimum_integer()
+    {
+        $product = Product::factory()->create(['name' => 'Produk Lama']);
+
+        $response = $this->actingAs($this->adminUser())
+            ->put(route('admin.products.update', $product), [
+                'name' => 'Produk Edit Stok Besar',
+                'description' => 'Deskripsi stok besar',
+                'price' => 150000,
+                'rental_price' => 50000,
+                'stock' => 2147483648,
+            ]);
+
+        $response->assertSessionHasErrors(['stock']);
+        $this->assertStringContainsString('Jumlah stok melebihi batas', session('errors')->get('stock')[0]);
+    }
+
+    /** @test */
+    public function test_admin_mengedit_produk_dengan_stok_bernilai_0_atau_negatif()
+    {
+        $product = Product::factory()->create(['name' => 'Produk Lama']);
+
+        $response = $this->actingAs($this->adminUser())
+            ->put(route('admin.products.update', $product), [
+                'name' => 'Produk Edit Stok Nol',
+                'description' => 'Deskripsi stok nol',
+                'price' => 150000,
+                'rental_price' => 50000,
+                'stock' => -1,
+            ]);
+
+        $response->assertSessionHasErrors(['stock']);
+        $this->assertStringContainsString('Stok tidak boleh bernilai 0 atau negatif', session('errors')->get('stock')[0]);
+    }
+
+    /** @test */
+    public function test_admin_mengedit_produk_dengan_stok_non_integer()
+    {
+        $product = Product::factory()->create(['name' => 'Produk Lama']);
+
+        $response = $this->actingAs($this->adminUser())
+            ->put(route('admin.products.update', $product), [
+                'name' => 'Produk Edit Stok Non Integer',
+                'description' => 'Deskripsi stok non integer',
+                'price' => 150000,
+                'rental_price' => 50000,
+                'stock' => 'budi',
+            ]);
+
+        $response->assertSessionHasErrors(['stock']);
+        $this->assertStringContainsString('Stok harus berupa bilangan bulat', session('errors')->get('stock')[0]);
+    }
+
+    /** @test */
+    public function test_admin_mengedit_produk_dengan_harga_melebihi_batas_maksimum_integer()
+    {
+        $product = Product::factory()->create(['name' => 'Produk Lama']);
+
+        $response = $this->actingAs($this->adminUser())
+            ->put(route('admin.products.update', $product), [
+                'name' => 'Produk Edit Harga Besar',
+                'description' => 'Deskripsi harga besar',
+                'price' => 2147483648,
+                'rental_price' => 50000,
+                'stock' => 10,
+            ]);
+
+        $response->assertSessionHasErrors(['price']);
+        $this->assertStringContainsString('Nominal harga beli terlalu besar', session('errors')->get('price')[0]);
+    }
+
+    /** @test */
+    public function test_admin_mengedit_produk_dengan_harga_bernilai_0_atau_negatif()
+    {
+        $product = Product::factory()->create(['name' => 'Produk Lama']);
+
+        $response = $this->actingAs($this->adminUser())
+            ->put(route('admin.products.update', $product), [
+                'name' => 'Produk Edit Harga Nol',
+                'description' => 'Deskripsi harga nol',
+                'price' => -1,
+                'rental_price' => 50000,
+                'stock' => 10,
+            ]);
+
+        $response->assertSessionHasErrors(['price']);
+        $this->assertStringContainsString('Harga beli tidak boleh bernilai 0 atau negatif', session('errors')->get('price')[0]);
+    }
+
+    /** @test */
+    public function test_admin_mengedit_produk_dengan_harga_non_integer()
+    {
+        $product = Product::factory()->create(['name' => 'Produk Lama']);
+
+        $response = $this->actingAs($this->adminUser())
+            ->put(route('admin.products.update', $product), [
+                'name' => 'Produk Edit Harga Non Integer',
+                'description' => 'Deskripsi harga non integer',
+                'price' => 'budi',
+                'rental_price' => 50000,
+                'stock' => 10,
+            ]);
+
+        $response->assertSessionHasErrors(['price']);
+        $this->assertStringContainsString('Harga beli harus berupa angka', session('errors')->get('price')[0]);
+    }
 }

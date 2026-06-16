@@ -21,6 +21,7 @@ return new class extends Migration
     $table->string('province');
     $table->string('city');
     $table->string('district');
+    $table->string('address');
     $table->string('postal_code');
     $table->date('rent_start')->nullable();
     $table->date('rent_end')->nullable();
@@ -33,6 +34,10 @@ return new class extends Migration
                 'paid',
                 'rejected'
             ])->default('pending');
+    $table->enum('return_status', [
+            'not_returned',
+            'returned'
+        ])->nullable();
     $table->timestamps();
 });
 }

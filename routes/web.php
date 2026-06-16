@@ -40,24 +40,45 @@ Route::middleware('auth')->group(function () {
         Route::post('/kelola-hero-section', [KelolaHeroSectionController::class, 'update'])->name('hero-section.update');
 
         Route::get('/orders', [OrderController::class, 'index'])
-        ->name('orders.index');
+            ->name('orders.index');
         Route::get('/orders/{order}', [OrderController::class, 'show'])
-        ->name('orders.show');
+            ->name('orders.show');
         Route::delete('/orders/{order}', [OrderController::class, 'destroy'])
-        ->name('orders.destroy');
-        Route::patch('/orders/{order}/status',[OrderController::class, 'updateStatus'])
-        ->name('orders.updateStatus');
+            ->name('orders.destroy');
+        Route::patch('/orders/{order}/status', [OrderController::class, 'updateStatus'])
+            ->name('orders.updateStatus');
+        Route::patch('/orders/{order}/return-status',[OrderController::class, 'updateReturnStatus']
+        )->name('orders.updateReturnStatus');
     });
 
 });
 Route::resource('faqs', FaqController::class);
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
 
 //Route untuk keranjang
 Route::post('/keranjang/add/{product}', [KeranjangController::class, 'add'])->name('keranjang.add');
 Route::post('/keranjang/remove/{id}', [KeranjangController::class, 'remove'])->name('keranjang.remove');
 Route::post('/keranjang/update/{id}', [KeranjangController::class, 'update'])
     ->name('keranjang.update');
+Route::get('/testing/clear-cart', function () {session()->forget('keranjang');});
+// untuk kebutuhan cypress
+Route::get('/testing/fill-cart', function () {
+
+    session([
+        'keranjang' => [
+            [
+                'id' => 1,
+                'name' => 'Produk Test',
+                'price' => 100000,
+                'rental_price' => 50000,
+                'qty' => 1,
+            ]
+        ]
+    ]);
+
+    return redirect()->route('checkout.buy');
+});
+
 
 //Route untuk checkout
 Route::get('/checkout/buy', [CheckoutController::class, 'buyForm'])->name('checkout.buy');

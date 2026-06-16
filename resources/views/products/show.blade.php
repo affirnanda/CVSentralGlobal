@@ -6,6 +6,8 @@
     <title>{{ $product->name }} - CV Solusi Sentra Global Indo</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css"/>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+
 </head>
 <body class="bg-[#F3F4F6] text-gray-800">
 
@@ -143,7 +145,9 @@
         @endforelse
 
     </div>
-
+    @php
+        $jumlahItem = collect($keranjang)->sum('qty');
+    @endphp
     <!-- Footer -->
     <div class="border-t p-4">
 
@@ -155,14 +159,22 @@
 
         <div class="space-y-3">
 
-            <a href="{{ route('checkout.buy') }}"
-            class="block w-full bg-purple-400 hover:bg-purple-500 text-white py-3 rounded-lg text-center font-bold relative z-50">
-            Beli
+            <a id="btn-buy"
+            href="{{ $jumlahItem > 0 ? route('checkout.buy') : '#' }}"
+            class="checkout-btn block w-full py-3 rounded-lg text-center font-bold relative z-50
+            {{ $jumlahItem > 0
+                ? 'bg-purple-400 hover:bg-purple-500 text-white'
+                : 'bg-gray-300 text-gray-500 cursor-not-allowed pointer-events-none' }}">
+                Beli
             </a>
 
-            <a href="{{ route('checkout.rent') }}"
-            class="block w-full bg-purple-400 hover:bg-purple-500 text-white py-3 rounded-lg text-center font-bold relative z-50">
-            Sewa
+            <a id="btn-rent"
+            href="{{ $jumlahItem > 0 ? route('checkout.rent') : '#' }}"
+            class="checkout-btn block w-full py-3 rounded-lg text-center font-bold relative z-50
+            {{ $jumlahItem > 0
+                ? 'bg-purple-400 hover:bg-purple-500 text-white'
+                : 'bg-gray-300 text-gray-500 cursor-not-allowed pointer-events-none' }}">
+                Sewa
             </a>
         </div>
 
@@ -193,8 +205,8 @@
                         Harga Sewa: IDR {{ number_format((float)($product->rental_price ?? 0), 0, ',', '.') }}
                     </p>
                 </div>
-                <p class="text-sm text-gray-500 mb-2">Stock: {{ $product->stock }}</p>
-                @if($product->stock <= 0)
+                <p class="text-sm text-gray-500 mb-2">Stok tersisa: {{ $product->available_stock }}</p>
+                @if($product->available_stock <= 0)
                     <p class="text-sm text-red-500 font-semibold mb-4">Stok produk habis</p>
                 @endif
                 <p class="text-sm text-gray-500 leading-relaxed">{{ $product->description }}</p>
@@ -205,13 +217,18 @@
 <div class="flex flex-col gap-3">
 
     <!-- Tambahkan ke Keranjang -->
-    <form action="{{ route('keranjang.add', $product) }}" method="POST">
+    <form action="{{ route('keranjang.add', $product) }}" method="POST" class="flex flex-col gap-3 md:flex-row md:items-center">
         @csrf
 
+        <label class="text-sm text-gray-600 flex items-center gap-2">
+            Qty
+            <input type="number" name="qty" value="1" min="1" max="{{ max(1, $product->available_stock) }}" class="w-20 border border-gray-300 rounded-lg px-3 py-2 text-sm" {{ $product->available_stock <= 0 ? 'disabled' : '' }}>
+        </label>
+
         <button type="submit"
-            class="w-full {{ $product->stock <= 0 ? 'bg-gray-300 text-gray-600 cursor-not-allowed' : 'bg-purple-400 hover:bg-purple-500 text-white' }} py-3 rounded-xl font-bold shadow-md transition hover:scale-[1.02]"
-            {{ $product->stock <= 0 ? 'disabled' : '' }}>
-            {{ $product->stock <= 0 ? 'Stok Habis' : 'Tambahkan ke Keranjang' }}
+            class="w-full {{ $product->available_stock <= 0 ? 'bg-gray-300 text-gray-600 cursor-not-allowed' : 'bg-purple-400 hover:bg-purple-500 text-white' }} py-3 rounded-xl font-bold shadow-md transition hover:scale-[1.02]"
+            {{ $product->available_stock <= 0 ? 'disabled' : '' }}>
+            {{ $product->available_stock <= 0 ? 'Stok Habis' : 'Tambahkan ke Keranjang' }}
         </button>
     </form>
 
@@ -233,7 +250,11 @@
                     <div class="text-orange-500 font-bold text-xs">
                         IDR {{ number_format((float)$item->price, 0, ',', '.') }}
                     </div>
-                    <p class="text-[10px] text-gray-500 mt-1">Stock: {{ $item->stock }}</p>
+                    @if($item->available_stock <= 0)
+                        <p class="text-[10px] text-red-500 font-semibold mt-1">Stok produk habis</p>
+                    @else
+                        <p class="text-[10px] text-gray-500 mt-1">Stok tersisa: {{ $item->available_stock }}</p>
+                    @endif
                 </a>
                 @endforeach
             </div>
@@ -294,6 +315,43 @@ function updateCart(id, change)
             qty += change;
             if(qty <= 0) {
                 document.getElementById(`cart-item-${id}`).remove();
+                const remainingItems =
+        document.querySelectorAll('[id^="cart-item-"]').length;
+
+    if(remainingItems === 0) {
+
+        const buyBtn = document.getElementById('btn-buy');
+        const rentBtn = document.getElementById('btn-rent');
+
+        buyBtn.href = '#';
+        rentBtn.href = '#';
+
+        buyBtn.classList.remove(
+            'bg-purple-400',
+            'hover:bg-purple-500',
+            'text-white'
+        );
+
+        rentBtn.classList.remove(
+            'bg-purple-400',
+            'hover:bg-purple-500',
+            'text-white'
+        );
+
+        buyBtn.classList.add(
+            'bg-gray-300',
+            'text-gray-500',
+            'cursor-not-allowed',
+            'pointer-events-none'
+        );
+
+        rentBtn.classList.add(
+            'bg-gray-300',
+            'text-gray-500',
+            'cursor-not-allowed',
+            'pointer-events-none'
+        );
+    }
             } else {
                 qtyElement.innerText = qty;
                 document.getElementById(`subtotal-${id}`).innerText =

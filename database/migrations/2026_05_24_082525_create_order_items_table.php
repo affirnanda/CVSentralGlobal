@@ -22,6 +22,7 @@ return new class extends Migration
                 $table->string('product_name');
                 $table->bigInteger('price');
                 $table->integer('qty');
+                $table->boolean('stock_returned')->default(false);
                 $table->bigInteger('subtotal');
                 $table->timestamps();
         });

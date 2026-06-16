@@ -1,5 +1,5 @@
+<head>@vite(['resources/css/app.css', 'resources/js/app.js'])</head>
 <x-app-layout>
-
     <x-slot name="header">
         <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
 
@@ -19,10 +19,11 @@
                 <select name="type"
                         class="border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
 
-                    <option value="">
+                    <option value=""
+                    {{ request('type') == '' ? 'selected' : '' }}>
                         Semua Type
                     </option>
-
+                    
                     <option value="buy"
                         {{ request('type') == 'buy' ? 'selected' : '' }}>
                         Pembelian
@@ -42,7 +43,7 @@
                         Semua Status
                     </option>
 
-                    <option value="pending"
+                    <option value="pending" class="text-white"
                         {{ request('status') == 'pending' ? 'selected' : '' }}>
                         Pending
                     </option>
@@ -118,6 +119,10 @@
 
                                         <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                                             Status
+                                        </th>
+
+                                        <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                                            Status Pengembalian
                                         </th>
 
                                         <th class="px-6 py-4 text-center text-xs font-semibold text-gray-500 dark:text-gray-300 uppercase tracking-wider">
@@ -217,6 +222,41 @@
                                                 @endif
 
                                             </td>
+
+                                            <td class="px-6 py-5">
+
+                                            @if($order->type == 'rent')
+
+                                                <form action="{{ route('admin.orders.updateReturnStatus', $order) }}"
+                                                    method="POST">
+                                                    @csrf
+                                                    @method('PATCH')
+
+                                                    <select name="return_status"
+                                                            onchange="this.form.submit()"
+                                                            @disabled($order->status == 'rejected' || $order->return_status == 'returned')
+                                                            class="border-gray-300 rounded-lg text-sm">
+
+                                                        <option value="not_returned"
+                                                            {{ $order->return_status == 'not_returned' ? 'selected' : '' }}>
+                                                            Belum Dikembalikan
+                                                        </option>
+
+                                                        <option value="returned"
+                                                            {{ $order->return_status == 'returned' ? 'selected' : '' }}>
+                                                            Sudah Dikembalikan
+                                                        </option>
+
+                                                    </select>
+                                                </form>
+
+                                            @else
+
+                                                <span class="text-gray-400 text-sm">-</span>
+
+                                            @endif
+
+                                        </td>
 
                                             <td class="px-6 py-5 text-center">
 

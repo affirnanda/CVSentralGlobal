@@ -7,16 +7,12 @@ use Illuminate\Http\Request;
 
 class TestimonialController extends Controller
 {
-    // ─── ADMIN ────────────────────────────────────────────────────────────────
-
-    /** Daftar semua testimoni di panel admin */
     public function index()
     {
         $testimonials = Testimonial::latest()->paginate(15);
         return view('admin.testimonials.index', compact('testimonials'));
     }
 
-    /** Toggle approve/reject testimoni */
     public function approve(Testimonial $testimonial)
     {
         $testimonial->update(['is_approved' => !$testimonial->is_approved]);
@@ -24,25 +20,23 @@ class TestimonialController extends Controller
         return back()->with('success', "Testimoni berhasil {$status}.");
     }
 
-    /** Hapus testimoni */
     public function destroy(Testimonial $testimonial)
     {
         $testimonial->delete();
         return back()->with('success', 'Testimoni berhasil dihapus.');
     }
 
-    // ─── PUBLIC (Landing Page) ─────────────────────────────────────────────────
-
-    /** Simpan testimoni dari form landing page */
     public function store(Request $request)
     {
         $request->validate([
             'name'    => 'required|string|max:100',
-            'message' => 'required|string|max:500',
+            'message' => 'required|string|max:200',
             'rating'  => 'required|integer|min:1|max:5',
         ], [
-            'name.required'    => 'Nama wajib diisi.',
-            'message.required' => 'Pesan testimoni wajib diisi.',
+            'name.required'    => 'Silahkan isi nama anda',
+            'name.max'         => 'Penulisan nama terlalu panjang',
+            'message.required' => 'Silahkan isi pesan testimoni',
+            'message.max'      => 'Pesan testimoni terlalu panjang',
             'rating.required'  => 'Rating wajib dipilih.',
         ]);
 
@@ -50,7 +44,7 @@ class TestimonialController extends Controller
             'name'        => $request->name,
             'message'     => $request->message,
             'rating'      => $request->rating,
-            'is_approved' => false, // menunggu persetujuan admin
+            'is_approved' => false,
         ]);
 
         return back()->with('success', 'Terima kasih Telah mengisi Testimoni');

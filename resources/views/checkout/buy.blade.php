@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Checkout Pembelian</title>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     <script src="https://cdn.tailwindcss.com"></script>
 
@@ -82,7 +83,7 @@
                             <input type="email" name="email"
                                 value="{{ old('email') }}"
                                 class="w-full border rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-purple-400"
-                                @error('email') border-red-500 @enderror"
+                                @error('email') border-red-500 @enderror"   
                                 placeholder="Masukkan email">
 
                                 @error('email')
@@ -175,6 +176,24 @@
                             {{ $message }}
                             </p>
                             @enderror
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-semibold mb-2">
+                                Alamat
+                            </label>
+
+                            <input type="text" name="address" 
+                            value="{{ old('address') }}"
+                            class="w-full border rounded-xl px-4 py-3"
+                             @error('address') border-red-500 @enderror
+                            placeholder="Alamat">
+                        
+                        @error('address')
+                        <p class="text-red-500 text-sm mt-2">
+                        {{ $message }}
+                        </p>
+                        @enderror
                         </div>
 
                         {{-- POSTAL CODE --}}
@@ -340,9 +359,9 @@
 
             let id = $(this).find(':selected').data('id');
 
-            $('#city').html('<option>Pilih Kota</option>');
+            $('#city').html('<option value="">Pilih Kota</option>');
 
-            $('#district').html('<option>Pilih Kecamatan</option>');
+            $('#district').html('<option value="">Pilih Kecamatan</option>');
 
             $.get(`https://api.binderbyte.com/wilayah/kabupaten?api_key=${apiKey}&id_provinsi=${id}`,
                 function (result) {
@@ -365,7 +384,7 @@
 
             let id = $(this).find(':selected').data('id');
 
-            $('#district').html('<option>Pilih Kecamatan</option>');
+            $('#district').html('<option value="">Pilih Kecamatan</option>');
 
             $.get(`https://api.binderbyte.com/wilayah/kecamatan?api_key=${apiKey}&id_kabupaten=${id}`,
                 function (result) {

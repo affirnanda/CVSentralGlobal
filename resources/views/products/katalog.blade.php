@@ -10,9 +10,13 @@
         .product-hover:hover { transform: scale(1.05); }
         html { scroll-behavior: smooth; }
     </style>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+
 </head>
 <body class="bg-[#F3F4F6] text-gray-800">
-
+    @php
+    $jumlahItem = collect($keranjang)->sum('qty');
+    @endphp
     @php
         use Illuminate\Support\Facades\Storage;
         $defaultImage = 'data:image/svg+xml;base64,' . base64_encode('<svg xmlns="http://www.w3.org/2000/svg" width="300" height="300" viewBox="0 0 300 300"><rect fill="#F3F4F6" width="100%" height="100%"/><g transform="translate(0, -5)"><circle cx="150" cy="135" r="28" fill="#E5E7EB"/><path d="M139 131h22m-11-11v22" stroke="#9CA3AF" stroke-width="3" stroke-linecap="round"/><text x="50%" y="195" dominant-baseline="middle" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="12" font-weight="600" fill="#9CA3AF" letter-spacing="0.5">SENTRAL GLOBAL INDO</text></g></svg>');
@@ -99,13 +103,19 @@
             </div>
 
             <div class="space-y-3">
-            <a href="{{ route('checkout.buy') }}"
-            class="block w-full bg-purple-500 hover:bg-purple-600 text-white py-3 rounded-lg text-center font-bold transition">
+            <a href="{{ $jumlahItem > 0 ? route('checkout.buy') : '#' }}"
+            class="checkout-btn block w-full py-3 rounded-lg text-center font-bold relative z-50
+            {{ $jumlahItem > 0
+                ? 'bg-purple-400 hover:bg-purple-500 text-white'
+                : 'bg-gray-300 text-gray-500 cursor-not-allowed pointer-events-none' }}">
             Beli
             </a>
 
-            <a href="{{ route('checkout.rent') }}"
-            class="block w-full bg-purple-500 hover:bg-purple-600 text-white py-3 rounded-lg text-center font-bold transition">
+            <a href="{{ $jumlahItem > 0 ? route('checkout.rent') : '#' }}"
+            class="checkout-btn block w-full py-3 rounded-lg text-center font-bold relative z-50
+            {{ $jumlahItem > 0
+                ? 'bg-purple-400 hover:bg-purple-500 text-white'
+                : 'bg-gray-300 text-gray-500 cursor-not-allowed pointer-events-none' }}">
             Sewa
             </a>
             </div>
@@ -136,17 +146,18 @@
     <div class="flex justify-between items-center">
         <div>
             <span class="text-purple-600 font-bold text-sm">IDR {{ number_format((float)$product->price, 0, ',', '.') }}</span>
-            @if($product->stock <= 0)
+            @if($product->available_stock <= 0)
                 <p class="text-[10px] text-red-500 font-semibold">Stok produk habis</p>
             @else
-                <p class="text-[10px] text-gray-500">Stock: {{ $product->stock }}</p>
+                <p class="text-[10px] text-gray-500">Stok tersisa: {{ $product->available_stock }}</p>
             @endif
         </div>
-        <form action="{{ route('keranjang.add', $product) }}" method="POST">
+        <form action="{{ route('keranjang.add', $product) }}" method="POST" class="flex items-center gap-2">
             @csrf
-            <button type="submit" class="flex items-center justify-center w-10 h-10 rounded-lg transition {{ $product->stock <= 0 ? 'bg-gray-300 text-gray-500 cursor-not-allowed' : 'bg-purple-100 text-purple-600 hover:bg-purple-600 hover:text-white' }}"
-                {{ $product->stock <= 0 ? 'disabled' : '' }}>
-                @if($product->stock <= 0)
+            <input type="number" name="qty" value="1" min="1" max="{{ max(1, $product->available_stock) }}" class="w-14 border border-gray-300 rounded-lg px-2 py-1 text-xs" {{ $product->available_stock <= 0 ? 'disabled' : '' }}>
+            <button type="submit" class="flex items-center justify-center w-10 h-10 rounded-lg transition {{ $product->available_stock <= 0 ? 'bg-gray-300 text-gray-500 cursor-not-allowed' : 'bg-purple-100 text-purple-600 hover:bg-purple-600 hover:text-white' }}"
+                {{ $product->available_stock <= 0 ? 'disabled' : '' }}>
+                @if($product->available_stock <= 0)
                     <span class="text-[10px]">Habis</span>
                 @else
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">

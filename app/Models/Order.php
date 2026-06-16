@@ -15,12 +15,14 @@ class Order extends Model
         'province',
         'city',
         'district',
+        'address',
         'postal_code',
         'rent_start',
         'rent_end',
         'payment_method_id',
         'total',
         'status',
+        'return_status',
     ];
 
     public function items()

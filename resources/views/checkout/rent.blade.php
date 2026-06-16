@@ -9,6 +9,7 @@
 <script src="https://cdn.tailwindcss.com"></script>
 
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+@vite(['resources/css/app.css', 'resources/js/app.js'])
 
 </head>
 
@@ -34,7 +35,7 @@
         </a>
     </div>
 
-<form action="{{ route('checkout.process') }}" method="POST" nonvalidate>
+<form action="{{ route('checkout.process') }}" method="POST" novalidate>
 
 @csrf
 
@@ -173,6 +174,24 @@
                             @enderror
                         </div>
 
+                        <div>
+                            <label class="block text-sm font-semibold mb-2">
+                                Alamat
+                            </label>
+
+                            <input type="text" name="address" 
+                            value="{{ old('address') }}"
+                            class="w-full border rounded-xl px-4 py-3"
+                             @error('address') border-red-500 @enderror
+                            placeholder="Alamat">
+                        
+                        @error('address')
+                        <p class="text-red-500 text-sm mt-2">
+                        {{ $message }}
+                        </p>
+                        @enderror
+                        </div>
+
                         {{-- POSTAL CODE --}}
                         <div>
                             <label class="block text-sm font-semibold mb-2">
@@ -245,7 +264,7 @@
             @foreach($keranjang as $item)
 
                 @php
-                    $subtotal = $item['price'] * $item['qty'];
+                    $subtotal = $item['rental_price'] * $item['qty'];
                     $total += $subtotal;
                 @endphp
 
@@ -262,7 +281,7 @@
                     </div>
 
                     <div class="font-bold text-sm">
-                        Rp {{ number_format($subtotal,0,',','.') }}
+                        Rp {{ number_format($item['rental_price'],0,',','.') }}/hari
                     </div>
 
                 </div>
@@ -273,13 +292,20 @@
 
         <div class="flex justify-between items-center py-5 border-b">
 
-            <span class="font-bold text-lg">
-                Total
-            </span>
+         <span class="font-bold text-lg">
+            Total Rental
+        </span>
 
-            <span class="font-bold text-xl text-purple-600">
-                Rp {{ number_format($total,0,',','.') }}
-            </span>
+        <div class="text-right">
+        <div>
+            Lama Sewa :
+            <span id="rental-days">0</span> hari
+        </div>
+
+        <span id="rental-total" class="font-bold text-xl text-purple-600">
+            Rp 0
+        </span>
+    </div>
 
         </div>
 
@@ -371,9 +397,9 @@ $('#province').change(function(){
 
     let id = $(this).find(':selected').data('id');
 
-    $('#city').html('<option>Pilih Kota</option>');
+    $('#city').html('<option value="">Pilih Kota</option>');
 
-    $('#district').html('<option>Pilih Kecamatan</option>');
+    $('#district').html('<option value="">Pilih Kecamatan</option>');
 
     $.get(`https://api.binderbyte.com/wilayah/kabupaten?api_key=${apiKey}&id_provinsi=${id}`,
     function(result){
@@ -394,7 +420,7 @@ $('#province').change(function(){
 
 $('#city').change(function(){
     let id = $(this).find(':selected').data('id');
-    $('#district').html('<option>Pilih Kecamatan</option>');
+    $('#district').html('<option value="">Pilih Kecamatan</option>');
     $.get(`https://api.binderbyte.com/wilayah/kecamatan?api_key=${apiKey}&id_kabupaten=${id}`,
     function(result){
         $.each(result.value, function(i, kecamatan){
@@ -418,6 +444,51 @@ rentStart.addEventListener('change', function() {
     }
 });
 
+const cartItems = @json($keranjang);
+function updateRentalSummary() {
+
+    let start = document.getElementById('rent_start').value;
+    let end = document.getElementById('rent_end').value;
+
+    if (!start || !end) {
+        return;
+    }
+
+    let startDate = new Date(start);
+    let endDate = new Date(end);
+
+    let diffTime = endDate.getTime() - startDate.getTime();
+
+    let days = Math.ceil(
+        diffTime / (1000 * 60 * 60 * 24)
+    );
+
+    if (days < 1) {
+        days = 1;
+    }
+
+    let total = 0;
+
+    Object.values(cartItems).forEach(item => {
+
+    total += item.rental_price * item.qty * days;
+
+});
+
+    document.getElementById('rental-days').innerText = days;
+
+    document.getElementById('rental-total').innerText =
+        'Rp ' + total.toLocaleString('id-ID');
+}
+document.getElementById('rent_start')
+    .addEventListener('change', updateRentalSummary);
+
+document.getElementById('rent_end')
+    .addEventListener('change', updateRentalSummary);
+
+window.addEventListener('load', function () {
+    updateRentalSummary();
+});
 </script>
 </body>
 </html>
