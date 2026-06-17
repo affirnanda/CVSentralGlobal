@@ -24,7 +24,7 @@ describe('TC-BF-8R', () => {
         cy.get('button[type="submit"]')
             .click();
 
-        cy.contains('Silahkan pilih Kecamatan anda')
+        cy.contains('Silahkan pilih kecamatan anda')
             .should('exist');
     });
 

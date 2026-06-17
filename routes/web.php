@@ -60,8 +60,9 @@ Route::post('/keranjang/add/{product}', [KeranjangController::class, 'add'])->na
 Route::post('/keranjang/remove/{id}', [KeranjangController::class, 'remove'])->name('keranjang.remove');
 Route::post('/keranjang/update/{id}', [KeranjangController::class, 'update'])
     ->name('keranjang.update');
-Route::get('/testing/clear-cart', function () {session()->forget('keranjang');});
+    
 // untuk kebutuhan cypress
+Route::get('/testing/clear-cart', function () {session()->forget('keranjang');});
 Route::get('/testing/fill-cart', function () {
 
     session([
@@ -77,6 +78,23 @@ Route::get('/testing/fill-cart', function () {
     ]);
 
     return redirect()->route('checkout.buy');
+});
+
+Route::get('/testing/isi-cart', function () {
+
+    session([
+        'keranjang' => [
+            [
+                'id' => 1,
+                'name' => 'Produk Test',
+                'price' => 100000,
+                'rental_price' => 50000,
+                'qty' => 1,
+            ]
+        ]
+    ]);
+
+    return redirect()->route('checkout.rent');
 });
 
 

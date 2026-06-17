@@ -39,7 +39,30 @@ Cypress.Commands.add('isiCheckoutValid', () => {
         .type('Alamat Testing');
 
     cy.get('input[name="postal_code"]')
-        .type('60234');
+        .type('60234');   
+});
 
-        
+Cypress.Commands.add('isiCheckoutRentValid', () => {
+
+    cy.isiCheckoutValid();
+
+    cy.get('#province').select('JAWA TIMUR');
+
+    cy.wait(2000);
+
+    cy.get('#city').select('KAB. SIDOARJO');
+
+    cy.wait(2000);
+
+    cy.get('#district').select('Gedangan');
+
+    cy.get('input[name="rent_start"]')
+        .type('2027-06-20');
+
+    cy.get('input[name="rent_end"]')
+        .type('2027-06-23');
+
+    cy.get('input[name="payment_method_id"]')
+        .first()
+        .check({ force: true });
 });
