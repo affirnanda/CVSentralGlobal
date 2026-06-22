@@ -25,21 +25,15 @@ describe('BF-4: Kelola FAQ', () => {
         cy.url().should('include', '/faqs/create');
 
         // 2. Admin mengisi pertanyaan dengan 100 karakter
-        // Membuat string berupa teks 'Tanya ' berulang agar terlihat natural, 
-        // atau karakter biasa hingga pas 100 karakter.
-        // Di sini kita gunakan huruf 'A' sebanyak 100 kali sebagai batas maksimal.
         const pertanyaanMaksimal = 'A'.repeat(100);
-
         cy.get('input[name="question"]').type(pertanyaanMaksimal);
 
         // Verifikasi: Pertanyaan diterima form (disimpan sementara di input field)
         cy.get('input[name="question"]').should('have.value', pertanyaanMaksimal);
 
         // *Catatan Tambahan: 
-        // Admin juga harus mengisi jawaban agar tidak terkena error validasi "answer.required" dari Laravel saat disubmit
         cy.get('textarea[name="answer"]').type('Ini adalah jawaban untuk memastikan form bisa disubmit.');
 
-        // Admin klik Simpan
         cy.get('button[type="submit"]').click();
 
         // Expected Result: Sistem menerima dan menyimpan data tanpa error validasi kepanjangan

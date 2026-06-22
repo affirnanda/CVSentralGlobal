@@ -1,11 +1,7 @@
 describe('BF-4: Kelola FAQ', () => {
     it('TC-BF-4A: Admin menambah FAQ, lalu tampil di Landing Page', () => {
-        // ==========================================
-        // FASE 1: ADMIN LOGIN & CREATE FAQ
-        // ==========================================
         cy.visit('/login');
 
-        // Login Admin
         cy.get('input[name="email"]').type('super@admin.com');
         cy.get('input[name="password"]').type('admin123');
         cy.get('button[type="submit"]').click();
@@ -33,19 +29,15 @@ describe('BF-4: Kelola FAQ', () => {
         cy.contains('FAQ berhasil ditambahkan!').should('be.visible');
         cy.contains('Bagaimana cara melakukan pemesanan?').should('be.visible');
 
-        // ==========================================
-        // FASE 2: LOGOUT (Hapus Sesi Admin)
-        // ==========================================
+        //logout sesi selesai admin
         cy.clearAllCookies();
         cy.clearAllSessionStorage();
         cy.clearAllLocalStorage();
 
-        // ==========================================
-        // FASE 3: CEK LANDING PAGE (Tanpa Login)
-        // ==========================================
+        //cek landing page
         cy.visit('/');
 
-        // 4. Verifikasi di sisi Landing Page
+        // [Verifikasi di sisi Landing Page]
         // A. Scroll layar menuju letak pertanyaan agar animasi AOS berjalan (opacity menjadi 1)
         cy.contains('Bagaimana cara melakukan pemesanan?').scrollIntoView();
 

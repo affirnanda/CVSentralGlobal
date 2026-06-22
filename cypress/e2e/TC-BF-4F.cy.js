@@ -33,13 +33,11 @@ describe('BF-4: Kelola FAQ', () => {
             .type(jawabanLebih);
 
         // 3. Admin klik Simpan
-        // Menghapus atribut 'disabled' secara paksa agar form tetap bisa dikirim
         cy.get('button[type="submit"]')
             .invoke('removeAttr', 'disabled')
             .click({ force: true });
 
         // Expected Result: Muncul error message "Jawaban terlalu panjang"
-        // Laravel akan melakukan redirect back() ke halaman form
         cy.url().should('include', '/faqs/create');
 
         // Memastikan pesan error dari FaqController benar-benar muncul di layar

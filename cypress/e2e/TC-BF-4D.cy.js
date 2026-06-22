@@ -22,8 +22,6 @@ describe('BF-4: Kelola FAQ', () => {
         cy.url().should('include', '/faqs/create');
 
         // 2. Admin tidak mengisi pertanyaan
-        // Kita memastikan input question dikosongkan dan menghapus atribut HTML5 'required'
-        // agar browser tidak memblokir proses klik Simpan sebelum mencapai backend Laravel
         cy.get('input[name="question"]')
             .clear()
             .invoke('removeAttr', 'required');
@@ -32,7 +30,6 @@ describe('BF-4: Kelola FAQ', () => {
         cy.get('textarea[name="answer"]').type('Ini adalah jawaban standar');
 
         // 3. Admin klik Simpan
-        // Menghapus 'disabled' dan melakukan 'force click' untuk menghindari validasi JS di frontend
         cy.get('button[type="submit"]')
             .invoke('removeAttr', 'disabled')
             .click({ force: true });
