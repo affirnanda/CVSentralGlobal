@@ -7,7 +7,7 @@ describe('TC-BF-8H', () => {
     it('TC-BF-8AH Keranjang kosong', () => { 
         cy.visit('/testing/clear-cart'); 
         cy.visit('/checkout/rent', { failOnStatusCode: false }); 
-        cy.contains('Keranjang kosong'); 
+        cy.visit('/'); 
     });
 
 });

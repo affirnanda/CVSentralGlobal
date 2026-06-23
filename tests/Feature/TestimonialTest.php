@@ -9,7 +9,6 @@ class TestimonialTest extends TestCase
 {
     use RefreshDatabase;
 
-    /** TC-01 */
     public function test_user_dapat_submit_testimonial()
     {
         $response = $this->post(route('testimonials.store'), [
@@ -31,7 +30,6 @@ class TestimonialTest extends TestCase
         ]);
     }
 
-    /** TC-02 */
     public function test_user_dapat_submit_testimonial_dengan_100_characters_pada_nama()
     {
         $response = $this->post(route('testimonials.store'), [
@@ -47,7 +45,6 @@ class TestimonialTest extends TestCase
         ]);
     }
 
-    /** TC-03 */
     public function test_user_tidak_dapat_submit_testimonial_dengan_nama_lebih_dari_100_characters()
     {
         $response = $this->from('/')
@@ -65,7 +62,6 @@ class TestimonialTest extends TestCase
         );
     }
 
-    /** TC-04 */
     public function test_user_tidak_dapat_submit_jika_nama_kosong()
     {
         $response = $this->from('/')
@@ -83,7 +79,6 @@ class TestimonialTest extends TestCase
         );
     }
 
-    /** TC-05 */
     public function test_user_dapat_submit_testimonial_dengan_pesan_200_characters()
     {
         $response = $this->post(route('testimonials.store'), [
@@ -99,25 +94,23 @@ class TestimonialTest extends TestCase
         ]);
     }
 
-    /** TC-06 */
     public function test_user_tidak_dapat_submit_testimonial_dengan_pesan_lebih_dari_200_characters()
     {
         $response = $this->from('/')
-        ->post(route('testimonials.store'), [
-            'name' => 'Galang',
-            'message' => str_repeat('A', 201),
-            'rating' => 5,
-        ]);
+            ->post(route('testimonials.store'), [
+                'name' => 'Galang',
+                'message' => str_repeat('A', 201),
+                'rating' => 5,
+            ]);
 
-    $response->assertSessionHasErrors('message');
+        $response->assertSessionHasErrors('message');
 
-    $this->assertEquals(
-        'Pesan testimoni terlalu panjang',
-        session('errors')->first('message')
-    );
+        $this->assertEquals(
+            'Pesan testimoni terlalu panjang',
+            session('errors')->first('message')
+        );
     }
 
-    /** TC-07 */
     public function test_user_tidak_dapat_submit_dengan_message_kosong()
     {
         $response = $this->from('/')

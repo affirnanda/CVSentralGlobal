@@ -32,7 +32,6 @@ describe('BF-4: Kelola FAQ', () => {
         cy.get('textarea[name="answer"]').type('Ini adalah jawaban standar');
 
         // 3. Admin klik Simpan
-        // SOLUSI: Hapus status 'disabled' pada tombol secara paksa agar form tetap terkirim ke backend
         cy.get('button[type="submit"]')
             .invoke('removeAttr', 'disabled')
             .click({ force: true });
