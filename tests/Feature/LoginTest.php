@@ -9,79 +9,90 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 class LoginTest extends TestCase
 {
     use RefreshDatabase;
+
     public function test_login_dengan_email_dan_password_yang_benar()
     {
         $user = User::factory()->create([
-            'email' => 'admin@example.com',
-            'password' => bcrypt('password123'),
+            'email' => 'Super@admin.com',
+            'password' => bcrypt('admin123'),
         ]);
 
         $response = $this->post('/login', [
-            'email' => 'admin@example.com',
-            'password' => 'password123',
+            'email' => 'Super@admin.com',
+            'password' => 'admin123',
         ]);
 
         $this->assertAuthenticatedAs($user);
         $response->assertRedirect(route('dashboard'));
     }
 
-    public function test_login_dengan_email_belum_terdaftar()
+    public function test_login_dengan_email_yang_tidak_terdaftar()
     {
         $response = $this->post('/login', [
-            'email' => 'notregistered@example.com',
-            'password' => 'password123',
+            'email' => 'unknown@test.com',
+            'password' => 'admin123',
         ]);
 
         $this->assertGuest();
-        $response->assertSessionHasErrors(['email']);
+        $response->assertSessionHasErrors([
+            'email' => 'Email yang dimasukkan tidak terdaftar',
+        ]);
     }
 
-    public function test_login_dengan_format_email_tidak_valid()
+    public function test_login_dengan_format_email_salah()
     {
         $response = $this->post('/login', [
-            'email' => 'invalid-email-format',
-            'password' => 'password123',
+            'email' => 'superadmin',
+            'password' => 'admin123',
         ]);
 
         $this->assertGuest();
-        $response->assertSessionHasErrors(['email']);
+        $response->assertSessionHasErrors([
+            'email' => 'Format email harus menggunakan @domain.***',
+        ]);
     }
 
-    public function test_login_tanpa_mengisi_email()
+    public function test_login_dengan_email_kosong()
     {
         $response = $this->post('/login', [
             'email' => '',
-            'password' => 'password123',
+            'password' => 'admin123',
         ]);
 
         $this->assertGuest();
-        $response->assertSessionHasErrors(['email']);
+        $response->assertSessionHasErrors([
+            'email' => 'Silahkan isi email anda',
+        ]);
     }
 
-    public function test_login_dengan_password_salah()
+    public function test_login_dengan_password_yang_salah()
     {
         $user = User::factory()->create([
-            'email' => 'admin@example.com',
-            'password' => bcrypt('password123'),
+            'email' => 'Super@admin.com',
+            'password' => bcrypt('admin123'),
         ]);
 
         $response = $this->post('/login', [
-            'email' => 'admin@example.com',
-            'password' => 'wrongpassword',
+            'email' => 'Super@admin.com',
+            'password' => 'salah123',
         ]);
 
         $this->assertGuest();
-        $response->assertSessionHasErrors(['email']);
+        $response->assertSessionHasErrors([
+            'password' => 'Password yang dimasukkan tidak sesuai',
+        ]);
     }
 
-    public function test_login_tanpa_mengisi_password()
+    public function test_login_dengan_password_kosong()
     {
         $response = $this->post('/login', [
-            'email' => 'admin@example.com',
+            'email' => 'Super@admin.com',
             'password' => '',
         ]);
 
         $this->assertGuest();
-        $response->assertSessionHasErrors(['password']);
+        $response->assertSessionHasErrors([
+            'password' => 'Silahkan isi password anda',
+        ]);
     }
 }
