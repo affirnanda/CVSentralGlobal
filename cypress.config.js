@@ -1,6 +1,7 @@
 import { defineConfig } from "cypress";
 
 export default defineConfig({
+  projectId: 'r2idex',
   allowCypressEnv: false,
 
   e2e: {
