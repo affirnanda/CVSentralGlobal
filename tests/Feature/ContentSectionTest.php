@@ -44,7 +44,7 @@ class ContentSectionTest extends TestCase
 
     /**
      * TC-BF-1H: Admin menyimpan paragraf konten section (>255 karakter)
-     * (Sengaja disisakan 1 yang FAILED sesuai permintaan untuk menunjukkan 
+    
      * bahwa sistem aplikasi saat ini tidak memiliki batasan maksimal 255 karakter)
      */
     public function test_admin_menyimpan_paragraf_konten_section_lebih_dari_255_karakter_tc_bf_1h()
@@ -57,8 +57,8 @@ class ContentSectionTest extends TestCase
 
         $response = $this->post('/admin/kelola-hero-section', $data);
 
-        // Ini akan menyebabkan FAILED (failed) karena controller aslinya mengizinkan
-        // string lebih dari 255 karakter, sedangkan Test Case mengharapkan ada error.
+        
+        // string lebih dari 255 karakter
         $response->assertSessionHasErrors('section_text');
     }
 

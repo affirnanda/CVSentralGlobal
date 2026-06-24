@@ -1,10 +1,10 @@
-describe("Admin Login E2E Tests", () => {
+describe("Admin Login E2E Tests (TC-BF-2)", () => {
     beforeEach(() => {
         cy.visit("/login");
     });
 
-    it("TC-01: Berhasil Login sebagai Admin", () => {
-        cy.get("input#email").type("super@admin.com");
+    it("TC-BF-2A: Admin login dengan email dan password yang benar", () => {
+        cy.get("input#email").type("Super@admin.com");
         cy.get("input#password").type("admin123");
 
         cy.get('button[type="submit"]').click();
@@ -12,44 +12,61 @@ describe("Admin Login E2E Tests", () => {
         cy.url().should("include", "/dashboard");
     });
 
-    it("TC-02: Gagal Login karena Format Email Tidak Valid", () => {
+    it("TC-BF-2B: Admin login dengan email yang tidak terdaftar", () => {
+        cy.get("input#email").type("unknown@test.com");
+        cy.get("input#password").type("admin123");
+
+        cy.get('button[type="submit"]').click();
+
+        cy.url().should("include", "/login");
+        cy.get(".text-red-500")
+            .should("be.visible")
+            .and("contain", "Email yang dimasukkan tidak terdaftar");
+    });
+
+    it("TC-BF-2C: Admin login dengan format email salah", () => {
         cy.get("input#email").type("superadmin");
         cy.get("input#password").type("admin123");
 
         cy.get('button[type="submit"]').click();
 
         cy.url().should("include", "/login");
-
-        cy.get(".text-red-500").should("be.visible").and("contain", "email");
+        cy.get(".text-red-500")
+            .should("be.visible")
+            .and("contain", "Format email harus menggunakan @domain.***");
     });
 
-    it("TC-03: Gagal Login karena Email Tidak Terdaftar", () => {
-        cy.get("input#email").type("tidakada@admin.com");
+    it("TC-BF-2D: Admin login dengan email kosong", () => {
         cy.get("input#password").type("admin123");
 
         cy.get('button[type="submit"]').click();
 
         cy.url().should("include", "/login");
-
-        cy.get(".text-red-500").should("be.visible");
+        cy.get(".text-red-500")
+            .should("be.visible")
+            .and("contain", "Silahkan isi email anda");
     });
 
-    it("TC-04: Gagal Login karena Password Salah", () => {
-        cy.get("input#email").type("super@admin.com");
-        cy.get("input#password").type("salahpassword");
+    it("TC-BF-2E: Admin login dengan password yang salah", () => {
+        cy.get("input#email").type("Super@admin.com");
+        cy.get("input#password").type("salah123");
 
         cy.get('button[type="submit"]').click();
 
         cy.url().should("include", "/login");
-
-        cy.get(".text-red-500").should("be.visible");
+        cy.get(".text-red-500")
+            .should("be.visible")
+            .and("contain", "Password yang dimasukkan tidak sesuai");
     });
 
-    it("TC-05: Gagal Login karena Form Kosong", () => {
+    it("TC-BF-2F: Admin login dengan password kosong", () => {
+        cy.get("input#email").type("Super@admin.com");
+
         cy.get('button[type="submit"]').click();
 
         cy.url().should("include", "/login");
-
-        cy.get(".text-red-500").should("be.visible");
+        cy.get(".text-red-500")
+            .should("be.visible")
+            .and("contain", "Silahkan isi password anda");
     });
 });
