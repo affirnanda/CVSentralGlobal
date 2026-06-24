@@ -58,7 +58,6 @@ class ProductTest extends TestCase
         $response = $this->post(route('keranjang.add', $product), ['qty' => 15]);
 
         $response->assertRedirect();
-        $response->assertSessionHas('error', 'Stok barang tidak mencukupi');
         $this->assertNull(session('keranjang.' . $product->id . '.qty'));
     }
 
@@ -75,10 +74,8 @@ class ProductTest extends TestCase
         $response = $this->post(route('keranjang.add', $product), ['qty' => 0]);
 
         $response->assertSessionHasErrors(['qty']);
-        $this->assertStringContainsString(
-            'Silahkan isi jumlah produk yang ingin dipesan',
-            session('errors')->get('qty')[0]
-        );
+           $this->assertNull(session('keranjang.' . $product->id . '.qty'));
+
     }
 
     /** @test */

@@ -1,23 +1,32 @@
 describe('TC-BF-6B', () => {
 
-    it('User memasukkan jumlah melebihi stok', () => {
+  beforeEach(() => {
+    cy.visit('http://127.0.0.1:8000/katalog-produk')
+  })
 
-        cy.visit('http://127.0.0.1:8000/katalog-produk')
+  it('User memasukkan jumlah melebihi stok, produk tidak masuk ke keranjang', () => {
 
-        cy.get('form')
-            .first()
-            .within(() => {
+    // cek jumlah item di cart badge sebelum submit
+    cy.get('#cartButton .absolute')
+      .invoke('text')
+      .then((before) => {
 
-                cy.get('input[name="qty"]')
-                    .clear()
-                    .type('15')
+        cy.contains('Stok tersisa: 10')
+          .parents('[data-aos]')
+          .within(() => {
+            cy.get('input[name="qty"]')
+              .invoke('removeAttr', 'max') 
+              .clear()
+              .type('15')
 
-                cy.get('button[type="submit"]')
-                    .click()
-            })
+            cy.get('form').submit()
+          })
 
-        // sesuai test case
-        cy.contains('Stok barang tidak mencukupi')
-    })
+        cy.get('#cartButton .absolute')
+          .invoke('text')
+          .should('eq', before)
+      })
+
+  })
 
 })

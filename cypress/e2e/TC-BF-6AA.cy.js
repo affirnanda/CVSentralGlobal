@@ -15,7 +15,7 @@ describe('TC-BF-6Z', () => {
     cy.contains('Edit').first().click()
   })
 
-  it('Admin mengedit produk tanpa mengganti gambar', () => {
+  it('Admin mengedit produk dengan harga bernilai 0 atau negatif', () => {
 
     cy.get('input[name="name"]')
       .clear()
