@@ -2,9 +2,9 @@
 <x-app-layout>
     <x-slot name="header">
         <div class="flex justify-between items-center">
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">Products</h2>
+            <h2 class="font-semibold text-xl text-white leading-tight">Products</h2>
             <a href="{{ route('admin.products.create') }}"
-               class="bg-indigo-600 text-white px-4 py-2 rounded-md text-sm hover:bg-indigo-700">
+               class="bg-purple-600 text-white px-4 py-2 rounded-md text-sm hover:bg-purple-700">
                 + Add Product
             </a>
         </div>
@@ -18,18 +18,18 @@
                 </div>
             @endif
 
-            <div class="bg-white shadow-sm sm:rounded-lg overflow-hidden">
-                <table class="min-w-full divide-y divide-gray-200">
-                    <thead class="bg-gray-50">
+            <div class="bg-white shadow-sm sm:rounded-lg overflow-hidden border border-purple-100">
+                <table class="min-w-full divide-y divide-purple-100">
+                    <thead class="bg-purple-600">
                         <tr>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Image</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Name</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Harga Beli / Sewa</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Stock</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase">Image</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase">Name</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase">Harga Beli / Sewa</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase">Stock</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase">Actions</th>
                         </tr>
                     </thead>
-                    <tbody class="bg-white divide-y divide-gray-200">
+                    <tbody class="bg-white divide-y divide-purple-100">
                         @forelse($products as $product)
                         <tr>
                             <td class="px-6 py-4">
@@ -47,7 +47,7 @@
                             <td class="px-6 py-4 text-sm text-gray-900">{{ $product->stock }}</td>
                             <td class="px-6 py-4 text-sm space-x-2">
                                 <a href="{{ route('admin.products.edit', $product) }}"
-                                   class="text-indigo-600 hover:underline">Edit</a>
+                                   class="text-purple-600 hover:underline">Edit</a>
                                 <form action="{{ route('admin.products.destroy', $product) }}" method="POST" class="inline"
                                       onsubmit="return confirm('Delete this product?')">
                                     @csrf
@@ -68,3 +68,4 @@
         </div>
     </div>
 </x-app-layout>
+

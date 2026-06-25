@@ -49,18 +49,18 @@
 
 </head>
 
-<body class="bg-[#F3F4F6] text-gray-800">
+<body class="bg-[#F3F4F6] text-black">
 
     @if(session('success'))
         <div id="flash-success"
-            class="fixed top-5 right-5 z-[9999] bg-green-500 text-white px-6 py-3 rounded-xl shadow-xl flex items-center gap-3 transition-all duration-500">
+            class="fixed top-5 right-5 z-[9999] bg-green-500 text-black px-6 py-3 rounded-xl shadow-xl flex items-center gap-3 transition-all duration-500">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24"
                 stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
             </svg>
             <span class="text-sm font-semibold">{{ session('success') }}</span>
             <button onclick="document.getElementById('flash-success').remove()"
-                class="ml-2 text-white hover:text-green-100 font-bold text-lg leading-none">&times;</button>
+                class="ml-2 text-black hover:text-black font-bold text-lg leading-none">&times;</button>
         </div>
 
         <script>
@@ -71,24 +71,25 @@
         </script>
     @endif
 
-    <nav class="flex items-center justify-between px-10 py-4 bg-white sticky top-0 z-50 shadow-sm">
-        <div class="flex items-center gap-2">
-        </div>
+    <nav class="flex items-center justify-between gap-3 px-4 py-3 bg-purple-700 sticky top-0 z-50 shadow-md sm:px-6 lg:px-10">
+        <a href="#home" class="flex shrink-0 items-center">
+            <x-application-logo class="h-10 w-auto max-w-[118px] rounded-md sm:h-12 sm:max-w-[150px] lg:max-w-[170px]" />
+        </a>
 
-        <div class="hidden md:flex gap-8 text-sm font-semibold text-gray-600">
-            <a href="#home">Dashboard</a>
-            <a href="#profile">Profile</a>
-            <a href="#produk">Produk</a>
-            <a href="#testi">Testimonials</a>
-            <a href="#faq">FAQ</a>
+        <div class="hidden md:flex gap-8 text-sm font-semibold text-black">
+            <a href="#home" class="transition hover:text-black">Dashboard</a>
+            <a href="#profile" class="transition hover:text-black">Profile</a>
+            <a href="#produk" class="transition hover:text-black">Produk</a>
+            <a href="#testi" class="transition hover:text-black">Testimonials</a>
+            <a href="#faq" class="transition hover:text-black">FAQ</a>
         </div>
         @php
             $jumlahItem = collect($keranjang)->sum('qty');
         @endphp
-        <div class="flex items-center">
+        <div class="flex shrink-0 items-center">
             <div id="cartButton" class="relative cursor-pointer transition-transform hover:scale-105">
-                <div class="w-10 h-10 bg-[#C7D2FE] rounded-full flex items-center justify-center shadow-md">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24"
+                <div class="w-10 h-10 bg-purple-500 rounded-full flex items-center justify-center shadow-md ring-1 ring-white/30">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-black" fill="none" viewBox="0 0 24 24"
                         stroke="currentColor">
 
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -96,7 +97,7 @@
                     </svg>
                 </div>
                 <div
-                    class="absolute -top-1 -right-1 min-w-[20px] h-5 px-1 bg-red-500 text-white text-[10px] rounded-full flex items-center justify-center">
+                    class="absolute -top-1 -right-1 min-w-[20px] h-5 px-1 bg-red-500 text-black text-[10px] rounded-full flex items-center justify-center">
                     {{ collect($keranjang)->sum('qty') }}
                 </div>
 
@@ -114,12 +115,12 @@
             <div>
                 <h2 class="font-bold text-lg">Keranjang</h2>
 
-                <p class="text-xs text-gray-400">
+                <p class="text-xs text-black">
                     {{ collect($keranjang)->sum('qty') }} item
                 </p>
             </div>
 
-            <button id="closeCart" class="text-2xl text-gray-500">
+            <button id="closeCart" class="text-2xl text-black">
                 ×
             </button>
         </div>
@@ -147,7 +148,7 @@
                             Rp {{ number_format($item['price'], 0, ',', '.') }}
                         </p>
 
-                        <p class="text-xs text-gray-500 mt-1">
+                        <p class="text-xs text-black mt-1">
                             Subtotal:
                             <span id="subtotal-{{ $item['id'] }}">Rp
                                 {{ number_format($item['price'] * $item['qty'], 0, ',', '.') }}
@@ -172,7 +173,7 @@
                     <form action="{{ route('keranjang.remove', $item['id']) }}" method="POST">
                         @csrf
 
-                        <button class="text-red-500">
+                        <button class="text-black">
                             ×
                         </button>
                     </form>
@@ -181,7 +182,7 @@
 
             @empty
 
-                <p class="text-center text-gray-400 text-sm">
+                <p class="text-center text-black text-sm">
                     Keranjang kosong
                 </p>
 
@@ -201,15 +202,15 @@
 
                 <a href="{{ $jumlahItem > 0 ? route('checkout.buy') : '#' }}" class="checkout-btn block w-full py-3 rounded-lg text-center font-bold relative z-50
             {{ $jumlahItem > 0
-    ? 'bg-purple-400 hover:bg-purple-500 text-white'
-    : 'bg-gray-300 text-gray-500 cursor-not-allowed pointer-events-none' }}">
+    ? 'bg-purple-400 hover:bg-purple-500 text-black'
+    : 'bg-gray-300 text-black cursor-not-allowed pointer-events-none' }}">
                     Beli
                 </a>
 
                 <a href="{{ $jumlahItem > 0 ? route('checkout.rent') : '#' }}" class="checkout-btn block w-full py-3 rounded-lg text-center font-bold relative z-50
             {{ $jumlahItem > 0
-    ? 'bg-purple-400 hover:bg-purple-500 text-white'
-    : 'bg-gray-300 text-gray-500 cursor-not-allowed pointer-events-none' }}">
+    ? 'bg-purple-400 hover:bg-purple-500 text-black'
+    : 'bg-gray-300 text-black cursor-not-allowed pointer-events-none' }}">
                     Sewa
                 </a>
             </div>
@@ -217,15 +218,15 @@
 
     </div>
 
-    <header class="hero-bg min-h-screen flex items-center px-10 pt-20">
+    <header id="home" class="hero-bg min-h-screen flex items-center px-10 pt-20">
         <div class="max-w-7xl mx-auto w-full">
             <h1 data-aos="zoom-in"
-                class="text-4xl md:text-6xl lg:text-7xl font-extrabold {{ !empty($landingData['hero_image']) ? 'text-white' : 'text-gray-800' }} max-w-4xl mb-8 leading-tight tracking-tight uppercase">
+                class="text-4xl md:text-6xl lg:text-7xl font-extrabold {{ !empty($landingData['hero_image']) ? 'text-black' : 'text-black' }} max-w-4xl mb-8 leading-tight tracking-tight uppercase">
                 {{ $landingData['hero_title'] ?? 'The Best Solution for Your Bussines' }}
             </h1>
 
             <a href="#profile" data-aos="fade-up" data-aos-delay="200"
-                class="inline-block bg-transparent border-2 {{ !empty($landingData['hero_image']) ? 'border-white text-white hover:bg-white hover:text-gray-900' : 'border-purple-600 text-purple-600 hover:bg-purple-600 hover:text-white' }} px-8 py-3 rounded-full font-bold transition-all duration-300 transform hover:-translate-y-1">
+                class="inline-block bg-transparent border-2 {{ !empty($landingData['hero_image']) ? 'border-white text-black hover:bg-white hover:text-black' : 'border-purple-600 text-black hover:bg-purple-600 hover:text-black' }} px-8 py-3 rounded-full font-bold transition-all duration-300 transform hover:-translate-y-1">
                 Learn More
             </a>
         </div>
@@ -234,18 +235,18 @@
     <section id="profile" class="py-24 px-10 bg-white">
         <div class="max-w-7xl mx-auto">
             <h2 data-aos="fade-up"
-                class="text-4xl md:text-5xl lg:text-6xl font-extrabold uppercase mb-16 tracking-tight text-gray-900 leading-tight max-w-4xl">
+                class="text-4xl md:text-5xl lg:text-6xl font-extrabold uppercase mb-16 tracking-tight text-black leading-tight max-w-4xl">
                 {{ $landingData['profile_title'] ?? 'Berpengalaman di bidangnya selama 5 tahun' }}
             </h2>
 
             <div class="grid md:grid-cols-2 gap-16 items-start">
                 <div data-aos="fade-right" class="pr-0 md:pr-8">
-                    <p class="text-gray-700 text-lg md:text-xl leading-relaxed mb-8">
+                    <p class="text-black text-lg md:text-xl leading-relaxed mb-8">
                         {{ $landingData['section_text'] ?? 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.' }}
                     </p>
 
                     <a href="#produk"
-                        class="inline-flex items-center text-gray-900 font-semibold border-b-2 border-gray-900 pb-1 hover:text-purple-600 hover:border-purple-600 transition-colors">
+                        class="inline-flex items-center text-black font-semibold border-b-2 border-gray-900 pb-1 hover:text-black hover:border-purple-600 transition-colors">
                         Lihat produk kami selengkapnya <span class="ml-2">&rarr;</span>
                     </a>
                 </div>
@@ -262,7 +263,7 @@
     <section class="py-16 bg-[#E9E9FF] px-10">
 
         <div class="text-center mb-10">
-            <span class="bg-purple-400 text-white px-6 py-1 rounded-md font-bold text-sm">
+            <span class="bg-purple-400 text-black px-6 py-1 rounded-md font-bold text-sm">
                 Layanan Kami
             </span>
         </div>
@@ -275,7 +276,7 @@
 
                 <h3 class="font-bold mb-2">Express Service</h3>
 
-                <p class="text-xs text-gray-400 mb-4">
+                <p class="text-xs text-black mb-4">
                     Layanan cepat dengan kualitas terbaik
                 </p>
 
@@ -288,7 +289,7 @@
 
                 <h3 class="font-bold mb-2">Maintenance</h3>
 
-                <p class="text-xs text-gray-400 mb-4">
+                <p class="text-xs text-black mb-4">
                     Perawatan rutin untuk perangkat Anda
                 </p>
 
@@ -301,7 +302,7 @@
 
                 <h3 class="font-bold mb-2">Help Desk</h3>
 
-                <p class="text-xs text-gray-400 mb-4">
+                <p class="text-xs text-black mb-4">
                     Dukungan teknis kapan saja
                 </p>
 
@@ -315,7 +316,7 @@
 
         <div class="text-center mb-10">
             <a href="{{ route('katalog.index') }}" class="inline-block transition hover:scale-105">
-                <span class="bg-purple-400 text-white px-6 py-1 rounded-md font-bold text-sm">
+                <span class="bg-purple-400 text-black px-6 py-1 rounded-md font-bold text-sm">
                     Catalog Product
                 </span>
             </a>
@@ -330,22 +331,22 @@
                             onerror="this.src='{{ $smallDefaultImage }}'">
 
                         <h4 class="text-xs font-bold mb-1 truncate" title="{{ $product->name }}">{{ $product->name }}</h4>
-                        <p class="text-[10px] text-gray-400 mb-2">
+                        <p class="text-[10px] text-black mb-2">
                             {{ \Illuminate\Support\Str::limit($product->description ?? '', 50) }}
                         </p>
 
-                        <div class="text-orange-500 font-bold text-xs">
+                        <div class="text-black font-bold text-xs">
                             IDR {{ number_format((float) $product->price, 0, ',', '.') }}
                         </div>
                         @if($product->available_stock <= 0)
-                            <p class="text-[10px] text-red-500 font-semibold mt-1">Stok produk habis</p>
+                            <p class="text-[10px] text-black font-semibold mt-1">Stok produk habis</p>
                         @else
-                            <p class="text-[10px] text-gray-500 mt-1">Stok tersisa: {{ $product->available_stock }}</p>
+                            <p class="text-[10px] text-black mt-1">Stok tersisa: {{ $product->available_stock }}</p>
                         @endif
                     </a>
                 </div>
             @empty
-                <div class="col-span-4 text-center py-10 text-gray-400 text-sm">
+                <div class="col-span-4 text-center py-10 text-black text-sm">
                     Belum ada produk. Tambahkan produk melalui panel admin.
                 </div>
             @endforelse
@@ -356,7 +357,7 @@
     <section id="testi" class="py-16 bg-[#E9E9FF] px-10">
 
         <div class="text-center mb-10">
-            <span class="bg-purple-400 text-white px-6 py-1 rounded-md font-bold text-sm">
+            <span class="bg-purple-400 text-black px-6 py-1 rounded-md font-bold text-sm">
                 Testimonial
             </span>
         </div>
@@ -368,49 +369,49 @@
                         <img src="https://ui-avatars.com/api/?name={{ urlencode($t->name) }}&background=random"
                             class="w-12 h-12 rounded-full border-2 border-purple-200">
                         <div>
-                            <h5 class="text-sm font-bold text-gray-800">{{ $t->name }}</h5>
-                            <div class="text-yellow-400 text-xs">
+                            <h5 class="text-sm font-bold text-black">{{ $t->name }}</h5>
+                            <div class="text-black text-xs">
                                 @for($i = 1; $i <= 5; $i++)
                                     {{ $i <= $t->rating ? '★' : '☆' }}
                                 @endfor
                             </div>
                         </div>
                     </div>
-                    <p class="text-xs text-gray-600 italic leading-relaxed">
+                    <p class="text-xs text-black italic leading-relaxed">
                         "{{ $t->message }}"
                     </p>
                 </div>
             @empty
-                <div class="col-span-full text-center text-gray-400 italic">
+                <div class="col-span-full text-center text-black italic">
                     Belum ada testimoni yang disetujui.
                 </div>
             @endforelse
         </div>
 
         <div class="max-w-2xl mx-auto bg-white p-8 rounded-3xl shadow-xl border border-purple-100" data-aos="zoom-in">
-            <h3 class="text-xl font-bold text-center mb-6 text-gray-800">Kirim Testimoni Anda</h3>
+            <h3 class="text-xl font-bold text-center mb-6 text-black">Kirim Testimoni Anda</h3>
 
             <form action="{{ route('testimonials.store') }}" method="POST" class="space-y-4" novalidate>
                 @csrf
                 <div>
-                    <label class="block text-xs font-bold text-gray-500 mb-1">NAMA ANDA</label>
+                    <label class="block text-xs font-bold text-black mb-1">NAMA ANDA</label>
                     <input type="text" id="name" name="name" required placeholder="Masukkan nama lengkap"
                         value="{{ old('name') }}" maxlength="100"
                         oninput="validateTestiField(this, 'name-count', 'name-error', 100, 'submit-testi-btn')"
                         class="w-full px-4 py-2 rounded-lg bg-gray-50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-purple-400 text-sm @error('name') border-red-500 @enderror">
                     <div class="flex justify-between items-center mt-1">
-                        <span id="name-error" class="text-xs text-red-500 hidden">&#10060; Penulisan nama terlalu
+                        <span id="name-error" class="text-xs text-black hidden">&#10060; Penulisan nama terlalu
                             panjang</span>
                         @error('name')
-                            <span class="text-xs text-red-500">{{ $message }}</span>
+                            <span class="text-xs text-black">{{ $message }}</span>
                         @enderror
-                        <span id="name-counter" class="text-[10px] text-gray-400 ml-auto"><span
+                        <span id="name-counter" class="text-[10px] text-black ml-auto"><span
                                 id="name-count">0</span>/100</span>
                     </div>
                 </div>
 
                 <div>
-                    <label class="block text-xs font-bold text-gray-500 mb-1">RATING</label>
+                    <label class="block text-xs font-bold text-black mb-1">RATING</label>
                     <select name="rating" required
                         class="w-full px-4 py-2 rounded-lg bg-gray-50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-purple-400 text-sm">
                         <option value="5">★★★★★ (Sangat Bagus)</option>
@@ -422,24 +423,24 @@
                 </div>
 
                 <div>
-                    <label class="block text-xs font-bold text-gray-500 mb-1">PESAN / TESTIMONI</label>
+                    <label class="block text-xs font-bold text-black mb-1">PESAN / TESTIMONI</label>
                     <textarea id="message" name="message" rows="3" required
                         placeholder="Tuliskan pengalaman Anda bersama kami..." maxlength="300"
                         oninput="validateTestiField(this, 'message-count', 'message-error', 300, 'submit-testi-btn')"
                         class="w-full px-4 py-2 rounded-lg bg-gray-50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-purple-400 text-sm @error('message') border-red-500 @enderror">{{ old('message') }}</textarea>
                     <div class="flex justify-between items-center mt-1">
-                        <span id="message-error" class="text-xs text-red-500 hidden">&#10060; Pesan testimoni terlalu
+                        <span id="message-error" class="text-xs text-black hidden">&#10060; Pesan testimoni terlalu
                             panjang</span>
                         @error('message')
-                            <span class="text-xs text-red-500">{{ $message }}</span>
+                            <span class="text-xs text-black">{{ $message }}</span>
                         @enderror
-                        <span id="message-counter" class="text-[10px] text-gray-400 ml-auto"><span
+                        <span id="message-counter" class="text-[10px] text-black ml-auto"><span
                                 id="message-count">0</span>/300</span>
                     </div>
                 </div>
 
                 <button type="submit" id="submit-testi-btn"
-                    class="w-full bg-purple-500 hover:bg-purple-600 text-white font-bold py-3 rounded-xl shadow-lg transition-all transform hover:scale-[1.02]">
+                    class="w-full bg-purple-500 hover:bg-purple-600 text-black font-bold py-3 rounded-xl shadow-lg transition-all transform hover:scale-[1.02]">
                     Kirim Testimoni
                 </button>
             </form>
@@ -449,7 +450,7 @@
     <section id="faq" class="py-16 px-10 bg-white">
 
         <div class="text-center mb-10">
-            <span class="bg-purple-400 text-white px-6 py-1 rounded-md font-bold text-sm">
+            <span class="bg-purple-400 text-black px-6 py-1 rounded-md font-bold text-sm">
                 FAQ
             </span>
         </div>
@@ -459,21 +460,21 @@
             @forelse($faqs as $faq)
                 <details data-aos="fade-up" class="bg-[#F3F4F6] rounded-xl shadow-sm p-4 group">
 
-                    <summary class="flex justify-between items-center cursor-pointer font-semibold text-gray-700 list-none">
+                    <summary class="flex justify-between items-center cursor-pointer font-semibold text-black list-none">
                         <span>{{ $faq->question }}</span>
 
-                        <span class="text-purple-500 text-xl transition-transform duration-300 group-open:rotate-45">
+                        <span class="text-black text-xl transition-transform duration-300 group-open:rotate-45">
                             +
                         </span>
                     </summary>
 
-                    <p class="mt-3 text-sm text-gray-500 leading-relaxed">
+                    <p class="mt-3 text-sm text-black leading-relaxed">
                         {{ $faq->answer }}
                     </p>
 
                 </details>
             @empty
-                <div class="text-center text-gray-400">
+                <div class="text-center text-black">
                     Belum ada FAQ tersedia.
                 </div>
             @endforelse
@@ -481,7 +482,7 @@
 
     </section>
 
-    <footer class="bg-gray-100 py-10 text-center text-xs text-gray-500">
+    <footer class="bg-purple-700 py-10 text-center text-xs text-black">
 
         <p>
             © 2026 CV Solusi Sentra Globalindo
@@ -571,12 +572,12 @@
                 input.classList.add('border-red-500');
                 input.classList.remove('border-gray-200');
                 errorMsg.classList.remove('hidden');
-                document.getElementById(countId).parentElement.classList.add('text-red-500');
+                document.getElementById(countId).parentElement.classList.add('text-black');
             } else {
                 input.classList.remove('border-red-500');
                 input.classList.add('border-gray-200');
                 errorMsg.classList.add('hidden');
-                document.getElementById(countId).parentElement.classList.remove('text-red-500');
+                document.getElementById(countId).parentElement.classList.remove('text-black');
             }
 
             submitBtn.disabled = nameOver || messageOver;
@@ -611,3 +612,4 @@
 </body>
 
 </html>
+

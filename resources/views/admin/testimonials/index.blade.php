@@ -2,13 +2,13 @@
 <x-app-layout>
     <x-slot name="header">
         <div class="flex justify-between items-center">
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">Manajemen Testimoni</h2>
+            <h2 class="font-semibold text-xl text-purple-900 leading-tight">Manajemen Testimoni</h2>
             <span class="text-sm font-bold text-white tracking-wider">Setujui testimoni agar tampil di landing
                 page</span>
         </div>
     </x-slot>
 
-    <div class="py-12 bg-gray-50 min-h-[calc(100vh-70px)]">
+    <div class="py-12 bg-purple-50 min-h-[calc(100vh-70px)]">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
 
             @if(session('success'))
@@ -17,8 +17,8 @@
                 </div>
             @endif
 
-            <div class="bg-white overflow-hidden shadow-lg sm:rounded-xl border border-gray-200">
-                <table class="min-w-full divide-y divide-gray-200">
+            <div class="bg-white overflow-hidden shadow-lg sm:rounded-xl border border-purple-100">
+                <table class="min-w-full divide-y divide-purple-100">
                     <thead class="bg-purple-600">
                         <tr>
                             <th class="px-6 py-3 text-left text-xs font-bold text-white uppercase tracking-wider">
@@ -35,7 +35,7 @@
                                 Aksi</th>
                         </tr>
                     </thead>
-                    <tbody class="bg-white divide-y divide-gray-200">
+                    <tbody class="bg-white divide-y divide-purple-100">
                         @forelse($testimonials as $t)
                             <tr class="{{ $t->is_approved ? '' : 'bg-yellow-50' }}">
                                 <td class="px-6 py-4 text-sm font-medium text-gray-900">

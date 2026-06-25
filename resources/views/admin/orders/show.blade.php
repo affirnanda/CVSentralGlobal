@@ -4,7 +4,7 @@
             <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
 
                 <div>
-                    <h2 class="font-semibold text-2xl text-gray-800 dark:text-gray-200 leading-tight">
+                    <h2 class="font-semibold text-2xl text-white leading-tight">
                         Detail Pesanan
                     </h2>
 
@@ -49,22 +49,22 @@
                         <select name="status"
                                 onchange="this.form.submit()"
                                 @disabled(in_array($order->status, ['paid', 'rejected']))
-                                class="bg-gray-800 dark:bg-gray-700 text-white border border-gray-600 rounded-lg px-4 py-2 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                class="bg-purple-700 dark:bg-purple-800 text-white border border-purple-500 rounded-lg px-4 py-2 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-purple-500">
 
                             <option value="pending" 
-                                    class="bg-gray-800 text-white"
+                                    class="bg-purple-800 text-white"
                                     {{ $order->status == 'pending' ? 'selected' : '' }}>
                                 Pending
                             </option>
 
                             <option value="paid"
-                                    class="bg-gray-800 text-white"
+                                    class="bg-purple-800 text-white"
                                     {{ $order->status == 'paid' ? 'selected' : '' }}>
                                 Paid
                             </option>
 
                             <option value="rejected"
-                                    class="bg-gray-800 text-white"
+                                    class="bg-purple-800 text-white"
                                     {{ $order->status == 'rejected' ? 'selected' : '' }}>
                                 Rejected
                             </option>
@@ -92,13 +92,13 @@
 
                 <div class="grid lg:grid-cols-2 gap-6 mb-6">
 
-                    <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+                    <div class="bg-white dark:bg-purple-950 overflow-hidden shadow-sm sm:rounded-lg border border-purple-100 dark:border-purple-800">
 
                         <div class="p-6">
 
                             <div class="flex items-center gap-3 mb-6">
 
-                                <div class="w-12 h-12 rounded-xl bg-indigo-100 dark:bg-indigo-900 flex items-center justify-center text-xl">
+                                <div class="w-12 h-12 rounded-xl bg-purple-100 dark:bg-purple-900 flex items-center justify-center text-xl">
                                     👤
                                 </div>
 
@@ -196,13 +196,13 @@
 
                     </div>
 
-                    <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+                    <div class="bg-white dark:bg-purple-950 overflow-hidden shadow-sm sm:rounded-lg border border-purple-100 dark:border-purple-800">
 
                         <div class="p-6">
 
                             <div class="flex items-center gap-3 mb-6">
 
-                                <div class="w-12 h-12 rounded-xl bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-xl">
+                                <div class="w-12 h-12 rounded-xl bg-purple-100 dark:bg-purple-900 flex items-center justify-center text-xl">
                                     💳
                                 </div>
 
@@ -260,7 +260,7 @@
 
                 </div>
 
-                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="bg-white dark:bg-purple-950 overflow-hidden shadow-sm sm:rounded-lg border border-purple-100 dark:border-purple-800">
 
                     <div class="p-6">
 
@@ -278,7 +278,7 @@
 
                             </div>
 
-                            <span class="inline-flex px-4 py-2 rounded-full text-sm font-semibold bg-indigo-100 text-indigo-800 dark:bg-indigo-900 dark:text-indigo-200">
+                            <span class="inline-flex px-4 py-2 rounded-full text-sm font-semibold bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200">
                                 {{ $order->items->count() }} Produk
                             </span>
 
@@ -288,19 +288,19 @@
 
                             <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
 
-                                <thead class="bg-gray-50 dark:bg-gray-700">
+                                <thead class="bg-purple-600 dark:bg-purple-800">
 
                                     <tr>
 
-                                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                                        <th class="px-4 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
                                             Produk
                                         </th>
 
-                                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                                        <th class="px-4 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
                                             Qty
                                         </th>
 
-                                        <th class="px-4 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                                        <th class="px-4 py-3 text-right text-xs font-medium text-white uppercase tracking-wider">
                                             Subtotal
                                         </th>
 
@@ -308,11 +308,11 @@
 
                                 </thead>
 
-                                <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                                <tbody class="bg-white dark:bg-purple-950 divide-y divide-purple-100 dark:divide-purple-800">
 
                                     @foreach($order->items as $item)
 
-                                        <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-150">
+                                        <tr class="hover:bg-purple-50 dark:hover:bg-purple-900 transition-colors duration-150">
 
                                             <td class="px-4 py-4 text-sm font-medium text-gray-900 dark:text-gray-100">
                                                 {{ $item->product_name }}
@@ -322,7 +322,7 @@
                                                 {{ $item->qty }}
                                             </td>
 
-                                            <td class="px-4 py-4 text-right text-sm font-semibold text-indigo-600 dark:text-indigo-400">
+                                            <td class="px-4 py-4 text-right text-sm font-semibold text-purple-600 dark:text-purple-400">
                                                 Rp {{ number_format($item->subtotal,0,',','.') }}
                                             </td>
 
@@ -338,13 +338,13 @@
 
                         <div class="mt-8 flex justify-end">
 
-                            <div class="bg-gray-100 dark:bg-gray-700 rounded-xl px-8 py-5">
+                            <div class="bg-purple-50 dark:bg-purple-900 rounded-xl px-8 py-5">
 
                                 <p class="text-sm text-gray-500 dark:text-gray-400 mb-2">
                                     Total Pembayaran
                                 </p>
 
-                                <p class="text-3xl font-bold text-indigo-700 dark:text-indigo-400">
+                                <p class="text-3xl font-bold text-purple-700 dark:text-purple-400">
                                     Rp {{ number_format($order->total,0,',','.') }}
                                 </p>
 
@@ -361,3 +361,4 @@
         </div>
 
     </x-app-layout>
+

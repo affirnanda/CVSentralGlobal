@@ -1,7 +1,7 @@
 <head>@vite(['resources/css/app.css', 'resources/js/app.js'])</head>
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
+        <h2 class="font-semibold text-xl text-purple-900 dark:text-purple-100 leading-tight">
             {{ __('Kelola Hero Section') }}
         </h2>
     </x-slot>
@@ -10,7 +10,7 @@
         <div id="popup-success" class="fixed inset-0 z-[9999] flex items-center justify-center bg-black/40 backdrop-blur-sm"
             onclick="if(event.target===this)closePopup('popup-success')">
             <div
-                class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-8 max-w-sm w-full mx-4 text-center animate-[popIn_0.3s_ease-out]">
+                class="bg-white dark:bg-purple-950 rounded-2xl shadow-2xl p-8 max-w-sm w-full mx-4 text-center animate-[popIn_0.3s_ease-out]">
                 <div class="flex items-center justify-center w-16 h-16 bg-green-100 rounded-full mx-auto mb-4">
                     <svg class="w-8 h-8 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
@@ -30,7 +30,7 @@
         <div id="popup-error" class="fixed inset-0 z-[9999] flex items-center justify-center bg-black/40 backdrop-blur-sm"
             onclick="if(event.target===this)closePopup('popup-error')">
             <div
-                class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-8 max-w-sm w-full mx-4 text-center animate-[popIn_0.3s_ease-out]">
+                class="bg-white dark:bg-purple-950 rounded-2xl shadow-2xl p-8 max-w-sm w-full mx-4 text-center animate-[popIn_0.3s_ease-out]">
                 <div class="flex items-center justify-center w-16 h-16 bg-red-100 rounded-full mx-auto mb-4">
                     <svg class="w-8 h-8 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -69,9 +69,9 @@
         });
     </script>
 
-    <div class="py-12 bg-gray-50 min-h-[calc(100vh-70px)]">
+    <div class="py-12 bg-purple-50 min-h-[calc(100vh-70px)]">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-lg sm:rounded-xl border border-gray-200">
+            <div class="bg-white overflow-hidden shadow-lg sm:rounded-xl border border-purple-100">
                 <div class="p-6 text-gray-900">
 
                     <form method="POST" action="{{ route('admin.hero-section.update') }}" enctype="multipart/form-data">

@@ -1,15 +1,15 @@
 <head>@vite(['resources/css/app.css', 'resources/js/app.js'])</head>
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+        <h2 class="font-semibold text-xl text-white leading-tight">
             {{ __('Dashboard Admin') }}
         </h2>
     </x-slot>
 
-    <div class="py-12 bg-white min-h-[calc(100vh-70px)]">
+    <div class="py-12 bg-purple-50 min-h-[calc(100vh-70px)]">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             
-            <div class="mb-8 bg-gray-50 overflow-hidden shadow-sm sm:rounded-lg border-l-4 border-purple-500">
+            <div class="mb-8 bg-white overflow-hidden shadow-sm sm:rounded-lg border border-purple-100 border-l-4 border-l-purple-500">
                 <div class="p-6 text-gray-900">
                     <h3 class="text-2xl font-bold text-gray-800 mb-2">Selamat Datang, {{ Auth::user()->name }}!</h3>
                     <p class="text-gray-500">Pilih menu di bawah ini untuk mengelola berbagai fitur website Solusi Sentral Global Indo.</p>
@@ -17,7 +17,7 @@
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <a href="{{ route('profile.edit') }}" class="block p-6 bg-gray-50 rounded-xl shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 border border-transparent hover:border-purple-300 group">
+                <a href="{{ route('profile.edit') }}" class="block p-6 bg-white rounded-xl shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 border border-purple-100 hover:border-purple-300 group">
                     <div class="flex items-center gap-4">
                         <div class="p-3 bg-purple-100 rounded-lg group-hover:bg-purple-200 transition-colors">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -31,7 +31,7 @@
                     </div>
                 </a>
 
-                <a href="{{ route('admin.products.index') }}" class="block p-6 bg-gray-50 rounded-xl shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 border border-transparent hover:border-purple-300 group">
+                <a href="{{ route('admin.products.index') }}" class="block p-6 bg-white rounded-xl shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 border border-purple-100 hover:border-purple-300 group">
                     <div class="flex items-center gap-4">
                         <div class="p-3 bg-purple-100 rounded-lg group-hover:bg-purple-200 transition-colors">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -45,7 +45,7 @@
                     </div>
                 </a>
 
-                <a href="{{ route('admin.orders.index') }}" class="block p-6 bg-gray-50 rounded-xl shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 border border-transparent hover:border-purple-300 group">
+                <a href="{{ route('admin.orders.index') }}" class="block p-6 bg-white rounded-xl shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 border border-purple-100 hover:border-purple-300 group">
                     <div class="flex items-center gap-4">
                         <div class="p-3 bg-purple-100 rounded-lg group-hover:bg-purple-200 transition-colors">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -59,7 +59,7 @@
                     </div>
                 </a>
 
-                <a href="{{ route('faqs.index') }}" class="block p-6 bg-gray-50 rounded-xl shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 border border-transparent hover:border-purple-300 group">
+                <a href="{{ route('faqs.index') }}" class="block p-6 bg-white rounded-xl shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 border border-purple-100 hover:border-purple-300 group">
                     <div class="flex items-center gap-4">
                         <div class="p-3 bg-purple-100 rounded-lg group-hover:bg-purple-200 transition-colors">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -73,7 +73,7 @@
                     </div>
                 </a>
 
-                <a href="{{ route('admin.testimonials.index') }}" class="block p-6 bg-gray-50 rounded-xl shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 border border-transparent hover:border-purple-300 group">
+                <a href="{{ route('admin.testimonials.index') }}" class="block p-6 bg-white rounded-xl shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 border border-purple-100 hover:border-purple-300 group">
                     <div class="flex items-center gap-4">
                         <div class="p-3 bg-purple-100 rounded-lg group-hover:bg-purple-200 transition-colors">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -87,7 +87,7 @@
                     </div>
                 </a>
 
-                <a href="{{ route('admin.hero-section.manage') }}" class="block p-6 bg-gray-50 rounded-xl shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 border border-transparent hover:border-purple-300 group">
+                <a href="{{ route('admin.hero-section.manage') }}" class="block p-6 bg-white rounded-xl shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 border border-purple-100 hover:border-purple-300 group">
                     <div class="flex items-center gap-4">
                         <div class="p-3 bg-purple-100 rounded-lg group-hover:bg-purple-200 transition-colors">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">

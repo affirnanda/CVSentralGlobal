@@ -4,7 +4,7 @@
         <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
 
             <div>
-                <h2 class="font-semibold text-2xl text-gray-800 dark:text-gray-200 leading-tight">
+                <h2 class="font-semibold text-2xl text-white leading-tight">
                     {{ __('Manage Orders') }}
                 </h2>
 
@@ -17,7 +17,7 @@
             <form method="GET" class="flex flex-row sm:flex-row gap-3">
 
                 <select name="type"
-                        class="border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                        class="border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200 rounded-lg shadow-sm focus:ring-purple-500 focus:border-purple-500">
 
                     <option value=""
                     {{ request('type') == '' ? 'selected' : '' }}>
@@ -37,7 +37,7 @@
                 </select>
 
                 <select name="status"
-                        class="border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                        class="border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200 rounded-lg shadow-sm focus:ring-purple-500 focus:border-purple-500">
 
                     <option value="">
                         Semua Status
@@ -61,7 +61,7 @@
                 </select>
 
                 <button type="submit"
-                        class="inline-flex items-center justify-center px-5 py-2 bg-gray-800 dark:bg-gray-200 border border-transparent rounded-lg font-semibold text-sm text-white dark:text-gray-800 hover:bg-gray-700 dark:hover:bg-white transition duration-150">
+                        class="inline-flex items-center justify-center px-5 py-2 bg-purple-600 dark:bg-purple-500 border border-transparent rounded-lg font-semibold text-sm text-white hover:bg-purple-700 dark:hover:bg-purple-400 transition duration-150">
 
                     Filter
 
@@ -72,7 +72,7 @@
         </div>
     </x-slot>
 
-    <div class="py-10">
+    <div class="py-10 bg-purple-50 min-h-[calc(100vh-70px)]">
 
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
 
@@ -87,7 +87,7 @@
 
             @endif
 
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-2xl">
+            <div class="bg-white dark:bg-purple-950 overflow-hidden shadow-xl sm:rounded-2xl border border-purple-100 dark:border-purple-800">
 
                 <div class="p-6">
 
@@ -95,37 +95,37 @@
 
                         <div class="overflow-x-auto">
 
-                            <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                            <table class="min-w-full divide-y divide-purple-100 dark:divide-purple-800">
 
-                                <thead class="bg-gray-50 dark:bg-gray-700">
+                                <thead class="bg-purple-600 dark:bg-purple-800">
 
                                     <tr>
 
-                                        <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                                        <th class="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">
                                             Invoice
                                         </th>
 
-                                        <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                                        <th class="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">
                                             Customer
                                         </th>
 
-                                        <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                                        <th class="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">
                                             Type
                                         </th>
 
-                                        <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                                        <th class="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">
                                             Total
                                         </th>
 
-                                        <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                                        <th class="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">
                                             Status
                                         </th>
 
-                                        <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                                        <th class="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">
                                             Status Pengembalian
                                         </th>
 
-                                        <th class="px-6 py-4 text-center text-xs font-semibold text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                                        <th class="px-6 py-4 text-center text-xs font-semibold text-white uppercase tracking-wider">
                                             Action
                                         </th>
 
@@ -133,7 +133,7 @@
 
                                 </thead>
 
-                                <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                                <tbody class="bg-white dark:bg-purple-950 divide-y divide-purple-100 dark:divide-purple-800">
 
                                     @foreach($orders as $order)
 
@@ -261,7 +261,7 @@
                                             <td class="px-6 py-5 text-center">
 
                                                 <a href="{{ route('admin.orders.show', $order) }}"
-                                                   class="inline-flex items-center px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg transition duration-150">
+                                                   class="inline-flex items-center px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white text-sm font-medium rounded-lg transition duration-150">
 
                                                     Detail
 
@@ -309,3 +309,4 @@
     </div>
 
 </x-app-layout>
+

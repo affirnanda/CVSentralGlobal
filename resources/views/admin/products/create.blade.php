@@ -1,12 +1,12 @@
 <head>@vite(['resources/css/app.css', 'resources/js/app.js'])</head>
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">Add Product</h2>
+        <h2 class="font-semibold text-xl text-white leading-tight">Add Product</h2>
     </x-slot>
 
     <div class="py-12">
         <div class="max-w-2xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white shadow-sm sm:rounded-lg p-6">
+            <div class="bg-white shadow-sm sm:rounded-lg p-6 border border-purple-100">
                 @if($errors->any())
                     <div class="mb-4 p-4 bg-red-100 text-red-700 rounded">
                         <ul class="list-disc pl-5">
@@ -57,11 +57,11 @@
                     </div>
                     <div class="flex gap-3">
                         <button type="submit"
-                                class="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700">
+                                class="bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700">
                             Save Product
                         </button>
                         <a href="{{ route('admin.products.index') }}"
-                           class="bg-gray-200 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-300">
+                           class="bg-purple-100 text-purple-700 px-4 py-2 rounded-md hover:bg-purple-200">
                             Cancel
                         </a>
                     </div>
@@ -70,3 +70,4 @@
         </div>
     </div>
 </x-app-layout>
+
