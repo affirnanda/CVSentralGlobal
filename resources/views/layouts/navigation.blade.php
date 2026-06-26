@@ -1,5 +1,5 @@
 <head>@vite(['resources/css/app.css', 'resources/js/app.js'])</head>
-<nav x-data="{ open: false }" class="bg-white dark:bg-purple-950 border-b border-purple-100 dark:border-purple-800 shadow-sm">
+<nav x-data="{ open: false }" class="bg-purple-500 dark:bg-purple-950 border-b border-purple-100 dark:border-purple-800 shadow-sm">
     <!-- Primary Navigation Menu -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16">

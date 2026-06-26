@@ -1,7 +1,14 @@
 <head>@vite(['resources/css/app.css', 'resources/js/app.js'])</head>
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-white leading-tight">Edit Product</h2>
+        <div class="flex items-center gap-4">
+            <a href="{{ route('admin.products.index') }}" class="text-white hover:text-gray-200" title="Kembali">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+            </a>
+            <h2 class="font-semibold text-xl text-white leading-tight">Edit Product</h2>
+        </div>
     </x-slot>
 
     <div class="py-12">
@@ -67,7 +74,7 @@
                         </button>
                         <a href="{{ route('admin.products.index') }}"
                            class="bg-purple-100 text-purple-700 px-4 py-2 rounded-md hover:bg-purple-200">
-                            Cancel
+                            Kembali
                         </a>
                     </div>
                 </form>
