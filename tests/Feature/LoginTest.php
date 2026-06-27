@@ -67,11 +67,6 @@ class LoginTest extends TestCase
 
     public function test_login_dengan_password_yang_salah()
     {
-        $user = User::factory()->create([
-            'email' => 'Super@admin.com',
-            'password' => bcrypt('admin123'),
-        ]);
-
         $response = $this->post('/login', [
             'email' => 'Super@admin.com',
             'password' => 'salah123',

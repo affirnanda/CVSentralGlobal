@@ -34,6 +34,7 @@ class KelolaHeroSectionController extends Controller
         $messages = [
             'hero_title.required' => 'Judul hero section tidak boleh kosong',
             'hero_title.max' => 'Judul hero section terlalu panjang',
+            'hero_image.image' => 'Format gambar yang diunggah tidak sesuai',
             'hero_image.mimes' => 'Format gambar yang diunggah tidak sesuai',
 
             'profile_title.required' => 'Judul profile tidak boleh kosong',
@@ -42,6 +43,7 @@ class KelolaHeroSectionController extends Controller
             'section_text.required' => 'Paragraf profile tidak boleh kosong',
             'section_text.max' => 'Paragraf profile terlalu panjang',
 
+            'profile_image.image' => 'Format gambar yang diunggah tidak sesuai',
             'profile_image.mimes' => 'Format gambar yang diunggah tidak sesuai',
         ];
 

@@ -72,12 +72,14 @@
         </script>
     @endif
 
-    <nav class="flex items-center justify-between gap-3 px-4 py-3 bg-purple-700 sticky top-0 z-50 shadow-md sm:px-6 lg:px-10">
+    <nav
+        class="flex items-center justify-between gap-3 px-4 py-3 bg-purple-700 sticky top-0 z-50 shadow-md sm:px-6 lg:px-10">
         <a href="#home" class="flex shrink-0 items-center">
-            <x-application-logo class="h-10 w-auto max-w-[118px] rounded-md sm:h-12 sm:max-w-[150px] lg:max-w-[170px]" />
+            <x-application-logo
+                class="h-10 w-auto max-w-[118px] rounded-md sm:h-12 sm:max-w-[150px] lg:max-w-[170px]" />
         </a>
 
-        <div class="hidden md:flex gap-8 text-sm font-semibold text-black">
+        <div class="hidden md:flex gap-8 text-sm font-semibold text-white">
             <a href="#home" class="transition hover:text-black">Dashboard</a>
             <a href="#profile" class="transition hover:text-black">Profile</a>
             <a href="#produk" class="transition hover:text-black">Produk</a>
@@ -89,8 +91,9 @@
         @endphp
         <div class="flex shrink-0 items-center">
             <div id="cartButton" class="relative cursor-pointer transition-transform hover:scale-105">
-                <div class="w-10 h-10 bg-purple-500 rounded-full flex items-center justify-center shadow-md ring-1 ring-white/30">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-black" fill="none" viewBox="0 0 24 24"
+                <div
+                    class="w-10 h-10 bg-purple-500 rounded-full flex items-center justify-center shadow-md ring-1 ring-white/30">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24"
                         stroke="currentColor">
 
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -222,12 +225,12 @@
     <header id="home" class="hero-bg min-h-screen flex items-center px-10 pt-20">
         <div class="max-w-7xl mx-auto w-full">
             <h1 data-aos="zoom-in"
-                class="text-4xl md:text-6xl lg:text-7xl font-extrabold {{ !empty($landingData['hero_image']) ? 'text-black' : 'text-black' }} max-w-4xl mb-8 leading-tight tracking-tight uppercase">
+                class="text-4xl md:text-6xl lg:text-7xl font-extrabold {{ !empty($landingData['hero_image']) ? 'text-white' : 'text-white' }} max-w-4xl mb-8 leading-tight tracking-tight uppercase">
                 {{ $landingData['hero_title'] ?? 'The Best Solution for Your Bussines' }}
             </h1>
 
             <a href="#profile" data-aos="fade-up" data-aos-delay="200"
-                class="inline-block bg-transparent border-2 {{ !empty($landingData['hero_image']) ? 'border-white text-black hover:bg-white hover:text-black' : 'border-purple-600 text-black hover:bg-purple-600 hover:text-black' }} px-8 py-3 rounded-full font-bold transition-all duration-300 transform hover:-translate-y-1">
+                class="inline-block bg-transparent border-2 {{ !empty($landingData['hero_image']) ? 'border-white text-white hover:bg-white hover:text-black' : 'border-purple-600 text-black hover:bg-purple-600 hover:text-black' }} px-8 py-3 rounded-full font-bold transition-all duration-300 transform hover:-translate-y-1">
                 Learn More
             </a>
         </div>
@@ -613,4 +616,3 @@
 </body>
 
 </html>
-

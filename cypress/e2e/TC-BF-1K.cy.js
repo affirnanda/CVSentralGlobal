@@ -1,18 +1,26 @@
-describe('TC-BF-1K: Admin mengunggah gambar konten section dengan format salah', () => {
-  it('Admin mengunggah gambar profil format salah', () => {
-    cy.visit('/login');
-    cy.get('input#email').type('super@admin.com');
-    cy.get('input#password').type('admin123');
-    cy.get('button[type="submit"]').click({force: true});
-    cy.visit('/admin/kelola-hero-section');
-    cy.get('input[name="hero_title"]').clear({force: true}).type('Solusi Terbaik');
-    cy.get('textarea[name="section_text"], input[name="section_text"]').clear({force: true}).type('Deskripsi Hero', {force: true});
-    cy.get('input[type="file"][name="profile_image"]').selectFile({
-      contents: Cypress.Buffer.from('dummy pdf'),
-      fileName: 'file.pdf',
-      mimeType: 'application/pdf'
+describe("TC-BF-1K: Admin mengunggah gambar profile section dengan format salah", () => {
+    beforeEach(() => {
+        cy.visit("http://127.0.0.1:8000/login");
+        cy.get("input#email").type("super@admin.com");
+        cy.get("input#password").type("admin123");
+        cy.get('button[type="submit"]').click();
+        cy.url().should("include", "/dashboard");
+        cy.visit("http://127.0.0.1:8000/admin/kelola-hero-section");
     });
-    cy.get('button[type="submit"]').click({force: true});
-    cy.screenshot('TC-BF-1K');
-  });
+
+    it("Admin mengunggah gambar profil format salah", () => {
+        cy.get('input[name="hero_title"]').clear().type("Solusi Terbaik");
+        cy.get('input[name="profile_title"]').clear().type("Profil Kami");
+        cy.get('textarea[name="section_text"]').clear().type("Deskripsi Hero");
+
+        cy.get('input[type="file"][name="profile_image"]').selectFile(
+            {
+                contents: Cypress.Buffer.from("dummy pdf"),
+                fileName: "file.pdf",
+                mimeType: "application/pdf",
+            },
+            { force: true },
+        );
+        cy.contains("Format gambar yang diunggah tidak sesuai").should("exist");
+    });
 });

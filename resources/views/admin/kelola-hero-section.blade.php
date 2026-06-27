@@ -53,8 +53,15 @@
 
     <style>
         @keyframes popIn {
-            from { opacity: 0; transform: scale(0.85); }
-            to   { opacity: 1; transform: scale(1); }
+            from {
+                opacity: 0;
+                transform: scale(0.85);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
         }
     </style>
 
@@ -177,7 +184,7 @@
 
                 const allowedExtensions = /(\.jpg|\.jpeg|\.png)$/i;
                 if (!allowedExtensions.exec(this.value)) {
-                    showClientPopup(`Format file "${file.name}" tidak didukung. Harap gunakan format JPG, JPEG, atau PNG.`);
+                    showClientPopup(`Format gambar yang diunggah tidak sesuai`);
                     this.value = '';
                     if (hint) hint.classList.add('text-red-500');
                     return;
@@ -192,7 +199,7 @@
                 }
             });
         }
-        fileGuard('hero_image',    'hero_image_hint',    2);
+        fileGuard('hero_image', 'hero_image_hint', 2);
         fileGuard('profile_image', 'profile_image_hint', 2);
 
         function showClientPopup(msg) {
@@ -213,9 +220,9 @@
                 OK, Mengerti
             </button>
         </div>`;
-    document.body.appendChild(overlay);
-    overlay.addEventListener('click', e => { if (e.target === overlay) overlay.remove(); });
-}
+            document.body.appendChild(overlay);
+            overlay.addEventListener('click', e => { if (e.target === overlay) overlay.remove(); });
+        }
 
         function monitorLength(inputId, counterId, maxLen, errorMsg) {
             const input = document.getElementById(inputId);
@@ -235,16 +242,16 @@
                 }
             });
         }
- // Monitor profile title length and show popup if exceeds 255 characters
- const profileTitleInput = document.getElementById('profile_title');
- if (profileTitleInput) {
-     profileTitleInput.addEventListener('input', function () {
-         const max = 255;
-         if (this.value.length > max) {
-             showClientPopup('Judul Profile terlalu panjang. Maksimum 255 karakter.');
-         }
-     });
- }
+        // Monitor profile title length and show popup if exceeds 255 characters
+        const profileTitleInput = document.getElementById('profile_title');
+        if (profileTitleInput) {
+            profileTitleInput.addEventListener('input', function () {
+                const max = 255;
+                if (this.value.length > max) {
+                    showClientPopup('Judul Profile terlalu panjang. Maksimum 255 karakter.');
+                }
+            });
+        }
 
         monitorLength('hero_title', 'hero_title_counter', 100, 'Judul hero section terlalu panjang');
         monitorLength('profile_title', 'profile_title_counter', 100, 'Judul profile terlalu panjang');
