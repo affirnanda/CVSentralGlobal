@@ -66,3 +66,5 @@ class AdminAddFaqTest extends TestCase
                         ->assertSee('Bagaimana cara melakukan pemesanan?');
     }
 }
+
+//testdong
